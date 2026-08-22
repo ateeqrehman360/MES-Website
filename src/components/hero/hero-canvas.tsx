@@ -7,22 +7,35 @@ import {
   PerspectiveCamera,
   useGLTF,
 } from "@react-three/drei";
-import { Canvas, useThree } from "@react-three/fiber";
-import { useEffect, useMemo, useState } from "react";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CanvasTexture,
   Color,
+  Group,
+  MathUtils,
   Mesh,
   MeshBasicMaterial,
   MeshPhysicalMaterial,
   MeshStandardMaterial,
   PerspectiveCamera as ThreePerspectiveCamera,
   SRGBColorSpace,
+  Vector3,
 } from "three";
+
+import type { HeroProgressSignal } from "./hero-progress";
 
 const MODEL_URL = "/models/MES_Laptop.glb";
 const LOGO_URL = "/brand/mes-logo.svg";
 const DISPLAY_TEXTURE_SIZE = { width: 1246, height: 720 } as const;
+const DISPLAY_LOCAL_CENTER = {
+  x: -0.0006706475396640599,
+  y: 10.722437858581543,
+  z: -10.537602424621582,
+} as const;
+const FOCUS_CAMERA = { x: 0.12, y: 1.85, z: 9.5 } as const;
+const FOCUS_TARGET_Z_OFFSET = 0.95;
+const TAKEOVER_CAMERA_DISTANCE = 5.82;
 
 type ScreenMode = "brand" | "mark" | "colour" | "uv";
 type CompositionMode = "poster" | "offset" | "gallery" | "baseline";
@@ -92,6 +105,16 @@ const portraitComposition: Composition = {
   shadowPosition: [-0.2, -3.09, 0.5],
   shadowScale: 4.8,
 };
+
+function clamp(value: number, minimum = 0, maximum = 1) {
+  return Math.min(maximum, Math.max(minimum, value));
+}
+
+function smoothSegment(value: number, start: number, end: number) {
+  const progress = clamp((value - start) / (end - start));
+
+  return progress * progress * (3 - 2 * progress);
+}
 
 function useDevelopmentSceneOptions(): {
   screenMode: ScreenMode;
@@ -474,37 +497,23 @@ function LaptopModel({
   return <primitive object={preparedScene} />;
 }
 
-function ArtDirectedCamera({ composition }: { composition: Composition }) {
-  const rotation = useMemo(() => {
-    const camera = new ThreePerspectiveCamera();
-    camera.position.set(...composition.camera);
-    camera.lookAt(...composition.target);
-
-    return [camera.rotation.x, camera.rotation.y, camera.rotation.z] as const;
-  }, [composition]);
-
-  return (
-    <PerspectiveCamera
-      makeDefault
-      position={composition.camera}
-      rotation={rotation}
-      fov={composition.fov}
-      near={0.1}
-      far={100}
-    />
-  );
-}
-
 function LaptopScene({
   screenMode,
   compositionMode,
   materialMode,
+  progress,
 }: {
   screenMode: ScreenMode;
   compositionMode: CompositionMode;
   materialMode: MaterialMode;
+  progress: HeroProgressSignal;
 }) {
   const size = useThree((state) => state.size);
+  const invalidate = useThree((state) => state.invalidate);
+  const cameraRef = useRef<ThreePerspectiveCamera>(null);
+  const modelRef = useRef<Group>(null);
+  const shadowRef = useRef<Group>(null);
+  const cameraTarget = useMemo(() => new Vector3(), []);
   const aspect = size.width / Math.max(size.height, 1);
   const isPortrait = aspect < 0.64;
   const portraitScale = Math.min(1.16, Math.max(1, aspect / 0.462));
@@ -526,9 +535,104 @@ function LaptopScene({
       }
     : desktopCompositions[compositionMode];
 
+  useEffect(() => progress.subscribe(invalidate), [invalidate, progress]);
+
+  useFrame(() => {
+    const camera = cameraRef.current;
+    const model = modelRef.current;
+    const shadow = shadowRef.current;
+
+    if (!camera || !model || !shadow) {
+      return;
+    }
+
+    if (isPortrait) {
+      camera.position.set(...composition.camera);
+      cameraTarget.set(...composition.target);
+      camera.lookAt(cameraTarget);
+      model.position.set(...composition.modelPosition);
+      model.rotation.set(...composition.modelRotation);
+      model.scale.setScalar(composition.modelScale);
+      shadow.position.set(...composition.shadowPosition);
+      shadow.scale.setScalar(1);
+
+      return;
+    }
+
+    const scrollProgress = progress.value;
+    const orientation = smoothSegment(scrollProgress, 0.12, 0.72);
+    const openingMove = smoothSegment(scrollProgress, 0.12, 0.58);
+    const approach = smoothSegment(scrollProgress, 0.58, 0.94);
+    const displayCenterX = DISPLAY_LOCAL_CENTER.x * composition.modelScale;
+    const displayCenterY =
+      composition.modelPosition[1] +
+      DISPLAY_LOCAL_CENTER.y * composition.modelScale;
+    const displayCenterZ =
+      composition.modelPosition[2] +
+      DISPLAY_LOCAL_CENTER.z * composition.modelScale;
+    const focusTargetX = displayCenterX + 0.08;
+    const focusTargetZ = displayCenterZ + FOCUS_TARGET_Z_OFFSET;
+
+    model.position.set(
+      MathUtils.lerp(composition.modelPosition[0], 0, orientation),
+      composition.modelPosition[1],
+      composition.modelPosition[2],
+    );
+    model.rotation.set(
+      MathUtils.lerp(composition.modelRotation[0], 0, orientation),
+      MathUtils.lerp(composition.modelRotation[1], 0, orientation),
+      MathUtils.lerp(composition.modelRotation[2], 0, orientation),
+    );
+    model.scale.setScalar(composition.modelScale);
+
+    shadow.position.set(
+      MathUtils.lerp(composition.shadowPosition[0], 0, orientation),
+      composition.shadowPosition[1],
+      composition.shadowPosition[2],
+    );
+    shadow.scale.setScalar(1);
+
+    if (scrollProgress < 0.58) {
+      camera.position.set(
+        MathUtils.lerp(composition.camera[0], FOCUS_CAMERA.x, openingMove),
+        MathUtils.lerp(composition.camera[1], FOCUS_CAMERA.y, openingMove),
+        MathUtils.lerp(composition.camera[2], FOCUS_CAMERA.z, openingMove),
+      );
+      cameraTarget.set(
+        MathUtils.lerp(composition.target[0], focusTargetX, openingMove),
+        MathUtils.lerp(composition.target[1], displayCenterY, openingMove),
+        MathUtils.lerp(composition.target[2], focusTargetZ, openingMove),
+      );
+    } else {
+      camera.position.set(
+        MathUtils.lerp(FOCUS_CAMERA.x, displayCenterX, approach),
+        MathUtils.lerp(FOCUS_CAMERA.y, displayCenterY, approach),
+        MathUtils.lerp(
+          FOCUS_CAMERA.z,
+          displayCenterZ + TAKEOVER_CAMERA_DISTANCE,
+          approach,
+        ),
+      );
+      cameraTarget.set(
+        MathUtils.lerp(focusTargetX, displayCenterX, approach),
+        displayCenterY,
+        MathUtils.lerp(focusTargetZ, displayCenterZ, approach),
+      );
+    }
+
+    camera.lookAt(cameraTarget);
+  });
+
   return (
     <>
-      <ArtDirectedCamera composition={composition} />
+      <PerspectiveCamera
+        ref={cameraRef}
+        makeDefault
+        position={composition.camera}
+        fov={composition.fov}
+        near={0.05}
+        far={100}
+      />
 
       <hemisphereLight
         intensity={0.8}
@@ -576,6 +680,7 @@ function LaptopScene({
       </Environment>
 
       <group
+        ref={modelRef}
         position={composition.modelPosition}
         rotation={composition.modelRotation}
         scale={composition.modelScale}
@@ -583,21 +688,22 @@ function LaptopScene({
         <LaptopModel screenMode={screenMode} materialMode={materialMode} />
       </group>
 
-      <ContactShadows
-        frames={1}
-        color="#013609"
-        opacity={0.15}
-        position={composition.shadowPosition}
-        scale={composition.shadowScale}
-        blur={2.7}
-        far={4.5}
-        resolution={512}
-      />
+      <group ref={shadowRef} position={composition.shadowPosition}>
+        <ContactShadows
+          frames={1}
+          color="#013609"
+          opacity={0.15}
+          scale={composition.shadowScale}
+          blur={2.7}
+          far={4.5}
+          resolution={512}
+        />
+      </group>
     </>
   );
 }
 
-export function HeroCanvas() {
+export function HeroCanvas({ progress }: { progress: HeroProgressSignal }) {
   const {
     screenMode,
     compositionMode,
@@ -623,6 +729,7 @@ export function HeroCanvas() {
         screenMode={screenMode}
         compositionMode={compositionMode}
         materialMode={materialMode}
+        progress={progress}
       />
     </Canvas>
   );

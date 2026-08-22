@@ -1,4 +1,10 @@
 @layer components {
+  .hero-motion {
+    position: relative;
+    height: 400svh;
+    background: var(--mes-cream-soft);
+  }
+
   .hero-static {
     position: relative;
     isolation: isolate;
@@ -6,6 +12,11 @@
     min-height: 39rem;
     overflow: hidden;
     background: var(--mes-cream-soft);
+  }
+
+  .hero-static.hero-motion__stage {
+    position: sticky;
+    inset-block-start: 0;
   }
 
   .hero-static__title {
@@ -18,6 +29,13 @@
     line-height: 0.74;
     text-align: center;
     text-transform: uppercase;
+    opacity: var(--hero-title-opacity, 1);
+    transform: translate3d(
+      0,
+      calc(var(--hero-title-progress, 0) * -4vh),
+      0
+    );
+    will-change: opacity, transform;
     pointer-events: none;
   }
 
@@ -52,11 +70,110 @@
     pointer-events: none;
   }
 
+  .hero-static__canvas {
+    opacity: var(--hero-canvas-opacity, 1);
+    will-change: opacity;
+  }
+
   .hero-static__canvas canvas {
     display: block;
     touch-action: pan-y;
   }
 
+  .hero-motion__takeover {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    overflow: hidden;
+    background: var(--mes-cream-soft);
+    opacity: var(--hero-takeover-opacity, 0);
+    will-change: opacity;
+    pointer-events: none;
+  }
+
+  .hero-screen-artboard {
+    container-type: size;
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: 50%;
+    width: max(107.4vw, 185.8627vh);
+    height: max(107.4vh, 62.061vw);
+    overflow: hidden;
+    background: linear-gradient(
+      to right,
+      #013609 0 63.4029%,
+      #c29231 63.4029% 65.008%,
+      #f4ede2 65.008% 100%
+    );
+    transform: translate3d(-50%, -50%, 0);
+  }
+
+  .hero-screen-artboard__accent,
+  .hero-screen-artboard__rule {
+    position: absolute;
+    inset-inline-start: 5.94%;
+  }
+
+  .hero-screen-artboard__accent {
+    inset-block-start: 15%;
+    width: 9.31%;
+    height: 1.12%;
+    background: var(--mes-gold);
+  }
+
+  .hero-screen-artboard__rule {
+    inset-block-start: 77.08%;
+    width: 50.24%;
+    height: 0.28%;
+    background: rgb(244 237 226 / 55%);
+  }
+
+  .hero-screen-artboard__wordmark {
+    position: absolute;
+    inset: 0;
+    color: var(--mes-cream-soft);
+    font-weight: 400;
+    letter-spacing: normal;
+    line-height: 0.78;
+    text-transform: uppercase;
+  }
+
+  .hero-screen-artboard__wordmark span {
+    position: absolute;
+    inset-inline-start: 5.78%;
+    display: block;
+    white-space: nowrap;
+  }
+
+  .hero-screen-artboard__wordmark span:first-child {
+    inset-block-start: 31%;
+    font-size: 17.5cqh;
+  }
+
+  .hero-screen-artboard__wordmark span:last-child {
+    inset-block-start: 50.2%;
+    font-size: 9.31cqh;
+  }
+
+  .hero-screen-artboard__logo {
+    position: absolute;
+    inset-block-start: 22.22%;
+    inset-inline-end: 2.77%;
+    width: auto;
+    height: 55.56%;
+  }
+
+  .hero-handoff {
+    position: relative;
+    isolation: isolate;
+    height: 100svh;
+    overflow: hidden;
+    background: var(--mes-cream-soft);
+  }
+
+  .hero-screen-artboard--continuation {
+    pointer-events: none;
+  }
 }
 
 /* Unlayered so the hero state intentionally overrides header utility classes. */
@@ -65,6 +182,14 @@ body:has(.hero-static) .site-header {
   inset: 0 0 auto;
   border-color: transparent;
   background: transparent;
+  opacity: var(--hero-navigation-opacity, 1);
+  transition-property: opacity, background-color, border-color;
+  will-change: opacity;
+}
+
+body:has(.hero-static[data-hero-navigation-hidden]) .site-header {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 body:has(.hero-static) .site-header__cta {
@@ -80,6 +205,15 @@ body:has(.hero-static) .site-header__cta:hover {
 
 @media (max-width: 47.999rem) {
   @layer components {
+    .hero-motion {
+      height: 100svh;
+    }
+
+    .hero-motion__takeover,
+    .hero-handoff {
+      display: none;
+    }
+
     .hero-static {
       min-height: 42rem;
     }
@@ -114,6 +248,19 @@ body:has(.hero-static) .site-header__cta:hover {
 
     .hero-static__line--entrepreneurs-mobile span {
       display: block;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @layer components {
+    .hero-motion {
+      height: 100svh;
+    }
+
+    .hero-motion__takeover,
+    .hero-handoff {
+      display: none;
     }
   }
 }

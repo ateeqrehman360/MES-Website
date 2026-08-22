@@ -2,6 +2,8 @@
 
 import dynamic from "next/dynamic";
 
+import type { HeroProgressSignal } from "./hero-progress";
+
 const HeroCanvas = dynamic(
   () => import("./hero-canvas").then((module) => module.HeroCanvas),
   {
@@ -10,10 +12,14 @@ const HeroCanvas = dynamic(
   },
 );
 
-export function HeroCanvasLoader() {
+export function HeroCanvasLoader({
+  progress,
+}: {
+  progress: HeroProgressSignal;
+}) {
   return (
     <div className="hero-static__canvas" aria-hidden="true">
-      <HeroCanvas />
+      <HeroCanvas progress={progress} />
     </div>
   );
 }
