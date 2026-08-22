@@ -10,9 +10,7 @@
 
   .hero-static__title {
     position: absolute;
-    inset: calc(var(--nav-height) + clamp(3rem, 9vh, 6rem))
-      var(--site-gutter) auto;
-    z-index: 1;
+    inset: 0;
     margin: 0;
     color: var(--mes-deep-green);
     font-weight: 400;
@@ -25,15 +23,20 @@
 
   .hero-static__line {
     display: block;
+    position: absolute;
+    inset-inline: var(--site-gutter);
     white-space: nowrap;
   }
 
   .hero-static__line--muslim {
+    inset-block-start: calc(var(--nav-height) + clamp(1.25rem, 3.6vh, 2.75rem));
+    z-index: 1;
     font-size: min(23vw, 20rem);
   }
 
   .hero-static__line--entrepreneurs-desktop {
-    margin-top: 0.08em;
+    inset-block-end: clamp(0.5rem, 1.8vh, 1.4rem);
+    z-index: 3;
     font-size: min(10.25vw, 9.65rem);
   }
 
@@ -82,7 +85,6 @@ body:has(.hero-static) .site-header__cta:hover {
     }
 
     .hero-static__title {
-      inset: calc(var(--nav-height) + clamp(1.75rem, 5vh, 2.75rem)) 0 auto;
       line-height: 0.76;
       text-align: left;
     }
@@ -93,6 +95,8 @@ body:has(.hero-static) .site-header__cta:hover {
     }
 
     .hero-static__line--muslim {
+      inset-block-start: calc(var(--nav-height) + clamp(1.75rem, 5vh, 2.75rem));
+      inset-inline: 0;
       font-size: clamp(4.65rem, 22.5vw, 6.7rem);
     }
 
@@ -102,6 +106,9 @@ body:has(.hero-static) .site-header__cta:hover {
 
     .hero-static__line--entrepreneurs-mobile {
       display: block;
+      inset-block-start: calc(var(--nav-height) + clamp(7.5rem, 20vh, 10.25rem));
+      inset-inline: 0;
+      z-index: 1;
       font-size: clamp(3.5rem, 17.75vw, 5.2rem);
     }
 
@@ -114,10 +121,11 @@ body:has(.hero-static) .site-header__cta:hover {
 @media (min-width: 48rem) and (max-aspect-ratio: 5 / 4) {
   @layer components {
     .hero-static__title {
-      inset-block-start: calc(var(--nav-height) + 6rem);
+      inset: 0;
     }
 
     .hero-static__line--muslim {
+      inset-block-start: calc(var(--nav-height) + 6rem);
       font-size: min(21.5vw, 15rem);
     }
 
@@ -134,6 +142,10 @@ body:has(.hero-static) .site-header__cta:hover {
     }
 
     .hero-static__title {
+      inset: 0;
+    }
+
+    .hero-static__line--muslim {
       inset-block-start: calc(var(--nav-height) + 1.5rem);
     }
   }
