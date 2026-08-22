@@ -6,10 +6,9 @@ import {
   Lightformer,
   PerspectiveCamera,
   useGLTF,
-  useTexture,
 } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CanvasTexture,
   Color,
@@ -368,15 +367,34 @@ function LaptopModel({
   materialMode: MaterialMode;
 }) {
   const { scene } = useGLTF(MODEL_URL);
-  const logoTexture = useTexture(LOGO_URL);
+  const [logoImage, setLogoImage] = useState<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    let isActive = true;
+    const image = new Image();
+
+    image.crossOrigin = "anonymous";
+    image.decoding = "async";
+    image.onload = () => {
+      if (isActive) {
+        setLogoImage(image);
+      }
+    };
+    image.src = LOGO_URL;
+
+    return () => {
+      isActive = false;
+      image.onload = null;
+    };
+  }, []);
 
   const brandTexture = useMemo(
-    () => createBrandTexture(logoTexture.image as CanvasImageSource),
-    [logoTexture.image],
+    () => (logoImage ? createBrandTexture(logoImage) : null),
+    [logoImage],
   );
   const markTexture = useMemo(
-    () => createMarkTexture(logoTexture.image as CanvasImageSource),
-    [logoTexture.image],
+    () => (logoImage ? createMarkTexture(logoImage) : null),
+    [logoImage],
   );
   const uvTexture = useMemo(() => createUvTestTexture(), []);
 
@@ -390,13 +408,24 @@ function LaptopModel({
       });
     }
 
+    const selectedTexture =
+      screenMode === "uv"
+        ? uvTexture
+        : screenMode === "mark"
+          ? markTexture
+          : brandTexture;
+
+    if (!selectedTexture) {
+      return new MeshBasicMaterial({
+        color: new Color("#013609"),
+        polygonOffset: true,
+        polygonOffsetFactor: -1,
+        polygonOffsetUnits: -1,
+      });
+    }
+
     return new MeshBasicMaterial({
-      map:
-        screenMode === "uv"
-          ? uvTexture
-          : screenMode === "mark"
-            ? markTexture
-            : brandTexture,
+      map: selectedTexture,
       toneMapped: false,
       polygonOffset: true,
       polygonOffsetFactor: -1,

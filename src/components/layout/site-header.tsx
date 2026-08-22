@@ -19,6 +19,7 @@ export function SiteHeader() {
             alt=""
             width={56}
             height={61}
+            crossOrigin="anonymous"
             priority
             className="h-12 w-auto lg:h-14"
           />
