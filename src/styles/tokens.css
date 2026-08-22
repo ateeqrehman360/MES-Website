@@ -1,0 +1,51 @@
+:root {
+  color-scheme: light;
+
+  /* Core MES brand palette */
+  --mes-cream: #eae2d4;
+  --mes-deep-green: #01500b;
+  --mes-gold: #c29231;
+  --mes-muted-green: #618c5d;
+
+  /* Supporting tones derived from the core palette */
+  --mes-cream-soft: #f4ede2;
+  --mes-green-ink: #013609;
+  --mes-border: rgb(1 80 11 / 24%);
+
+  /* Provisional type scale and readable measures */
+  --type-lead: clamp(1.125rem, 1.05rem + 0.5vw, 1.5rem);
+  --type-display-home: clamp(3.35rem, 14.4vw, 5rem);
+  --type-display-page: clamp(4rem, 13vw, 7rem);
+  --measure-intro: 37rem;
+  --measure-copy: 42rem;
+
+  /* Layout */
+  --site-max-width: 90rem;
+  --site-gutter: clamp(1.25rem, 4vw, 4.5rem);
+  --nav-height: 4.5rem;
+
+  /* System layers */
+  --layer-navigation: 40;
+  --layer-dialog: 50;
+  --layer-skip-link: 60;
+
+  /* Shape and motion */
+  --radius-control: 0.5rem;
+  --radius-surface: 0.75rem;
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 180ms;
+  --duration-base: 320ms;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --type-display-home: clamp(6rem, 10vw, 10rem);
+  }
+}
+
+@media (min-width: 64rem) {
+  :root {
+    --type-display-page: clamp(6rem, 8vw, 9rem);
+    --nav-height: 5rem;
+  }
+}

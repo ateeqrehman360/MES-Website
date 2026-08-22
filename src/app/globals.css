@@ -1,0 +1,15 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+@import "../styles/base.css";
+
+@theme inline {
+  --color-mes-cream: var(--mes-cream);
+  --color-mes-cream-soft: var(--mes-cream-soft);
+  --color-mes-deep-green: var(--mes-deep-green);
+  --color-mes-green-ink: var(--mes-green-ink);
+  --color-mes-gold: var(--mes-gold);
+  --color-mes-muted-green: var(--mes-muted-green);
+  --color-mes-border: var(--mes-border);
+  --font-display: var(--font-newsreader);
+  --font-sans: var(--font-manrope);
+}
