@@ -4,7 +4,7 @@ Official website for Muslim Entrepreneurs (MES) at Manchester Metropolitan Unive
 
 ## Status
 
-Phase 1 project foundation is implemented and awaiting Checkpoint A review. The 3D hero and later website phases have not started.
+Phase 2's static 3D hero composition is implemented and awaiting Checkpoint B review. Hero motion and later website phases have not started.
 
 ## Documentation
 
@@ -23,7 +23,7 @@ npm install
 npm run dev
 ```
 
-Foundation checks:
+Project checks:
 
 ```bash
 npm run lint

@@ -1,5 +1,16 @@
-import { FoundationIntro } from "@/components/sections/foundation-intro";
+import { StaticHero } from "@/components/hero/static-hero";
 
 export default function HomePage() {
-  return <FoundationIntro />;
+  return (
+    <>
+      <link
+        rel="preload"
+        href="/models/MES_Laptop.glb"
+        as="fetch"
+        type="model/gltf-binary"
+        crossOrigin="anonymous"
+      />
+      <StaticHero />
+    </>
+  );
 }

@@ -1,0 +1,140 @@
+@layer components {
+  .hero-static {
+    position: relative;
+    isolation: isolate;
+    height: 100svh;
+    min-height: 39rem;
+    overflow: hidden;
+    background: var(--mes-cream-soft);
+  }
+
+  .hero-static__title {
+    position: absolute;
+    inset: calc(var(--nav-height) + clamp(3rem, 9vh, 6rem))
+      var(--site-gutter) auto;
+    z-index: 1;
+    margin: 0;
+    color: var(--mes-deep-green);
+    font-weight: 400;
+    letter-spacing: -0.065em;
+    line-height: 0.74;
+    text-align: center;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .hero-static__line {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .hero-static__line--muslim {
+    font-size: min(23vw, 20rem);
+  }
+
+  .hero-static__line--entrepreneurs-desktop {
+    margin-top: 0.08em;
+    font-size: min(10.25vw, 9.65rem);
+  }
+
+  .hero-static__line--entrepreneurs-mobile {
+    display: none;
+  }
+
+  .hero-static__canvas,
+  .hero-static__canvas-placeholder {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .hero-static__canvas canvas {
+    display: block;
+    touch-action: pan-y;
+  }
+
+}
+
+/* Unlayered so the hero state intentionally overrides header utility classes. */
+body:has(.hero-static) .site-header {
+  position: fixed;
+  inset: 0 0 auto;
+  border-color: transparent;
+  background: transparent;
+}
+
+body:has(.hero-static) .site-header__cta {
+  border: 1px solid var(--mes-deep-green);
+  background: rgb(244 237 226 / 35%);
+  color: var(--mes-deep-green);
+}
+
+body:has(.hero-static) .site-header__cta:hover {
+  background: var(--mes-deep-green);
+  color: var(--mes-cream-soft);
+}
+
+@media (max-width: 47.999rem) {
+  @layer components {
+    .hero-static {
+      min-height: 42rem;
+    }
+
+    .hero-static__title {
+      inset: calc(var(--nav-height) + clamp(1.75rem, 5vh, 2.75rem)) 0 auto;
+      line-height: 0.76;
+      text-align: left;
+    }
+
+    .hero-static__line--muslim,
+    .hero-static__line--entrepreneurs-mobile span {
+      padding-inline: var(--site-gutter);
+    }
+
+    .hero-static__line--muslim {
+      font-size: clamp(4.65rem, 22.5vw, 6.7rem);
+    }
+
+    .hero-static__line--entrepreneurs-desktop {
+      display: none;
+    }
+
+    .hero-static__line--entrepreneurs-mobile {
+      display: block;
+      font-size: clamp(3.5rem, 17.75vw, 5.2rem);
+    }
+
+    .hero-static__line--entrepreneurs-mobile span {
+      display: block;
+    }
+  }
+}
+
+@media (min-width: 48rem) and (max-aspect-ratio: 5 / 4) {
+  @layer components {
+    .hero-static__title {
+      inset-block-start: calc(var(--nav-height) + 6rem);
+    }
+
+    .hero-static__line--muslim {
+      font-size: min(21.5vw, 15rem);
+    }
+
+    .hero-static__line--entrepreneurs-desktop {
+      font-size: min(9.35vw, 7rem);
+    }
+  }
+}
+
+@media (max-height: 42rem) and (orientation: landscape) {
+  @layer components {
+    .hero-static {
+      min-height: 34rem;
+    }
+
+    .hero-static__title {
+      inset-block-start: calc(var(--nav-height) + 1.5rem);
+    }
+  }
+}

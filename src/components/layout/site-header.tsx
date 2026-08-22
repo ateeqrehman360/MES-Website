@@ -7,7 +7,7 @@ import { MobileNavigation } from "./mobile-navigation";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-[var(--layer-navigation)] h-[var(--nav-height)] border-b border-mes-border bg-mes-cream">
+    <header className="site-header sticky top-0 z-[var(--layer-navigation)] h-[var(--nav-height)] border-b border-mes-border bg-mes-cream transition-[background-color,border-color] duration-[var(--duration-base)]">
       <div className="site-container flex h-full items-center justify-between gap-8">
         <Link
           href="/"
@@ -41,7 +41,7 @@ export function SiteHeader() {
 
         <Link
           href="/work-with-us"
-          className="hidden min-h-12 items-center justify-center rounded-[var(--radius-control)] bg-mes-deep-green px-6 text-sm font-semibold text-mes-cream transition-colors duration-[var(--duration-fast)] hover:bg-mes-green-ink lg:inline-flex"
+          className="site-header__cta hidden min-h-12 items-center justify-center rounded-[var(--radius-control)] bg-mes-deep-green px-6 text-sm font-semibold text-mes-cream transition-colors duration-[var(--duration-fast)] hover:bg-mes-green-ink lg:inline-flex"
         >
           Work With Us
         </Link>
