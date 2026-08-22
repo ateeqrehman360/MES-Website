@@ -86,11 +86,11 @@ const portraitComposition: Composition = {
   camera: [0, 4.55, 15.8],
   target: [0.2, -0.5, 0],
   fov: 34,
-  modelPosition: [-0.4, -2.75, 0],
+  modelPosition: [-0.4, -3.1, 0],
   modelRotation: [0.095, -0.58, -0.024],
-  modelScale: 0.128,
-  shadowPosition: [-0.2, -2.74, 0.5],
-  shadowScale: 4.6,
+  modelScale: 0.134,
+  shadowPosition: [-0.2, -3.09, 0.5],
+  shadowScale: 4.8,
 };
 
 function useDevelopmentSceneOptions(): {

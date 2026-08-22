@@ -35,7 +35,7 @@
   }
 
   .hero-static__line--entrepreneurs-desktop {
-    inset-block-end: clamp(0.5rem, 1.8vh, 1.4rem);
+    inset-block-end: clamp(1.25rem, 3vh, 2rem);
     z-index: 3;
     font-size: min(10.25vw, 9.65rem);
   }
