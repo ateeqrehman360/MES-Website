@@ -33,9 +33,17 @@ const DISPLAY_LOCAL_CENTER = {
   y: 10.722437858581543,
   z: -10.537602424621582,
 } as const;
+const DISPLAY_LOCAL_SIZE = {
+  width: 29.302825927734375,
+  height: 16.937835693359375,
+} as const;
+const DISPLAY_ASPECT = DISPLAY_TEXTURE_SIZE.width / DISPLAY_TEXTURE_SIZE.height;
+const SCREEN_OVERSCAN = 1.074;
 const FOCUS_CAMERA = { x: 0.12, y: 1.85, z: 9.5 } as const;
 const FOCUS_TARGET_Z_OFFSET = 0.95;
 const TAKEOVER_CAMERA_DISTANCE = 5.82;
+const MOBILE_FOCUS_CAMERA = { x: 0.08, y: 1.05, z: 8.65 } as const;
+const MOBILE_FOCUS_TARGET_Z_OFFSET = 0.82;
 
 type ScreenMode = "brand" | "mark" | "colour" | "uv";
 type CompositionMode = "poster" | "offset" | "gallery" | "baseline";
@@ -385,9 +393,11 @@ function createFrameSurfaceMap(source: MeshStandardMaterial) {
 function LaptopModel({
   screenMode,
   materialMode,
+  onReady,
 }: {
   screenMode: ScreenMode;
   materialMode: MaterialMode;
+  onReady: () => void;
 }) {
   const { scene } = useGLTF(MODEL_URL);
   const [logoImage, setLogoImage] = useState<HTMLImageElement | null>(null);
@@ -420,6 +430,17 @@ function LaptopModel({
     [logoImage],
   );
   const uvTexture = useMemo(() => createUvTestTexture(), []);
+
+  useEffect(() => {
+    const textureIsReady =
+      screenMode === "colour" ||
+      screenMode === "uv" ||
+      (screenMode === "mark" ? markTexture !== null : brandTexture !== null);
+
+    if (textureIsReady) {
+      onReady();
+    }
+  }, [brandTexture, markTexture, onReady, screenMode]);
 
   const screenMaterial = useMemo(() => {
     if (screenMode === "colour") {
@@ -497,16 +518,40 @@ function LaptopModel({
   return <primitive object={preparedScene} />;
 }
 
+function WebGLContextLifecycle({
+  onUnavailable,
+}: {
+  onUnavailable: () => void;
+}) {
+  const gl = useThree((state) => state.gl);
+
+  useEffect(() => {
+    const canvas = gl.domElement;
+    const handleContextLoss = () => onUnavailable();
+
+    canvas.addEventListener("webglcontextlost", handleContextLoss, {
+      once: true,
+    });
+
+    return () =>
+      canvas.removeEventListener("webglcontextlost", handleContextLoss);
+  }, [gl, onUnavailable]);
+
+  return null;
+}
+
 function LaptopScene({
   screenMode,
   compositionMode,
   materialMode,
   progress,
+  onReady,
 }: {
   screenMode: ScreenMode;
   compositionMode: CompositionMode;
   materialMode: MaterialMode;
   progress: HeroProgressSignal;
+  onReady: () => void;
 }) {
   const size = useThree((state) => state.size);
   const invalidate = useThree((state) => state.invalidate);
@@ -547,15 +592,98 @@ function LaptopScene({
     }
 
     if (isPortrait) {
-      camera.position.set(...composition.camera);
-      cameraTarget.set(...composition.target);
-      camera.lookAt(cameraTarget);
-      model.position.set(...composition.modelPosition);
-      model.rotation.set(...composition.modelRotation);
+      const scrollProgress = progress.value;
+      const orientation = smoothSegment(scrollProgress, 0.08, 0.64);
+      const framing = smoothSegment(scrollProgress, 0.08, 0.52);
+      const approach = smoothSegment(scrollProgress, 0.5, 0.92);
+      const lift =
+        smoothSegment(scrollProgress, 0.08, 0.42) *
+        (1 - smoothSegment(scrollProgress, 0.48, 0.72)) *
+        0.44;
+      const modelY = composition.modelPosition[1] + lift;
+      const displayCenterX = DISPLAY_LOCAL_CENTER.x * composition.modelScale;
+      const displayCenterY =
+        modelY + DISPLAY_LOCAL_CENTER.y * composition.modelScale;
+      const displayCenterZ =
+        composition.modelPosition[2] +
+        DISPLAY_LOCAL_CENTER.z * composition.modelScale;
+      const visibleScreenHalf =
+        aspect / (2 * DISPLAY_ASPECT * SCREEN_OVERSCAN);
+      const portalAnchor = clamp(0.635 + visibleScreenHalf, 0.74, 0.8);
+      const displayAnchorX =
+        displayCenterX +
+        (portalAnchor - 0.5) * DISPLAY_LOCAL_SIZE.width * composition.modelScale;
+      const takeoverDistance =
+        (DISPLAY_LOCAL_SIZE.height * composition.modelScale) /
+        (2 * Math.tan(MathUtils.degToRad(composition.fov / 2)) * SCREEN_OVERSCAN);
+      const focusTargetX = MathUtils.lerp(
+        displayCenterX,
+        displayAnchorX,
+        0.16,
+      );
+      const focusTargetY = displayCenterY + 0.18;
+      const focusTargetZ = displayCenterZ + MOBILE_FOCUS_TARGET_Z_OFFSET;
+
+      model.position.set(
+        MathUtils.lerp(composition.modelPosition[0], 0, orientation),
+        modelY,
+        composition.modelPosition[2],
+      );
+      model.rotation.set(
+        MathUtils.lerp(composition.modelRotation[0], 0, orientation),
+        MathUtils.lerp(composition.modelRotation[1], 0, orientation),
+        MathUtils.lerp(composition.modelRotation[2], 0, orientation),
+      );
       model.scale.setScalar(composition.modelScale);
-      shadow.position.set(...composition.shadowPosition);
+
+      shadow.position.set(
+        MathUtils.lerp(composition.shadowPosition[0], 0, orientation),
+        composition.shadowPosition[1] + lift,
+        composition.shadowPosition[2],
+      );
       shadow.scale.setScalar(1);
 
+      if (scrollProgress < 0.5) {
+        camera.position.set(
+          MathUtils.lerp(
+            composition.camera[0],
+            MOBILE_FOCUS_CAMERA.x,
+            framing,
+          ),
+          MathUtils.lerp(
+            composition.camera[1],
+            MOBILE_FOCUS_CAMERA.y,
+            framing,
+          ),
+          MathUtils.lerp(
+            composition.camera[2],
+            MOBILE_FOCUS_CAMERA.z,
+            framing,
+          ),
+        );
+        cameraTarget.set(
+          MathUtils.lerp(composition.target[0], focusTargetX, framing),
+          MathUtils.lerp(composition.target[1], focusTargetY, framing),
+          MathUtils.lerp(composition.target[2], focusTargetZ, framing),
+        );
+      } else {
+        camera.position.set(
+          MathUtils.lerp(MOBILE_FOCUS_CAMERA.x, displayAnchorX, approach),
+          MathUtils.lerp(MOBILE_FOCUS_CAMERA.y, displayCenterY, approach),
+          MathUtils.lerp(
+            MOBILE_FOCUS_CAMERA.z,
+            displayCenterZ + takeoverDistance,
+            approach,
+          ),
+        );
+        cameraTarget.set(
+          MathUtils.lerp(focusTargetX, displayAnchorX, approach),
+          MathUtils.lerp(focusTargetY, displayCenterY, approach),
+          MathUtils.lerp(focusTargetZ, displayCenterZ, approach),
+        );
+      }
+
+      camera.lookAt(cameraTarget);
       return;
     }
 
@@ -640,7 +768,7 @@ function LaptopScene({
         groundColor="#30352f"
       />
       <directionalLight
-        castShadow
+        castShadow={!isPortrait}
         color="#fff4d9"
         intensity={2.85}
         position={[-5.5, 8.5, 6.5]}
@@ -652,7 +780,7 @@ function LaptopScene({
         intensity={0.85}
         position={[5, 3.5, 8]}
       />
-      <Environment resolution={128} frames={1}>
+      <Environment resolution={isPortrait ? 64 : 128} frames={1}>
         <Lightformer
           form="rect"
           color="#fffaf1"
@@ -685,7 +813,11 @@ function LaptopScene({
         rotation={composition.modelRotation}
         scale={composition.modelScale}
       >
-        <LaptopModel screenMode={screenMode} materialMode={materialMode} />
+        <LaptopModel
+          screenMode={screenMode}
+          materialMode={materialMode}
+          onReady={onReady}
+        />
       </group>
 
       <group ref={shadowRef} position={composition.shadowPosition}>
@@ -696,24 +828,48 @@ function LaptopScene({
           scale={composition.shadowScale}
           blur={2.7}
           far={4.5}
-          resolution={512}
+          resolution={isPortrait ? 256 : 512}
         />
       </group>
     </>
   );
 }
 
-export function HeroCanvas({ progress }: { progress: HeroProgressSignal }) {
-  const {
-    screenMode,
-    compositionMode,
-    materialMode,
-  } = useDevelopmentSceneOptions();
+function useMobileCanvasQuality() {
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window === "undefined"
+      ? false
+      : window.matchMedia("(max-width: 47.999rem)").matches,
+  );
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 47.999rem)");
+    const update = () => setIsMobile(query.matches);
+
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  return isMobile;
+}
+
+export function HeroCanvas({
+  progress,
+  onReady,
+  onUnavailable,
+}: {
+  progress: HeroProgressSignal;
+  onReady: () => void;
+  onUnavailable: () => void;
+}) {
+  const { screenMode, compositionMode, materialMode } =
+    useDevelopmentSceneOptions();
+  const isMobile = useMobileCanvasQuality();
 
   return (
     <Canvas
       frameloop="demand"
-      dpr={[1, 1.5]}
+      dpr={isMobile ? [1, 1.25] : [1, 1.5]}
       camera={{ fov: 30, near: 0.1, far: 100 }}
       gl={{
         alpha: true,
@@ -723,13 +879,15 @@ export function HeroCanvas({ progress }: { progress: HeroProgressSignal }) {
       onCreated={({ gl }) => {
         gl.toneMappingExposure = 1.12;
       }}
-      shadows
+      shadows={!isMobile}
     >
+      <WebGLContextLifecycle onUnavailable={onUnavailable} />
       <LaptopScene
         screenMode={screenMode}
         compositionMode={compositionMode}
         materialMode={materialMode}
         progress={progress}
+        onReady={onReady}
       />
     </Canvas>
   );

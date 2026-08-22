@@ -6,6 +6,9 @@ import { useEffect, useMemo, useRef } from "react";
 import { HeroCanvasLoader } from "./hero-canvas-loader";
 import { createHeroProgressSignal } from "./hero-progress";
 
+const DISPLAY_ASPECT = 1246 / 720;
+const SCREEN_OVERSCAN = 1.074;
+
 function clamp(value: number, minimum = 0, maximum = 1) {
   return Math.min(maximum, Math.max(minimum, value));
 }
@@ -38,17 +41,52 @@ export function StaticHero() {
     const update = () => {
       frame = 0;
 
-      const availableTravel = Math.max(root.offsetHeight - window.innerHeight, 1);
-      const rawProgress = desktopQuery.matches && !reducedMotionQuery.matches
-        ? clamp(-root.getBoundingClientRect().top / availableTravel)
+      const rootHeight = root.offsetHeight;
+      const stageHeight = stage.offsetHeight;
+      const rootTop = root.getBoundingClientRect().top;
+      const isDesktop = desktopQuery.matches;
+      const webglUnavailable = root.querySelector(
+        '[data-webgl-state="unavailable"]',
+      );
+      const availableTravel = Math.max(rootHeight - stageHeight, 1);
+      const rawProgress = !reducedMotionQuery.matches && !webglUnavailable
+        ? clamp(-rootTop / availableTravel)
         : 0;
-      const titleExit = smoothSegment(rawProgress, 0.08, 0.28);
-      const takeover = smoothSegment(rawProgress, 0.94, 0.99);
-      const canvasExit = smoothSegment(rawProgress, 0.99, 1);
-      const navigationExit = smoothSegment(rawProgress, 0.76, 0.88);
+      const titleExit = smoothSegment(
+        rawProgress,
+        isDesktop ? 0.08 : 0.06,
+        isDesktop ? 0.28 : 0.44,
+      );
+      const takeover = smoothSegment(
+        rawProgress,
+        isDesktop ? 0.94 : 0.9,
+        isDesktop ? 0.99 : 0.97,
+      );
+      const canvasExit = smoothSegment(
+        rawProgress,
+        isDesktop ? 0.99 : 0.97,
+        1,
+      );
+      const navigationExit = smoothSegment(
+        rawProgress,
+        isDesktop ? 0.76 : 0.66,
+        isDesktop ? 0.88 : 0.8,
+      );
+      const viewportAspect = window.innerWidth / Math.max(window.innerHeight, 1);
+      const visibleScreenHalf =
+        viewportAspect / (2 * DISPLAY_ASPECT * SCREEN_OVERSCAN);
+      const mobileAnchor = clamp(0.635 + visibleScreenHalf, 0.74, 0.8);
 
       progress.set(rawProgress);
+      root.dataset.heroReducedMotion = reducedMotionQuery.matches
+        ? "true"
+        : "false";
       stage.dataset.heroProgress = rawProgress.toFixed(3);
+      stage.dataset.heroMotionMode = webglUnavailable
+        ? "fallback"
+        : isDesktop
+          ? "desktop"
+          : "mobile";
       stage.toggleAttribute(
         "data-hero-navigation-hidden",
         navigationExit > 0.999,
@@ -57,6 +95,10 @@ export function StaticHero() {
       stage.style.setProperty("--hero-title-opacity", (1 - titleExit).toFixed(4));
       stage.style.setProperty("--hero-takeover-opacity", takeover.toFixed(4));
       stage.style.setProperty("--hero-canvas-opacity", (1 - canvasExit).toFixed(4));
+      document.documentElement.style.setProperty(
+        "--hero-artboard-translate-x",
+        isDesktop ? "-50%" : `${(-mobileAnchor * 100).toFixed(3)}%`,
+      );
       document.documentElement.style.setProperty(
         "--hero-navigation-opacity",
         (1 - navigationExit).toFixed(4),
@@ -70,8 +112,14 @@ export function StaticHero() {
     };
 
     const observer = new ResizeObserver(scheduleUpdate);
+    const canvasStateObserver = new MutationObserver(scheduleUpdate);
 
     observer.observe(root);
+    canvasStateObserver.observe(root, {
+      attributes: true,
+      attributeFilter: ["data-webgl-state"],
+      subtree: true,
+    });
     window.addEventListener("scroll", scheduleUpdate, { passive: true });
     window.addEventListener("resize", scheduleUpdate);
     desktopQuery.addEventListener("change", scheduleUpdate);
@@ -84,11 +132,16 @@ export function StaticHero() {
       }
 
       observer.disconnect();
+      canvasStateObserver.disconnect();
       window.removeEventListener("scroll", scheduleUpdate);
       window.removeEventListener("resize", scheduleUpdate);
       desktopQuery.removeEventListener("change", scheduleUpdate);
       reducedMotionQuery.removeEventListener("change", scheduleUpdate);
+      delete root.dataset.heroReducedMotion;
       document.documentElement.style.removeProperty("--hero-navigation-opacity");
+      document.documentElement.style.removeProperty(
+        "--hero-artboard-translate-x",
+      );
     };
   }, [progress]);
 

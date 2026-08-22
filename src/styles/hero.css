@@ -77,7 +77,44 @@
 
   .hero-static__canvas canvas {
     display: block;
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-premium);
     touch-action: pan-y;
+  }
+
+  .hero-static__canvas[data-webgl-state="ready"] canvas {
+    opacity: 1;
+  }
+
+  .hero-static__webgl-fallback {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding-block-start: 42vh;
+    opacity: 0.72;
+    transition: opacity var(--duration-fast) var(--ease-premium);
+    pointer-events: none;
+  }
+
+  .hero-static__canvas[data-webgl-state="ready"]
+    .hero-static__webgl-fallback {
+    opacity: 0;
+  }
+
+  .hero-static__fallback-rule {
+    position: absolute;
+    inset-block-start: 57%;
+    inset-inline-start: 50%;
+    width: clamp(8rem, 22vw, 16rem);
+    height: 0.125rem;
+    background: var(--mes-gold);
+    transform: translateX(-50%);
+  }
+
+  .hero-static__fallback-logo {
+    width: clamp(5.25rem, 10vw, 7.5rem);
+    height: auto;
   }
 
   .hero-motion__takeover {
@@ -105,7 +142,11 @@
       #c29231 63.4029% 65.008%,
       #f4ede2 65.008% 100%
     );
-    transform: translate3d(-50%, -50%, 0);
+    transform: translate3d(
+      var(--hero-artboard-translate-x, -50%),
+      -50%,
+      0
+    );
   }
 
   .hero-screen-artboard__accent,
@@ -206,16 +247,11 @@ body:has(.hero-static) .site-header__cta:hover {
 @media (max-width: 47.999rem) {
   @layer components {
     .hero-motion {
-      height: 100svh;
-    }
-
-    .hero-motion__takeover,
-    .hero-handoff {
-      display: none;
+      height: 300svh;
     }
 
     .hero-static {
-      min-height: 42rem;
+      min-height: 0;
     }
 
     .hero-static__title {
@@ -249,6 +285,48 @@ body:has(.hero-static) .site-header__cta:hover {
     .hero-static__line--entrepreneurs-mobile span {
       display: block;
     }
+
+    .hero-static__webgl-fallback {
+      padding-block-start: 54svh;
+    }
+
+    .hero-static__fallback-rule {
+      inset-block-start: 64%;
+      width: min(44vw, 10rem);
+    }
+
+    .hero-static__fallback-logo {
+      width: clamp(4.75rem, 24vw, 6.25rem);
+    }
+  }
+}
+
+@media (max-width: 22rem) {
+  @layer components {
+    .hero-static__line--muslim {
+      font-size: 21.5vw;
+    }
+  }
+}
+
+@layer components {
+  .hero-motion:has([data-webgl-state="unavailable"]) {
+    height: 100svh;
+  }
+
+  .hero-motion:has([data-webgl-state="unavailable"])
+    .hero-motion__takeover {
+    display: none;
+  }
+
+  .hero-motion[data-hero-reduced-motion="true"] {
+    height: 100svh;
+  }
+
+  .hero-motion[data-hero-reduced-motion="true"]
+    .hero-motion__takeover,
+  body:has(.hero-motion[data-hero-reduced-motion="true"]) .hero-handoff {
+    display: none;
   }
 }
 
