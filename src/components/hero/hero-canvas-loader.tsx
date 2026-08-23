@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { useCallback, useEffect, useState } from "react";
+import { Component, useCallback, useEffect, useState } from "react";
+import type { ReactNode } from "react";
 
 import type { HeroProgressSignal } from "./hero-progress";
 
@@ -13,6 +14,25 @@ const HeroCanvas = dynamic(
     loading: () => <div className="hero-static__canvas-placeholder" />,
   },
 );
+
+class HeroCanvasErrorBoundary extends Component<
+  { children: ReactNode; onUnavailable: () => void },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch() {
+    this.props.onUnavailable();
+  }
+
+  render() {
+    return this.state.hasError ? null : this.props.children;
+  }
+}
 
 export function HeroCanvasLoader({
   progress,
@@ -77,16 +97,19 @@ export function HeroCanvasLoader({
           alt=""
           width={560}
           height={610}
+          loading="eager"
           className="hero-static__fallback-logo"
         />
       </div>
 
       {(canvasState === "loading" || canvasState === "ready") && (
-        <HeroCanvas
-          progress={progress}
-          onReady={markReady}
-          onUnavailable={markUnavailable}
-        />
+        <HeroCanvasErrorBoundary onUnavailable={markUnavailable}>
+          <HeroCanvas
+            progress={progress}
+            onReady={markReady}
+            onUnavailable={markUnavailable}
+          />
+        </HeroCanvasErrorBoundary>
       )}
     </div>
   );

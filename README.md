@@ -4,7 +4,7 @@ Official website for Muslim Entrepreneurs (MES) at Manchester Metropolitan Unive
 
 ## Status
 
-Phase 2's static 3D hero composition is implemented and awaiting Checkpoint B review. Hero motion and later website phases have not started.
+The project foundation and the desktop/mobile 3D hero proofs are approved through Checkpoint D.1. The production hero and later website phases have not started.
 
 ## Documentation
 

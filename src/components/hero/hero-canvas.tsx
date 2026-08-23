@@ -11,8 +11,8 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CanvasTexture,
-  Color,
   Group,
+  Material,
   MathUtils,
   Mesh,
   MeshBasicMaterial,
@@ -44,10 +44,7 @@ const FOCUS_TARGET_Z_OFFSET = 0.95;
 const TAKEOVER_CAMERA_DISTANCE = 5.82;
 const MOBILE_FOCUS_CAMERA = { x: 0.08, y: 1.05, z: 8.65 } as const;
 const MOBILE_FOCUS_TARGET_Z_OFFSET = 0.82;
-
-type ScreenMode = "brand" | "mark" | "colour" | "uv";
-type CompositionMode = "poster" | "offset" | "gallery" | "baseline";
-type MaterialMode = "studio" | "satin" | "baseline";
+const FRAME_SURFACE_MAP_NAME = "MES_Frame_Surface_Map";
 
 type BrandTextureController = {
   texture: CanvasTexture;
@@ -65,47 +62,15 @@ type Composition = {
   shadowScale: number;
 };
 
-const desktopCompositions: Record<CompositionMode, Composition> = {
-  poster: {
-    camera: [0, 3.75, 14.1],
-    target: [0.25, -0.1, 0],
-    fov: 31,
-    modelPosition: [0.8, -2.25, 0],
-    modelRotation: [0.045, -0.42, 0.008],
-    modelScale: 0.205,
-    shadowPosition: [0.55, -2.24, 0.65],
-    shadowScale: 7.4,
-  },
-  offset: {
-    camera: [0, 3.8, 14],
-    target: [0.5, -0.2, 0],
-    fov: 31,
-    modelPosition: [1.35, -2.1, 0],
-    modelRotation: [0.06, -0.5, -0.015],
-    modelScale: 0.212,
-    shadowPosition: [1.05, -2.09, 0.65],
-    shadowScale: 7.6,
-  },
-  gallery: {
-    camera: [0, 4.05, 14.8],
-    target: [0.15, -0.45, 0],
-    fov: 31,
-    modelPosition: [0.3, -2.2, 0],
-    modelRotation: [0.08, -0.31, 0.02],
-    modelScale: 0.195,
-    shadowPosition: [0.2, -2.19, 0.55],
-    shadowScale: 7.1,
-  },
-  baseline: {
-    camera: [0, 3.65, 13.8],
-    target: [0.2, 0.4, 0],
-    fov: 31,
-    modelPosition: [0.7, -1.35, 0],
-    modelRotation: [0.035, -0.38, 0.012],
-    modelScale: 0.225,
-    shadowPosition: [0.55, -1.34, 0.65],
-    shadowScale: 8,
-  },
+const desktopComposition: Composition = {
+  camera: [0, 3.75, 14.1],
+  target: [0.25, -0.1, 0],
+  fov: 31,
+  modelPosition: [0.8, -2.25, 0],
+  modelRotation: [0.045, -0.42, 0.008],
+  modelScale: 0.205,
+  shadowPosition: [0.55, -2.24, 0.65],
+  shadowScale: 7.4,
 };
 
 const portraitComposition: Composition = {
@@ -127,76 +92,6 @@ function smoothSegment(value: number, start: number, end: number) {
   const progress = clamp((value - start) / (end - start));
 
   return progress * progress * (3 - 2 * progress);
-}
-
-function useDevelopmentSceneOptions(): {
-  screenMode: ScreenMode;
-  compositionMode: CompositionMode;
-  materialMode: MaterialMode;
-} {
-  const [{ screenMode, compositionMode, materialMode }] = useState(() => {
-    if (process.env.NODE_ENV !== "development" || typeof window === "undefined") {
-      return {
-        screenMode: "brand" as ScreenMode,
-        compositionMode: "poster" as CompositionMode,
-        materialMode: "studio" as MaterialMode,
-      };
-    }
-
-    const params = new URLSearchParams(window.location.search);
-    const screen = params.get("screen");
-    const view = params.get("view");
-    const material = params.get("material");
-
-    return {
-      screenMode:
-        screen === "mark" || screen === "colour" || screen === "uv"
-          ? (screen as ScreenMode)
-          : "brand",
-      compositionMode:
-        view === "offset" || view === "gallery" || view === "baseline"
-          ? (view as CompositionMode)
-          : "poster",
-      materialMode:
-        material === "satin" || material === "baseline"
-          ? (material as MaterialMode)
-          : "studio",
-    };
-  });
-
-  return { screenMode, compositionMode, materialMode };
-}
-
-function createMarkTexture(image: CanvasImageSource) {
-  const canvas = document.createElement("canvas");
-  canvas.width = DISPLAY_TEXTURE_SIZE.width;
-  canvas.height = DISPLAY_TEXTURE_SIZE.height;
-
-  const context = canvas.getContext("2d");
-
-  if (!context) {
-    throw new Error("Unable to create the MES display texture.");
-  }
-
-  context.fillStyle = "#eae2d4";
-  context.fillRect(0, 0, canvas.width, canvas.height);
-
-  const logoHeight = 230;
-  const logoWidth = logoHeight * (560 / 610);
-  context.drawImage(
-    image,
-    (canvas.width - logoWidth) / 2,
-    (canvas.height - logoHeight) / 2,
-    logoWidth,
-    logoHeight,
-  );
-
-  const texture = new CanvasTexture(canvas);
-  texture.colorSpace = SRGBColorSpace;
-  texture.flipY = true;
-  texture.needsUpdate = true;
-
-  return texture;
 }
 
 function createBrandTexture(image: CanvasImageSource): BrandTextureController {
@@ -308,55 +203,8 @@ function createBrandTexture(image: CanvasImageSource): BrandTextureController {
   return { texture, draw };
 }
 
-function createUvTestTexture() {
-  const canvas = document.createElement("canvas");
-  canvas.width = DISPLAY_TEXTURE_SIZE.width;
-  canvas.height = DISPLAY_TEXTURE_SIZE.height;
-
-  const context = canvas.getContext("2d");
-
-  if (!context) {
-    throw new Error("Unable to create the MES display test texture.");
-  }
-
-  const swatches = ["#c29231", "#01500b", "#618c5d", "#013609"];
-  const labels = ["TOP LEFT", "TOP RIGHT", "BOTTOM LEFT", "BOTTOM RIGHT"];
-
-  swatches.forEach((swatch, index) => {
-    const x = index % 2 === 0 ? 0 : canvas.width / 2;
-    const y = index < 2 ? 0 : canvas.height / 2;
-    context.fillStyle = swatch;
-    context.fillRect(x, y, canvas.width / 2, canvas.height / 2);
-    context.fillStyle = index === 0 || index === 2 ? "#013609" : "#f4ede2";
-    context.font = "600 42px sans-serif";
-    context.fillText(labels[index], x + 46, y + 72);
-  });
-
-  context.strokeStyle = "#f4ede2";
-  context.lineWidth = 12;
-  context.strokeRect(6, 6, canvas.width - 12, canvas.height - 12);
-
-  const texture = new CanvasTexture(canvas);
-  texture.colorSpace = SRGBColorSpace;
-  texture.flipY = true;
-  texture.needsUpdate = true;
-
-  return texture;
-}
-
-function createLaptopMaterial(
-  source: MeshStandardMaterial,
-  materialMode: MaterialMode,
-) {
-  if (materialMode === "baseline") {
-    const material = source.clone();
-    material.emissiveIntensity = 0.16;
-    material.roughness = Math.max(material.roughness, 0.62);
-    return material;
-  }
-
+function createLaptopMaterial(source: MeshStandardMaterial) {
   const isFrame = source.name === "ComputerFrame.001";
-  const isSatin = materialMode === "satin";
   const surfaceMap = isFrame ? createFrameSurfaceMap(source) : null;
   const material = new MeshPhysicalMaterial({
     alphaTest: source.alphaTest,
@@ -367,26 +215,22 @@ function createLaptopMaterial(
     emissiveIntensity: isFrame ? 0.055 : 0.025,
     emissiveMap: source.emissiveMap,
     map: source.map,
-    metalness: isFrame ? (surfaceMap ? 1 : isSatin ? 0.18 : 0.34) : 0.2,
+    metalness: isFrame ? (surfaceMap ? 1 : 0.34) : 0.2,
     metalnessMap: surfaceMap ?? source.metalnessMap,
     opacity: source.opacity,
-    roughness: isFrame ? (surfaceMap ? 1 : isSatin ? 0.27 : 0.34) : 0.4,
+    roughness: isFrame ? (surfaceMap ? 1 : 0.34) : 0.4,
     roughnessMap: surfaceMap ?? source.roughnessMap,
     side: source.side,
     transparent: source.transparent,
-    clearcoat: isFrame ? (isSatin ? 0.46 : 0.28) : 0.14,
+    clearcoat: isFrame ? 0.28 : 0.14,
     clearcoatRoughness: isFrame ? 0.24 : 0.32,
-    envMapIntensity: isFrame ? (isSatin ? 1 : 1.35) : 0.75,
+    envMapIntensity: isFrame ? 1.35 : 0.75,
   });
 
   material.name = source.name;
 
   if (isFrame) {
-    material.color.setRGB(
-      isSatin ? 1.08 : 1.16,
-      isSatin ? 1.06 : 1.12,
-      isSatin ? 1.02 : 1.06,
-    );
+    material.color.setRGB(1.16, 1.12, 1.06);
   }
 
   [material.map, material.emissiveMap, material.metalnessMap, material.roughnessMap]
@@ -438,6 +282,7 @@ function createFrameSurfaceMap(source: MeshStandardMaterial) {
   context.putImageData(pixels, 0, 0);
 
   const texture = new CanvasTexture(canvas);
+  texture.name = FRAME_SURFACE_MAP_NAME;
   texture.flipY = source.map?.flipY ?? false;
   texture.anisotropy = 8;
   texture.needsUpdate = true;
@@ -445,22 +290,58 @@ function createFrameSurfaceMap(source: MeshStandardMaterial) {
   return texture;
 }
 
+function disposePreparedLaptop(
+  scene: Group,
+  screenMaterial: MeshBasicMaterial,
+) {
+  const disposedMaterials = new Set<Material>();
+  const disposedSurfaceMaps = new Set<CanvasTexture>();
+
+  scene.traverse((object) => {
+    if (!(object instanceof Mesh)) {
+      return;
+    }
+
+    const materials = Array.isArray(object.material)
+      ? object.material
+      : [object.material];
+
+    materials.forEach((material) => {
+      if (material === screenMaterial || disposedMaterials.has(material)) {
+        return;
+      }
+
+      if (
+        material instanceof MeshPhysicalMaterial &&
+        material.metalnessMap instanceof CanvasTexture &&
+        material.metalnessMap === material.roughnessMap &&
+        material.metalnessMap.name === FRAME_SURFACE_MAP_NAME &&
+        !disposedSurfaceMaps.has(material.metalnessMap)
+      ) {
+        material.metalnessMap.dispose();
+        disposedSurfaceMaps.add(material.metalnessMap);
+      }
+
+      material.dispose();
+      disposedMaterials.add(material);
+    });
+  });
+}
+
 function LaptopModel({
-  screenMode,
-  materialMode,
   isPortrait,
   progress,
   onReady,
+  onUnavailable,
 }: {
-  screenMode: ScreenMode;
-  materialMode: MaterialMode;
   isPortrait: boolean;
   progress: HeroProgressSignal;
   onReady: () => void;
+  onUnavailable: () => void;
 }) {
   const { scene } = useGLTF(MODEL_URL);
   const [logoImage, setLogoImage] = useState<HTMLImageElement | null>(null);
-  const lastArtworkProgress = useRef(-1);
+  const lastArtworkProgress = useRef(0);
 
   useEffect(() => {
     let isActive = true;
@@ -473,26 +354,34 @@ function LaptopModel({
         setLogoImage(image);
       }
     };
+    image.onerror = () => {
+      if (isActive) {
+        onUnavailable();
+      }
+    };
     image.src = LOGO_URL;
 
     return () => {
       isActive = false;
       image.onload = null;
+      image.onerror = null;
     };
-  }, []);
+  }, [onUnavailable]);
 
   const brandTexture = useMemo(
     () => (logoImage ? createBrandTexture(logoImage) : null),
     [logoImage],
   );
-  const markTexture = useMemo(
-    () => (logoImage ? createMarkTexture(logoImage) : null),
-    [logoImage],
+
+  useEffect(
+    () => () => {
+      brandTexture?.texture.dispose();
+    },
+    [brandTexture],
   );
-  const uvTexture = useMemo(() => createUvTestTexture(), []);
 
   useFrame(() => {
-    if (screenMode !== "brand" || !brandTexture) {
+    if (!brandTexture) {
       return;
     }
 
@@ -511,53 +400,39 @@ function LaptopModel({
   });
 
   useEffect(() => {
-    const textureIsReady =
-      screenMode === "colour" ||
-      screenMode === "uv" ||
-      (screenMode === "mark" ? markTexture !== null : brandTexture !== null);
-
-    if (textureIsReady) {
+    if (brandTexture) {
       onReady();
     }
-  }, [brandTexture, markTexture, onReady, screenMode]);
+  }, [brandTexture, onReady]);
 
   const screenMaterial = useMemo(() => {
-    if (screenMode === "colour") {
-      return new MeshBasicMaterial({
-        color: new Color("#c29231"),
-        polygonOffset: true,
-        polygonOffsetFactor: -1,
-        polygonOffsetUnits: -1,
-      });
-    }
-
-    const selectedTexture =
-      screenMode === "uv"
-        ? uvTexture
-        : screenMode === "mark"
-          ? markTexture
-          : brandTexture?.texture ?? null;
-
-    if (!selectedTexture) {
-      return new MeshBasicMaterial({
-        color: new Color("#013609"),
-        polygonOffset: true,
-        polygonOffsetFactor: -1,
-        polygonOffsetUnits: -1,
-      });
+    if (!brandTexture) {
+      return null;
     }
 
     return new MeshBasicMaterial({
-      map: selectedTexture,
+      map: brandTexture.texture,
       toneMapped: false,
       polygonOffset: true,
       polygonOffsetFactor: -1,
       polygonOffsetUnits: -1,
     });
-  }, [brandTexture, markTexture, screenMode, uvTexture]);
+  }, [brandTexture]);
+
+  useEffect(
+    () => () => {
+      screenMaterial?.dispose();
+    },
+    [screenMaterial],
+  );
 
   const preparedScene = useMemo(() => {
+    if (!screenMaterial) {
+      return null;
+    }
+
     const clone = scene.clone(true);
+    const materialClones = new Map<Material, Material>();
 
     clone.traverse((object) => {
       if (!(object instanceof Mesh)) {
@@ -569,11 +444,21 @@ function LaptopModel({
       const sourceMaterials = Array.isArray(object.material)
         ? object.material
         : [object.material];
-      const materials = sourceMaterials.map((material) =>
-        material instanceof MeshStandardMaterial
-          ? createLaptopMaterial(material, materialMode)
-          : material.clone(),
-      );
+      const materials = sourceMaterials.map((material) => {
+        const existingClone = materialClones.get(material);
+
+        if (existingClone) {
+          return existingClone;
+        }
+
+        const clonedMaterial =
+          material instanceof MeshStandardMaterial
+            ? createLaptopMaterial(material)
+            : material.clone();
+
+        materialClones.set(material, clonedMaterial);
+        return clonedMaterial;
+      });
 
       object.material = Array.isArray(object.material) ? materials : materials[0];
     });
@@ -592,9 +477,18 @@ function LaptopModel({
     display.material = screenMaterial;
 
     return clone;
-  }, [materialMode, scene, screenMaterial]);
+  }, [scene, screenMaterial]);
 
-  return <primitive object={preparedScene} />;
+  useEffect(
+    () => () => {
+      if (preparedScene && screenMaterial) {
+        disposePreparedLaptop(preparedScene, screenMaterial);
+      }
+    },
+    [preparedScene, screenMaterial],
+  );
+
+  return preparedScene ? <primitive object={preparedScene} /> : null;
 }
 
 function WebGLContextLifecycle({
@@ -606,7 +500,10 @@ function WebGLContextLifecycle({
 
   useEffect(() => {
     const canvas = gl.domElement;
-    const handleContextLoss = () => onUnavailable();
+    const handleContextLoss = (event: Event) => {
+      event.preventDefault();
+      onUnavailable();
+    };
 
     canvas.addEventListener("webglcontextlost", handleContextLoss, {
       once: true,
@@ -620,17 +517,13 @@ function WebGLContextLifecycle({
 }
 
 function LaptopScene({
-  screenMode,
-  compositionMode,
-  materialMode,
   progress,
   onReady,
+  onUnavailable,
 }: {
-  screenMode: ScreenMode;
-  compositionMode: CompositionMode;
-  materialMode: MaterialMode;
   progress: HeroProgressSignal;
   onReady: () => void;
+  onUnavailable: () => void;
 }) {
   const size = useThree((state) => state.size);
   const invalidate = useThree((state) => state.invalidate);
@@ -657,7 +550,7 @@ function LaptopScene({
         ] as [number, number, number],
         shadowScale: portraitComposition.shadowScale * portraitScale,
       }
-    : desktopCompositions[compositionMode];
+    : desktopComposition;
 
   useEffect(() => progress.subscribe(invalidate), [invalidate, progress]);
 
@@ -893,11 +786,10 @@ function LaptopScene({
         scale={composition.modelScale}
       >
         <LaptopModel
-          screenMode={screenMode}
-          materialMode={materialMode}
           isPortrait={isPortrait}
           progress={progress}
           onReady={onReady}
+          onUnavailable={onUnavailable}
         />
       </group>
 
@@ -943,8 +835,6 @@ export function HeroCanvas({
   onReady: () => void;
   onUnavailable: () => void;
 }) {
-  const { screenMode, compositionMode, materialMode } =
-    useDevelopmentSceneOptions();
   const isMobile = useMobileCanvasQuality();
 
   return (
@@ -964,11 +854,9 @@ export function HeroCanvas({
     >
       <WebGLContextLifecycle onUnavailable={onUnavailable} />
       <LaptopScene
-        screenMode={screenMode}
-        compositionMode={compositionMode}
-        materialMode={materialMode}
         progress={progress}
         onReady={onReady}
+        onUnavailable={onUnavailable}
       />
     </Canvas>
   );

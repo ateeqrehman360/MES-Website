@@ -357,6 +357,10 @@ body:has(.hero-static) .site-header__cta:hover {
     display: none;
   }
 
+  .hero-motion:has([data-webgl-state="unavailable"]) + .hero-handoff {
+    display: none;
+  }
+
   .hero-motion[data-hero-reduced-motion="true"] {
     height: 100svh;
   }
@@ -401,7 +405,7 @@ body:has(.hero-static) .site-header__cta:hover {
 @media (max-height: 42rem) and (orientation: landscape) {
   @layer components {
     .hero-static {
-      min-height: 34rem;
+      min-height: 100svh;
     }
 
     .hero-static__title {

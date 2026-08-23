@@ -37,18 +37,48 @@ export function StaticHero() {
       "(prefers-reduced-motion: reduce)",
     );
     let frame = 0;
+    let hasMeasured = false;
+    let previousDesktop = desktopQuery.matches;
+    let previousHeight = window.innerHeight;
+    let previousProgress = 0;
+    let previousWidth = window.innerWidth;
 
     const update = () => {
       frame = 0;
 
       const rootHeight = root.offsetHeight;
       const stageHeight = stage.offsetHeight;
-      const rootTop = root.getBoundingClientRect().top;
+      let rootTop = root.getBoundingClientRect().top;
       const isDesktop = desktopQuery.matches;
       const webglUnavailable = root.querySelector(
         '[data-webgl-state="unavailable"]',
       );
       const availableTravel = Math.max(rootHeight - stageHeight, 1);
+      const viewportHeight = window.innerHeight;
+      const viewportWidth = window.innerWidth;
+      const viewportChanged =
+        viewportHeight !== previousHeight || viewportWidth !== previousWidth;
+      const orientationChanged =
+        (viewportWidth >= viewportHeight) !==
+        (previousWidth >= previousHeight);
+      const shouldPreserveProgress =
+        hasMeasured &&
+        viewportChanged &&
+        previousProgress > 0 &&
+        previousProgress < 1 &&
+        !reducedMotionQuery.matches &&
+        !webglUnavailable &&
+        (orientationChanged || (previousDesktop && isDesktop));
+
+      if (shouldPreserveProgress) {
+        const rootDocumentTop = window.scrollY + rootTop;
+        const targetScrollY =
+          rootDocumentTop + previousProgress * availableTravel;
+
+        window.scrollTo({ top: targetScrollY, behavior: "instant" });
+        rootTop = root.getBoundingClientRect().top;
+      }
+
       const rawProgress = !reducedMotionQuery.matches && !webglUnavailable
         ? clamp(-rootTop / availableTravel)
         : 0;
@@ -103,6 +133,12 @@ export function StaticHero() {
         "--hero-navigation-opacity",
         (1 - navigationExit).toFixed(4),
       );
+
+      hasMeasured = true;
+      previousDesktop = isDesktop;
+      previousHeight = viewportHeight;
+      previousProgress = rawProgress;
+      previousWidth = viewportWidth;
     };
 
     const scheduleUpdate = () => {
@@ -202,10 +238,7 @@ export function StaticHero() {
         </section>
       </div>
 
-      <section
-        className="hero-handoff"
-        aria-label="Placeholder for the normal website section"
-      >
+      <section className="hero-handoff" aria-hidden="true">
         <div className="hero-screen-artboard hero-screen-artboard--continuation" />
       </section>
     </>
