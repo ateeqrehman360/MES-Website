@@ -4,7 +4,9 @@ Official website for Muslim Entrepreneurs (MES) at Manchester Metropolitan Unive
 
 ## Status
 
-The project foundation and the desktop/mobile 3D hero proofs are approved through Checkpoint D.1. The production hero and later website phases have not started.
+The project foundation and desktop/mobile 3D hero proofs are approved through Checkpoint D.1. A pre-Phase-5 technical audit and hardening pass is complete.
+
+The codebase is ready for Phase 5 once the approved MES photography/media is prepared. The production hero and later website phases have not started.
 
 ## Documentation
 
