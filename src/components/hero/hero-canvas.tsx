@@ -49,6 +49,11 @@ type ScreenMode = "brand" | "mark" | "colour" | "uv";
 type CompositionMode = "poster" | "offset" | "gallery" | "baseline";
 type MaterialMode = "studio" | "satin" | "baseline";
 
+type BrandTextureController = {
+  texture: CanvasTexture;
+  draw: (progress: number) => void;
+};
+
 type Composition = {
   camera: [number, number, number];
   target: [number, number, number];
@@ -194,7 +199,7 @@ function createMarkTexture(image: CanvasImageSource) {
   return texture;
 }
 
-function createBrandTexture(image: CanvasImageSource) {
+function createBrandTexture(image: CanvasImageSource): BrandTextureController {
   const canvas = document.createElement("canvas");
   canvas.width = DISPLAY_TEXTURE_SIZE.width;
   canvas.height = DISPLAY_TEXTURE_SIZE.height;
@@ -208,49 +213,99 @@ function createBrandTexture(image: CanvasImageSource) {
   const displayFont = getComputedStyle(document.documentElement)
     .getPropertyValue("--font-newsreader")
     .trim();
+  const fontFamily = displayFont || "Georgia, serif";
+  const landscapeTitleFont = `400 126px ${fontFamily}`;
+  const landscapeSubtitleFont = `400 67px ${fontFamily}`;
+  const portraitTitleFont = `400 67px ${fontFamily}`;
+  const portraitSubtitleFont = `400 27px ${fontFamily}`;
+  const initialLogoHeight = 400;
+  const initialLogoWidth = initialLogoHeight * (560 / 610);
+  const initialLogoX = 810 + (canvas.width - 810 - initialLogoWidth) / 2;
+  const initialLogoY = (canvas.height - initialLogoHeight) / 2;
+  const finalLogoX = 825;
+  const finalLogoY = 360;
+  const finalLogoHeight = 260;
 
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = "high";
-  context.fillStyle = "#013609";
-  context.fillRect(0, 0, 790, canvas.height);
-  context.fillStyle = "#c29231";
-  context.fillRect(790, 0, 20, canvas.height);
-  context.fillStyle = "#f4ede2";
-  context.fillRect(810, 0, canvas.width - 810, canvas.height);
-
-  context.fillStyle = "#c29231";
-  context.fillRect(76, 108, 116, 8);
-
-  context.fillStyle = "#f4ede2";
-  context.textBaseline = "alphabetic";
-  context.font = `400 126px ${displayFont || "Georgia, serif"}`;
-  context.fillText("MUSLIM", 72, 303);
-  context.font = `400 67px ${displayFont || "Georgia, serif"}`;
-  context.fillText("ENTREPRENEURS", 72, 405);
-
-  context.strokeStyle = "rgba(244, 237, 226, 0.55)";
-  context.lineWidth = 2;
-  context.beginPath();
-  context.moveTo(74, 555);
-  context.lineTo(700, 555);
-  context.stroke();
-
-  const logoHeight = 400;
-  const logoWidth = logoHeight * (560 / 610);
-  context.drawImage(
-    image,
-    810 + (canvas.width - 810 - logoWidth) / 2,
-    (canvas.height - logoHeight) / 2,
-    logoWidth,
-    logoHeight,
-  );
 
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
   texture.flipY = true;
-  texture.needsUpdate = true;
 
-  return texture;
+  const draw = (progress: number) => {
+    const originalFade = 1 - smoothSegment(progress, 0.49, 0.78);
+    const markMorph = smoothSegment(progress, 0.47, 0.9);
+    const portraitReveal = smoothSegment(progress, 0.54, 0.86);
+
+    context.globalAlpha = 1;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = "#013609";
+    context.fillRect(0, 0, 790, canvas.height);
+    context.fillStyle = "#c29231";
+    context.fillRect(790, 0, 20, canvas.height);
+    context.fillStyle = "#f4ede2";
+    context.fillRect(810, 0, canvas.width - 810, canvas.height);
+
+    context.globalAlpha = originalFade;
+    context.fillStyle = "#c29231";
+    context.fillRect(76, 108, 116, 8);
+
+    context.fillStyle = "#f4ede2";
+    context.textBaseline = "alphabetic";
+    context.font = landscapeTitleFont;
+    context.fillText("MUSLIM", 72, 303);
+    context.font = landscapeSubtitleFont;
+    context.fillText("ENTREPRENEURS", 72, 405);
+
+    context.strokeStyle = "rgba(244, 237, 226, 0.55)";
+    context.lineWidth = 2;
+    context.beginPath();
+    context.moveTo(74, 555);
+    context.lineTo(700, 555);
+    context.stroke();
+    context.globalAlpha = 1;
+
+    const logoHeight = MathUtils.lerp(
+      initialLogoHeight,
+      finalLogoHeight,
+      markMorph,
+    );
+    const logoWidth = logoHeight * (560 / 610);
+
+    context.drawImage(
+      image,
+      MathUtils.lerp(initialLogoX, finalLogoX, markMorph),
+      MathUtils.lerp(initialLogoY, finalLogoY, markMorph),
+      logoWidth,
+      logoHeight,
+    );
+
+    const settle = MathUtils.lerp(16, 0, portraitReveal);
+
+    context.globalAlpha = portraitReveal;
+    context.fillStyle = "#c29231";
+    context.fillRect(820, 88 + settle, 82, 6);
+    context.fillStyle = "#013609";
+    context.textBaseline = "top";
+    context.font = portraitTitleFont;
+    context.fillText("MUSLIM", 818, 148 + settle);
+    context.font = portraitSubtitleFont;
+    context.fillText("ENTREPRENEURS", 820, 226 + settle);
+    context.strokeStyle = "rgba(1, 54, 9, 0.38)";
+    context.lineWidth = 2;
+    context.beginPath();
+    context.moveTo(820, 295 + settle);
+    context.lineTo(1055, 295 + settle);
+    context.stroke();
+    context.globalAlpha = 1;
+
+    texture.needsUpdate = true;
+  };
+
+  draw(0);
+
+  return { texture, draw };
 }
 
 function createUvTestTexture() {
@@ -393,14 +448,19 @@ function createFrameSurfaceMap(source: MeshStandardMaterial) {
 function LaptopModel({
   screenMode,
   materialMode,
+  isPortrait,
+  progress,
   onReady,
 }: {
   screenMode: ScreenMode;
   materialMode: MaterialMode;
+  isPortrait: boolean;
+  progress: HeroProgressSignal;
   onReady: () => void;
 }) {
   const { scene } = useGLTF(MODEL_URL);
   const [logoImage, setLogoImage] = useState<HTMLImageElement | null>(null);
+  const lastArtworkProgress = useRef(-1);
 
   useEffect(() => {
     let isActive = true;
@@ -431,6 +491,25 @@ function LaptopModel({
   );
   const uvTexture = useMemo(() => createUvTestTexture(), []);
 
+  useFrame(() => {
+    if (screenMode !== "brand" || !brandTexture) {
+      return;
+    }
+
+    const rawArtworkProgress = isPortrait ? progress.value : 0;
+    const artworkProgress =
+      rawArtworkProgress <= 0.47
+        ? 0
+        : Math.min(rawArtworkProgress, 0.9);
+
+    if (Math.abs(artworkProgress - lastArtworkProgress.current) < 0.001) {
+      return;
+    }
+
+    brandTexture.draw(artworkProgress);
+    lastArtworkProgress.current = artworkProgress;
+  });
+
   useEffect(() => {
     const textureIsReady =
       screenMode === "colour" ||
@@ -457,7 +536,7 @@ function LaptopModel({
         ? uvTexture
         : screenMode === "mark"
           ? markTexture
-          : brandTexture;
+          : brandTexture?.texture ?? null;
 
     if (!selectedTexture) {
       return new MeshBasicMaterial({
@@ -816,6 +895,8 @@ function LaptopScene({
         <LaptopModel
           screenMode={screenMode}
           materialMode={materialMode}
+          isPortrait={isPortrait}
+          progress={progress}
           onReady={onReady}
         />
       </group>

@@ -298,6 +298,44 @@ body:has(.hero-static) .site-header__cta:hover {
     .hero-static__fallback-logo {
       width: clamp(4.75rem, 24vw, 6.25rem);
     }
+
+    .hero-screen-artboard__accent {
+      inset-block-start: 12.2222%;
+      inset-inline-start: 65.8106%;
+      width: 6.5811%;
+      height: 0.8333%;
+    }
+
+    .hero-screen-artboard__wordmark {
+      color: var(--mes-deep-green);
+      line-height: 1;
+    }
+
+    .hero-screen-artboard__wordmark span:first-child {
+      inset-block-start: 20.5556%;
+      inset-inline-start: 65.6501%;
+      font-size: 9.3056cqh;
+    }
+
+    .hero-screen-artboard__wordmark span:last-child {
+      inset-block-start: 31.3889%;
+      inset-inline-start: 65.8106%;
+      font-size: 3.75cqh;
+    }
+
+    .hero-screen-artboard__rule {
+      inset-block-start: 40.9722%;
+      inset-inline-start: 65.8106%;
+      width: 18.8604%;
+      background: rgb(1 54 9 / 38%);
+    }
+
+    .hero-screen-artboard__logo {
+      inset-block-start: 50%;
+      inset-inline-start: 66.2119%;
+      inset-inline-end: auto;
+      height: 36.1111%;
+    }
   }
 }
 
