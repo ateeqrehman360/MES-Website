@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useEffect, useMemo, useRef } from "react";
 
+import { heroPhotography, heroStatement } from "@/data/hero";
+
 import { HeroCanvasLoader } from "./hero-canvas-loader";
 import { createHeroProgressSignal } from "./hero-progress";
 
@@ -17,6 +19,41 @@ function smoothSegment(value: number, start: number, end: number) {
   const progress = clamp((value - start) / (end - start));
 
   return progress * progress * (3 - 2 * progress);
+}
+
+function HeroStatementArtboard({ continuation = false }) {
+  return (
+    <div
+      className={`hero-screen-artboard${
+        continuation ? " hero-screen-artboard--continuation" : ""
+      }`}
+    >
+      {continuation ? (
+        <p className="sr-only">{heroStatement.accessibleText}</p>
+      ) : null}
+      <div className="hero-screen-artboard__content" aria-hidden="true">
+        <span className="hero-screen-artboard__accent" />
+        <div className="hero-screen-artboard__statement-lead font-display">
+          {heroStatement.leadLines.map((line) => (
+            <span key={line}>{line}</span>
+          ))}
+        </div>
+        <span className="hero-screen-artboard__rule" />
+        <div className="hero-screen-artboard__statement-close font-display">
+          {heroStatement.closeLines.map((line) => (
+            <span key={line}>{line}</span>
+          ))}
+        </div>
+        <Image
+          src="/brand/mes-logo.svg"
+          alt=""
+          width={560}
+          height={610}
+          className="hero-screen-artboard__logo"
+        />
+      </div>
+    </div>
+  );
 }
 
 export function StaticHero() {
@@ -218,29 +255,21 @@ export function StaticHero() {
 
           <HeroCanvasLoader progress={progress} />
 
+          <ul className="sr-only" aria-label="MES event photography">
+            {heroPhotography.map((photograph) => (
+              <li key={photograph.id}>{photograph.alt}</li>
+            ))}
+          </ul>
+
           <div className="hero-motion__takeover" aria-hidden="true">
-            <div className="hero-screen-artboard">
-              <span className="hero-screen-artboard__accent" />
-              <div className="hero-screen-artboard__wordmark font-display">
-                <span>Muslim</span>
-                <span>Entrepreneurs</span>
-              </div>
-              <span className="hero-screen-artboard__rule" />
-              <Image
-                src="/brand/mes-logo.svg"
-                alt=""
-                width={560}
-                height={610}
-                className="hero-screen-artboard__logo"
-              />
-            </div>
+            <HeroStatementArtboard />
           </div>
         </section>
       </div>
 
-      <section className="hero-handoff" aria-hidden="true">
-        <div className="hero-screen-artboard hero-screen-artboard--continuation" />
-      </section>
+      <div className="hero-handoff">
+        <HeroStatementArtboard continuation />
+      </div>
     </>
   );
 }

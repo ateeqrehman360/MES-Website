@@ -19,15 +19,21 @@ import {
   MeshPhysicalMaterial,
   MeshStandardMaterial,
   PerspectiveCamera as ThreePerspectiveCamera,
-  SRGBColorSpace,
   Vector3,
 } from "three";
 
+import { heroPhotography } from "@/data/hero";
+
+import {
+  createHeroDisplayTexture,
+  getHeroDisplayDrawProgress,
+  HERO_DISPLAY_TEXTURE_SIZE,
+  type HeroDisplayPhotographs,
+} from "./hero-display-texture";
 import type { HeroProgressSignal } from "./hero-progress";
 
 const MODEL_URL = "/models/MES_Laptop.glb";
 const LOGO_URL = "/brand/mes-logo.svg";
-const DISPLAY_TEXTURE_SIZE = { width: 1246, height: 720 } as const;
 const DISPLAY_LOCAL_CENTER = {
   x: -0.0006706475396640599,
   y: 10.722437858581543,
@@ -37,7 +43,8 @@ const DISPLAY_LOCAL_SIZE = {
   width: 29.302825927734375,
   height: 16.937835693359375,
 } as const;
-const DISPLAY_ASPECT = DISPLAY_TEXTURE_SIZE.width / DISPLAY_TEXTURE_SIZE.height;
+const DISPLAY_ASPECT =
+  HERO_DISPLAY_TEXTURE_SIZE.width / HERO_DISPLAY_TEXTURE_SIZE.height;
 const SCREEN_OVERSCAN = 1.074;
 const FOCUS_CAMERA = { x: 0.12, y: 1.85, z: 9.5 } as const;
 const FOCUS_TARGET_Z_OFFSET = 0.95;
@@ -45,11 +52,6 @@ const TAKEOVER_CAMERA_DISTANCE = 5.82;
 const MOBILE_FOCUS_CAMERA = { x: 0.08, y: 1.05, z: 8.65 } as const;
 const MOBILE_FOCUS_TARGET_Z_OFFSET = 0.82;
 const FRAME_SURFACE_MAP_NAME = "MES_Frame_Surface_Map";
-
-type BrandTextureController = {
-  texture: CanvasTexture;
-  draw: (progress: number) => void;
-};
 
 type Composition = {
   camera: [number, number, number];
@@ -94,113 +96,24 @@ function smoothSegment(value: number, start: number, end: number) {
   return progress * progress * (3 - 2 * progress);
 }
 
-function createBrandTexture(image: CanvasImageSource): BrandTextureController {
-  const canvas = document.createElement("canvas");
-  canvas.width = DISPLAY_TEXTURE_SIZE.width;
-  canvas.height = DISPLAY_TEXTURE_SIZE.height;
+function loadDisplayImage(source: string) {
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const image = new Image();
 
-  const context = canvas.getContext("2d");
-
-  if (!context) {
-    throw new Error("Unable to create the MES display texture.");
-  }
-
-  const displayFont = getComputedStyle(document.documentElement)
-    .getPropertyValue("--font-newsreader")
-    .trim();
-  const fontFamily = displayFont || "Georgia, serif";
-  const landscapeTitleFont = `400 126px ${fontFamily}`;
-  const landscapeSubtitleFont = `400 67px ${fontFamily}`;
-  const portraitTitleFont = `400 67px ${fontFamily}`;
-  const portraitSubtitleFont = `400 27px ${fontFamily}`;
-  const initialLogoHeight = 400;
-  const initialLogoWidth = initialLogoHeight * (560 / 610);
-  const initialLogoX = 810 + (canvas.width - 810 - initialLogoWidth) / 2;
-  const initialLogoY = (canvas.height - initialLogoHeight) / 2;
-  const finalLogoX = 825;
-  const finalLogoY = 360;
-  const finalLogoHeight = 260;
-
-  context.imageSmoothingEnabled = true;
-  context.imageSmoothingQuality = "high";
-
-  const texture = new CanvasTexture(canvas);
-  texture.colorSpace = SRGBColorSpace;
-  texture.flipY = true;
-
-  const draw = (progress: number) => {
-    const originalFade = 1 - smoothSegment(progress, 0.49, 0.78);
-    const markMorph = smoothSegment(progress, 0.47, 0.9);
-    const portraitReveal = smoothSegment(progress, 0.54, 0.86);
-
-    context.globalAlpha = 1;
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = "#013609";
-    context.fillRect(0, 0, 790, canvas.height);
-    context.fillStyle = "#c29231";
-    context.fillRect(790, 0, 20, canvas.height);
-    context.fillStyle = "#f4ede2";
-    context.fillRect(810, 0, canvas.width - 810, canvas.height);
-
-    context.globalAlpha = originalFade;
-    context.fillStyle = "#c29231";
-    context.fillRect(76, 108, 116, 8);
-
-    context.fillStyle = "#f4ede2";
-    context.textBaseline = "alphabetic";
-    context.font = landscapeTitleFont;
-    context.fillText("MUSLIM", 72, 303);
-    context.font = landscapeSubtitleFont;
-    context.fillText("ENTREPRENEURS", 72, 405);
-
-    context.strokeStyle = "rgba(244, 237, 226, 0.55)";
-    context.lineWidth = 2;
-    context.beginPath();
-    context.moveTo(74, 555);
-    context.lineTo(700, 555);
-    context.stroke();
-    context.globalAlpha = 1;
-
-    const logoHeight = MathUtils.lerp(
-      initialLogoHeight,
-      finalLogoHeight,
-      markMorph,
-    );
-    const logoWidth = logoHeight * (560 / 610);
-
-    context.drawImage(
-      image,
-      MathUtils.lerp(initialLogoX, finalLogoX, markMorph),
-      MathUtils.lerp(initialLogoY, finalLogoY, markMorph),
-      logoWidth,
-      logoHeight,
-    );
-
-    const settle = MathUtils.lerp(16, 0, portraitReveal);
-
-    context.globalAlpha = portraitReveal;
-    context.fillStyle = "#c29231";
-    context.fillRect(820, 88 + settle, 82, 6);
-    context.fillStyle = "#013609";
-    context.textBaseline = "top";
-    context.font = portraitTitleFont;
-    context.fillText("MUSLIM", 818, 148 + settle);
-    context.font = portraitSubtitleFont;
-    context.fillText("ENTREPRENEURS", 820, 226 + settle);
-    context.strokeStyle = "rgba(1, 54, 9, 0.38)";
-    context.lineWidth = 2;
-    context.beginPath();
-    context.moveTo(820, 295 + settle);
-    context.lineTo(1055, 295 + settle);
-    context.stroke();
-    context.globalAlpha = 1;
-
-    texture.needsUpdate = true;
-  };
-
-  draw(0);
-
-  return { texture, draw };
+    image.crossOrigin = "anonymous";
+    image.decoding = "async";
+    image.onload = () => {
+      image.onload = null;
+      image.onerror = null;
+      resolve(image);
+    };
+    image.onerror = () => {
+      image.onload = null;
+      image.onerror = null;
+      reject(new Error(`Unable to load hero display asset: ${source}`));
+    };
+    image.src = source;
+  });
 }
 
 function createLaptopMaterial(source: MeshStandardMaterial) {
@@ -340,84 +253,118 @@ function LaptopModel({
   onUnavailable: () => void;
 }) {
   const { scene } = useGLTF(MODEL_URL);
+  const invalidate = useThree((state) => state.invalidate);
   const [logoImage, setLogoImage] = useState<HTMLImageElement | null>(null);
-  const lastArtworkProgress = useRef(0);
+  const [photographyRevision, setPhotographyRevision] = useState(0);
+  const photographs = useRef<HeroDisplayPhotographs>([
+    null,
+    null,
+    null,
+  ]);
+  const lastArtworkProgress = useRef(Number.NaN);
 
   useEffect(() => {
     let isActive = true;
-    const image = new Image();
 
-    image.crossOrigin = "anonymous";
-    image.decoding = "async";
-    image.onload = () => {
-      if (isActive) {
-        setLogoImage(image);
-      }
-    };
-    image.onerror = () => {
-      if (isActive) {
-        onUnavailable();
-      }
-    };
-    image.src = LOGO_URL;
+    loadDisplayImage(LOGO_URL).then(
+      (image) => {
+        if (isActive) {
+          setLogoImage(image);
+        }
+      },
+      () => {
+        if (isActive) {
+          onUnavailable();
+        }
+      },
+    );
+
+    heroPhotography.forEach((photograph, index) => {
+      loadDisplayImage(photograph.src).then(
+        (image) => {
+          if (!isActive) {
+            return;
+          }
+
+          photographs.current[index] = image;
+          setPhotographyRevision((revision) => revision + 1);
+        },
+        () => {
+          // The display renderer keeps a branded fallback for a failed photo.
+        },
+      );
+    });
 
     return () => {
       isActive = false;
-      image.onload = null;
-      image.onerror = null;
     };
   }, [onUnavailable]);
 
-  const brandTexture = useMemo(
-    () => (logoImage ? createBrandTexture(logoImage) : null),
-    [logoImage],
+  const displayTexture = useMemo(
+    () =>
+      logoImage
+        ? createHeroDisplayTexture(logoImage, isPortrait)
+        : null,
+    [isPortrait, logoImage],
   );
 
   useEffect(
     () => () => {
-      brandTexture?.texture.dispose();
+      displayTexture?.texture.dispose();
     },
-    [brandTexture],
+    [displayTexture],
   );
 
-  useFrame(() => {
-    if (!brandTexture) {
+  useEffect(() => {
+    if (!displayTexture) {
       return;
     }
 
-    const rawArtworkProgress = isPortrait ? progress.value : 0;
-    const artworkProgress =
-      rawArtworkProgress <= 0.47
-        ? 0
-        : Math.min(rawArtworkProgress, 0.9);
+    photographs.current.forEach((image, index) => {
+      displayTexture.setPhotograph(index, image);
+    });
+
+    const artworkProgress = getHeroDisplayDrawProgress(progress.value);
+
+    displayTexture.draw(artworkProgress);
+    lastArtworkProgress.current = artworkProgress;
+    invalidate();
+  }, [displayTexture, invalidate, photographyRevision, progress]);
+
+  useFrame(() => {
+    if (!displayTexture) {
+      return;
+    }
+
+    const artworkProgress = getHeroDisplayDrawProgress(progress.value);
 
     if (Math.abs(artworkProgress - lastArtworkProgress.current) < 0.001) {
       return;
     }
 
-    brandTexture.draw(artworkProgress);
+    displayTexture.draw(artworkProgress);
     lastArtworkProgress.current = artworkProgress;
   });
 
   useEffect(() => {
-    if (brandTexture) {
+    if (displayTexture) {
       onReady();
     }
-  }, [brandTexture, onReady]);
+  }, [displayTexture, onReady]);
 
   const screenMaterial = useMemo(() => {
-    if (!brandTexture) {
+    if (!displayTexture) {
       return null;
     }
 
     return new MeshBasicMaterial({
-      map: brandTexture.texture,
+      map: displayTexture.texture,
       toneMapped: false,
       polygonOffset: true,
       polygonOffsetFactor: -1,
       polygonOffsetUnits: -1,
     });
-  }, [brandTexture]);
+  }, [displayTexture]);
 
   useEffect(
     () => () => {
