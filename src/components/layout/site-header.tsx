@@ -12,7 +12,7 @@ export function SiteHeader() {
         <Link
           href="/"
           aria-label="Muslim Entrepreneurs home"
-          className="flex min-h-12 min-w-12 items-center"
+          className="site-header__brand flex min-h-12 min-w-12 items-center gap-4"
         >
           <Image
             src="/brand/mes-logo.svg"
@@ -21,8 +21,24 @@ export function SiteHeader() {
             height={61}
             crossOrigin="anonymous"
             priority
-            className="h-12 w-auto lg:h-14"
+            className="site-header__brand-mark h-12 w-auto lg:h-14"
           />
+          <span
+            className="site-header__brand-lockup hidden items-center lg:flex"
+            aria-hidden="true"
+          >
+            <span className="site-header__brand-abbreviation font-display">
+              MES
+            </span>
+            <span className="site-header__brand-rule hidden xl:block" />
+            <span className="site-header__brand-name hidden xl:block">
+              Muslim
+              <br />
+              Entrepreneurs
+              <br />
+              Society
+            </span>
+          </span>
         </Link>
 
         <nav

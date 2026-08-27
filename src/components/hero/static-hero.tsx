@@ -253,6 +253,14 @@ export function StaticHero() {
             </span>
           </h1>
 
+          <p className="hero-static__affiliation">
+            Manchester Metropolitan
+            <br />
+            University
+          </p>
+
+          <span className="hero-static__ground-shadow" aria-hidden="true" />
+
           <HeroCanvasLoader progress={progress} />
 
           <ul className="sr-only" aria-label="MES event photography">

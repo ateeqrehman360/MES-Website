@@ -65,14 +65,14 @@ type Composition = {
 };
 
 const desktopComposition: Composition = {
-  camera: [0, 3.75, 14.1],
-  target: [0.25, -0.1, 0],
-  fov: 31,
-  modelPosition: [0.8, -2.25, 0],
-  modelRotation: [0.045, -0.42, 0.008],
+  camera: [0, 1.85, 15.2],
+  target: [0.65, -0.8, 0],
+  fov: 30,
+  modelPosition: [1.9, -2.95, 0],
+  modelRotation: [0.012, -0.63, 0.004],
   modelScale: 0.205,
-  shadowPosition: [0.55, -2.24, 0.65],
-  shadowScale: 7.4,
+  shadowPosition: [1.65, -2.93, 1.55],
+  shadowScale: 10.2,
 };
 
 const portraitComposition: Composition = {
@@ -744,10 +744,10 @@ function LaptopScene({
         <ContactShadows
           frames={1}
           color="#013609"
-          opacity={0.15}
+          opacity={isPortrait ? 0.15 : 0.14}
           scale={composition.shadowScale}
-          blur={2.7}
-          far={4.5}
+          blur={isPortrait ? 2.7 : 3.4}
+          far={isPortrait ? 4.5 : 5.2}
           resolution={isPortrait ? 256 : 512}
         />
       </group>
