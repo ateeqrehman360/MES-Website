@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Manrope, Newsreader } from "next/font/google";
+import localFont from "next/font/local";
 import type { ReactNode } from "react";
 
 import { SiteHeader } from "@/components/layout/site-header";
@@ -10,6 +11,22 @@ import "./globals.css";
 const displayFont = Newsreader({
   variable: "--font-newsreader",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const heroApparelFont = localFont({
+  src: "../assets/fonts/Apparel Display Regular/Apparel Display Regular.ttf",
+  weight: "400",
+  style: "normal",
+  variable: "--font-hero-apparel",
+  display: "swap",
+});
+
+const heroKommonFont = localFont({
+  src: "../assets/fonts/kommon-grotesk-regular/kommon-grotesk-regular.ttf",
+  weight: "400",
+  style: "normal",
+  variable: "--font-hero-kommon",
   display: "swap",
 });
 
@@ -53,7 +70,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html
       lang="en-GB"
       data-scroll-behavior="smooth"
-      className={`${displayFont.variable} ${bodyFont.variable} antialiased`}
+      className={`${displayFont.variable} ${heroApparelFont.variable} ${heroKommonFont.variable} ${bodyFont.variable} antialiased`}
     >
       <body>
         <a className="skip-link" href="#main-content">
