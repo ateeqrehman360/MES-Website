@@ -138,11 +138,11 @@
 
   .hero-static__ground-shadow {
     position: absolute;
-    inset-inline-end: -0.75rem;
-    inset-block-end: clamp(1.25rem, 2.5vh, 2rem);
+    inset-inline-end: -1rem;
+    inset-block-end: clamp(0.75rem, 1.75vh, 1.5rem);
     z-index: 1;
-    width: min(65vw, 58rem);
-    height: clamp(11rem, 24vh, 15rem);
+    width: min(70vw, 62rem);
+    height: clamp(13rem, 28vh, 17rem);
     opacity: var(--hero-title-opacity, 1);
     will-change: opacity;
     pointer-events: none;
@@ -156,16 +156,16 @@
   }
 
   .hero-static__ground-shadow::after {
-    inset: -2% -10% -3% -12%;
+    inset: -5% -10% -6% -16%;
     background: radial-gradient(
-      ellipse at 58% 51%,
-      rgb(49 49 46 / 7%) 0%,
-      rgb(57 56 52 / 4%) 40%,
-      rgb(68 65 59 / 1.5%) 68%,
-      transparent 88%
+      ellipse at 50% 54%,
+      rgb(49 49 46 / 15%) 0%,
+      rgb(57 56 52 / 8.5%) 42%,
+      rgb(68 65 59 / 3%) 70%,
+      transparent 90%
     );
-    filter: blur(4.2rem);
-    transform: translateY(0.8rem) rotate(2deg) skewX(-7deg) scaleY(0.82);
+    filter: blur(5.5rem);
+    transform: translateY(0.9rem) rotate(2deg) skewX(-7deg) scaleY(0.86);
   }
 
   .hero-static__canvas,

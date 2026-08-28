@@ -71,8 +71,8 @@ const desktopComposition: Composition = {
   modelPosition: [2.1, -3.72, 0],
   modelRotation: [0.004, -1, 0.025],
   modelScale: 0.205,
-  shadowPosition: [2.18, -3.84, -0.05],
-  shadowScale: 9,
+  shadowPosition: [1, -3.84, -0.05],
+  shadowScale: 12.5,
 };
 
 const portraitComposition: Composition = {
@@ -750,15 +750,15 @@ function LaptopScene({
         intensity={useDesktopProductTreatment ? 3.45 : 2.85}
         position={[-5.5, 8.5, 6.5]}
         shadow-mapSize={[512, 512]}
-        shadow-camera-left={-8}
-        shadow-camera-right={8}
-        shadow-camera-top={8}
-        shadow-camera-bottom={-8}
+        shadow-camera-left={-11}
+        shadow-camera-right={11}
+        shadow-camera-top={11}
+        shadow-camera-bottom={-11}
         shadow-camera-near={0.1}
         shadow-camera-far={30}
         shadow-bias={-0.00015}
-        shadow-radius={18}
-        shadow-blurSamples={24}
+        shadow-radius={30}
+        shadow-blurSamples={32}
       />
       <directionalLight
         color={useDesktopProductTreatment ? "#edf3f2" : "#dfeae2"}
@@ -821,11 +821,11 @@ function LaptopScene({
         ) : (
           <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]}>
             <planeGeometry
-              args={[composition.shadowScale, composition.shadowScale]}
+              args={[composition.shadowScale, composition.shadowScale * 0.66]}
             />
             <shadowMaterial
               color="#252a26"
-              opacity={0.5}
+              opacity={0.72}
               transparent
               depthWrite={false}
             />
