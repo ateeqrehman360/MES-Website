@@ -157,28 +157,39 @@
   }
 
   .hero-static__ground-shadow::before {
-    inset: 7% 0 16%;
-    background: radial-gradient(
-      ellipse at 52% 47%,
-      rgb(28 28 25 / 32%) 0%,
-      rgb(37 36 32 / 23%) 30%,
-      rgb(48 46 40 / 11%) 59%,
-      transparent 82%
-    );
-    filter: blur(1.35rem);
-    transform: rotate(3deg) skewX(-11deg) scaleY(0.72);
+    inset: 24% -7% 6% -12%;
+    background:
+      radial-gradient(
+        ellipse 54% 62% at 70% 52%,
+        rgb(22 22 20 / 40%) 0%,
+        rgb(31 30 27 / 28%) 45%,
+        transparent 75%
+      ),
+      linear-gradient(
+        90deg,
+        transparent 0%,
+        rgb(44 42 36 / 32%) 7%,
+        rgb(36 35 31 / 46%) 25%,
+        rgb(29 29 26 / 56%) 52%,
+        rgb(25 25 23 / 60%) 76%,
+        rgb(36 34 30 / 46%) 93%,
+        transparent 100%
+      );
+    filter: blur(1rem);
+    transform: translateY(1.9rem) rotate(3deg) skewX(-10deg) scaleY(0.56);
   }
 
   .hero-static__ground-shadow::after {
-    inset: 0 -5% 0 9%;
+    inset: -4% -9% -4% -10%;
     background: radial-gradient(
-      ellipse at 63% 52%,
-      rgb(38 36 31 / 14%) 0%,
-      rgb(50 46 39 / 8%) 45%,
-      transparent 76%
+      ellipse at 56% 50%,
+      rgb(38 36 31 / 22%) 0%,
+      rgb(50 46 39 / 14%) 38%,
+      rgb(61 56 47 / 6%) 67%,
+      transparent 85%
     );
-    filter: blur(2.4rem);
-    transform: rotate(2deg) skewX(-7deg) scaleY(0.82);
+    filter: blur(2.75rem);
+    transform: translateY(0.9rem) rotate(2deg) skewX(-7deg) scaleY(0.88);
   }
 
   .hero-static__canvas,
@@ -459,6 +470,9 @@ body:has(.hero-static) .site-header__cta:hover {
   }
 
   body:has(.hero-static) .hero-static__line--entrepreneurs-desktop {
+    inset-block-start: calc(
+      var(--nav-height) + clamp(18rem, 36vh, 22.5rem) + 1rem
+    );
     font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
     font-weight: 400;
     letter-spacing: 0.29em;
