@@ -253,11 +253,17 @@ export function StaticHero() {
             </span>
           </h1>
 
-          <p className="hero-static__affiliation">
-            Manchester Metropolitan
-            <br />
-            University
-          </p>
+          <div className="hero-static__facts">
+            <p className="hero-static__affiliation">
+              Manchester Metropolitan
+              <br />
+              University
+            </p>
+            <p className="hero-static__established">
+              <span>Est.</span>
+              <strong>2024</strong>
+            </p>
+          </div>
 
           <span className="hero-static__ground-shadow" aria-hidden="true" />
 

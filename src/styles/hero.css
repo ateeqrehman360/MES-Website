@@ -46,24 +46,24 @@
   }
 
   .hero-static__line--muslim {
-    inset-block-start: calc(var(--nav-height) + clamp(2.1rem, 4.6vh, 3.65rem));
-    inset-inline-start: var(--site-gutter);
+    inset-block-start: calc(var(--nav-height) + clamp(5rem, 9vh, 6rem));
+    inset-inline-start: 5vw;
     z-index: 1;
     color: var(--mes-green-ink);
-    font-size: min(20.25vw, 18rem);
+    font-size: min(23.75vw, 21.5rem);
     letter-spacing: -0.062em;
     line-height: 0.76;
   }
 
   .hero-static__line--entrepreneurs-desktop {
     inset-block-start: calc(var(--nav-height) + clamp(18rem, 36vh, 22.5rem));
-    inset-inline-start: calc(var(--site-gutter) + 0.25rem);
+    inset-inline-start: 5.75vw;
     z-index: 1;
     color: var(--mes-muted-green-deep);
     font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
-    font-size: clamp(2.15rem, 3.55vw, 3.65rem);
+    font-size: clamp(1.875rem, 3.35vw, 3rem);
     font-weight: 520;
-    letter-spacing: 0.145em;
+    letter-spacing: 0.17em;
     line-height: 1;
   }
 
@@ -81,19 +81,14 @@
     display: none;
   }
 
-  .hero-static__affiliation {
+  .hero-static__facts {
     position: absolute;
-    inset-block-start: calc(var(--nav-height) + clamp(26rem, 54vh, 33rem));
-    inset-inline-start: calc(var(--site-gutter) + 0.25rem);
+    inset-block-start: 70vh;
+    inset-inline-start: 5.75vw;
     z-index: 1;
-    margin: 0;
-    padding-inline-start: 1.15rem;
-    color: var(--mes-green-ink);
-    font-size: 0.6875rem;
-    font-weight: 650;
-    letter-spacing: 0.13em;
-    line-height: 1.45;
-    text-transform: uppercase;
+    display: flex;
+    align-items: stretch;
+    gap: clamp(2rem, 3.5vw, 3.5rem);
     opacity: var(--hero-title-opacity, 1);
     transform: translate3d(
       0,
@@ -104,7 +99,21 @@
     pointer-events: none;
   }
 
-  .hero-static__affiliation::before {
+  .hero-static__affiliation,
+  .hero-static__established {
+    position: relative;
+    margin: 0;
+    padding-inline-start: 1.15rem;
+    color: var(--mes-green-ink);
+    font-size: 0.6875rem;
+    font-weight: 650;
+    letter-spacing: 0.13em;
+    line-height: 1.45;
+    text-transform: uppercase;
+  }
+
+  .hero-static__affiliation::before,
+  .hero-static__established::before {
     content: "";
     position: absolute;
     inset-block: 0.05rem;
@@ -113,17 +122,36 @@
     background: rgb(194 146 49 / 78%);
   }
 
+  .hero-static__established {
+    display: flex;
+    min-width: 5.5rem;
+    flex-direction: column;
+    gap: 0.05rem;
+  }
+
+  .hero-static__established strong {
+    color: var(--mes-gold);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+  }
+
   .hero-static__ground-shadow {
     position: absolute;
-    inset-inline-end: clamp(2rem, 5.5vw, 5.5rem);
-    inset-block-end: clamp(3.25rem, 7.5vh, 5rem);
+    inset-inline-end: clamp(0.5rem, 2vw, 2rem);
+    inset-block-end: clamp(2rem, 5vh, 3.5rem);
     z-index: 1;
-    width: min(57vw, 51rem);
-    height: clamp(3.75rem, 7vh, 5rem);
+    width: min(62vw, 56rem);
+    height: clamp(4rem, 7vh, 5.25rem);
     border-radius: 50%;
-    background: rgb(47 43 37 / 14%);
-    filter: blur(1.85rem);
-    opacity: calc(var(--hero-title-opacity, 1) * 0.78);
+    background: radial-gradient(
+      ellipse at center,
+      rgb(39 39 33 / 21%) 0%,
+      rgb(50 48 41 / 11%) 44%,
+      transparent 76%
+    );
+    filter: blur(1.25rem);
+    opacity: calc(var(--hero-title-opacity, 1) * 0.8);
     transform: rotate(-1.5deg) scaleX(1.03);
     transform-origin: center;
     will-change: opacity;
@@ -398,6 +426,27 @@ body:has(.hero-static) .site-header__cta:hover {
   color: var(--mes-cream-soft);
 }
 
+@media (min-width: 48rem) {
+  body:has(.hero-static) .site-header > .site-container {
+    gap: 4.25rem;
+    padding-inline-start: 5vw;
+    padding-inline-end: 7vw;
+    transform: translateY(1.8rem);
+  }
+
+  body:has(.hero-static) .site-header__brand-mark {
+    height: 3.8rem;
+  }
+
+  body:has(.hero-static) .site-header__brand-abbreviation {
+    font-size: 3rem;
+  }
+
+  body:has(.hero-static) .site-header nav {
+    column-gap: 3.75rem;
+  }
+}
+
 @media (max-width: 47.999rem) {
   @layer components {
     .hero-motion {
@@ -449,7 +498,7 @@ body:has(.hero-static) .site-header__cta:hover {
       display: none;
     }
 
-    .hero-static__affiliation {
+    .hero-static__facts {
       display: none;
     }
 
