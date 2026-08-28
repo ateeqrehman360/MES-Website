@@ -148,7 +148,6 @@
     pointer-events: none;
   }
 
-  .hero-static__ground-shadow::before,
   .hero-static__ground-shadow::after {
     content: "";
     position: absolute;
@@ -156,40 +155,17 @@
     transform-origin: 62% 54%;
   }
 
-  .hero-static__ground-shadow::before {
-    inset: 24% -7% 6% -12%;
-    background:
-      radial-gradient(
-        ellipse 54% 62% at 70% 52%,
-        rgb(22 22 20 / 40%) 0%,
-        rgb(31 30 27 / 28%) 45%,
-        transparent 75%
-      ),
-      linear-gradient(
-        90deg,
-        transparent 0%,
-        rgb(44 42 36 / 32%) 7%,
-        rgb(36 35 31 / 46%) 25%,
-        rgb(29 29 26 / 56%) 52%,
-        rgb(25 25 23 / 60%) 76%,
-        rgb(36 34 30 / 46%) 93%,
-        transparent 100%
-      );
-    filter: blur(1rem);
-    transform: translateY(1.9rem) rotate(3deg) skewX(-10deg) scaleY(0.56);
-  }
-
   .hero-static__ground-shadow::after {
-    inset: -4% -9% -4% -10%;
+    inset: -2% -10% -3% -12%;
     background: radial-gradient(
-      ellipse at 56% 50%,
-      rgb(38 36 31 / 22%) 0%,
-      rgb(50 46 39 / 14%) 38%,
-      rgb(61 56 47 / 6%) 67%,
-      transparent 85%
+      ellipse at 58% 51%,
+      rgb(49 49 46 / 7%) 0%,
+      rgb(57 56 52 / 4%) 40%,
+      rgb(68 65 59 / 1.5%) 68%,
+      transparent 88%
     );
-    filter: blur(2.75rem);
-    transform: translateY(0.9rem) rotate(2deg) skewX(-7deg) scaleY(0.88);
+    filter: blur(4.2rem);
+    transform: translateY(0.8rem) rotate(2deg) skewX(-7deg) scaleY(0.82);
   }
 
   .hero-static__canvas,

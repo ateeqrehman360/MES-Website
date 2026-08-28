@@ -71,8 +71,8 @@ const desktopComposition: Composition = {
   modelPosition: [2.1, -3.72, 0],
   modelRotation: [0.004, -1, 0.025],
   modelScale: 0.205,
-  shadowPosition: [1.82, -3.7, 1.65],
-  shadowScale: 15.5,
+  shadowPosition: [2.18, -3.84, -0.05],
+  shadowScale: 9,
 };
 
 const portraitComposition: Composition = {
@@ -116,34 +116,87 @@ function loadDisplayImage(source: string) {
   });
 }
 
-function createLaptopMaterial(source: MeshStandardMaterial) {
+function createLaptopMaterial(
+  source: MeshStandardMaterial,
+  useDesktopProductTreatment: boolean,
+) {
   const isFrame = source.name === "ComputerFrame.001";
   const surfaceMap = isFrame ? createFrameSurfaceMap(source) : null;
   const material = new MeshPhysicalMaterial({
     alphaTest: source.alphaTest,
-    color: isFrame ? "#fff9ee" : "#f0eee8",
+    color: isFrame
+      ? useDesktopProductTreatment
+        ? "#ffffff"
+        : "#fff9ee"
+      : useDesktopProductTreatment
+        ? "#0d0f10"
+        : "#f0eee8",
     depthWrite: source.depthWrite,
     dithering: true,
     emissive: source.emissive,
-    emissiveIntensity: isFrame ? 0.055 : 0.025,
+    emissiveIntensity: isFrame
+      ? useDesktopProductTreatment
+        ? 0.035
+        : 0.055
+      : useDesktopProductTreatment
+        ? 0
+        : 0.025,
     emissiveMap: source.emissiveMap,
     map: source.map,
-    metalness: isFrame ? (surfaceMap ? 1 : 0.34) : 0.2,
+    metalness: isFrame
+      ? surfaceMap
+        ? 1
+        : useDesktopProductTreatment
+          ? 0.48
+          : 0.34
+      : useDesktopProductTreatment
+        ? 0.04
+        : 0.2,
     metalnessMap: surfaceMap ?? source.metalnessMap,
     opacity: source.opacity,
-    roughness: isFrame ? (surfaceMap ? 1 : 0.34) : 0.4,
+    roughness: isFrame
+      ? surfaceMap
+        ? 1
+        : useDesktopProductTreatment
+          ? 0.3
+          : 0.34
+      : useDesktopProductTreatment
+        ? 0.68
+        : 0.4,
     roughnessMap: surfaceMap ?? source.roughnessMap,
     side: source.side,
     transparent: source.transparent,
-    clearcoat: isFrame ? 0.28 : 0.14,
-    clearcoatRoughness: isFrame ? 0.24 : 0.32,
-    envMapIntensity: isFrame ? 1.35 : 0.75,
+    clearcoat: isFrame
+      ? useDesktopProductTreatment
+        ? 0.2
+        : 0.28
+      : useDesktopProductTreatment
+        ? 0.05
+        : 0.14,
+    clearcoatRoughness: isFrame
+      ? useDesktopProductTreatment
+        ? 0.3
+        : 0.24
+      : useDesktopProductTreatment
+        ? 0.52
+        : 0.32,
+    envMapIntensity: isFrame
+      ? useDesktopProductTreatment
+        ? 1.72
+        : 1.35
+      : useDesktopProductTreatment
+        ? 0.3
+        : 0.75,
   });
 
   material.name = source.name;
 
   if (isFrame) {
-    material.color.setRGB(1.16, 1.12, 1.06);
+    if (useDesktopProductTreatment) {
+      material.color.setRGB(1.56, 1.58, 1.62);
+    } else {
+      material.color.setRGB(1.16, 1.12, 1.06);
+    }
   }
 
   [material.map, material.emissiveMap, material.metalnessMap, material.roughnessMap]
@@ -243,11 +296,13 @@ function disposePreparedLaptop(
 
 function LaptopModel({
   isPortrait,
+  useDesktopProductTreatment,
   progress,
   onReady,
   onUnavailable,
 }: {
   isPortrait: boolean;
+  useDesktopProductTreatment: boolean;
   progress: HeroProgressSignal;
   onReady: () => void;
   onUnavailable: () => void;
@@ -386,7 +441,7 @@ function LaptopModel({
         return;
       }
 
-      object.castShadow = true;
+      object.castShadow = object.name === "Frame_ComputerFrame_0";
       object.receiveShadow = true;
       const sourceMaterials = Array.isArray(object.material)
         ? object.material
@@ -400,7 +455,7 @@ function LaptopModel({
 
         const clonedMaterial =
           material instanceof MeshStandardMaterial
-            ? createLaptopMaterial(material)
+            ? createLaptopMaterial(material, useDesktopProductTreatment)
             : material.clone();
 
         materialClones.set(material, clonedMaterial);
@@ -424,7 +479,7 @@ function LaptopModel({
     display.material = screenMaterial;
 
     return clone;
-  }, [scene, screenMaterial]);
+  }, [scene, screenMaterial, useDesktopProductTreatment]);
 
   useEffect(
     () => () => {
@@ -464,10 +519,12 @@ function WebGLContextLifecycle({
 }
 
 function LaptopScene({
+  isMobile,
   progress,
   onReady,
   onUnavailable,
 }: {
+  isMobile: boolean;
   progress: HeroProgressSignal;
   onReady: () => void;
   onUnavailable: () => void;
@@ -480,6 +537,7 @@ function LaptopScene({
   const cameraTarget = useMemo(() => new Vector3(), []);
   const aspect = size.width / Math.max(size.height, 1);
   const isPortrait = aspect < 0.64;
+  const useDesktopProductTreatment = !isMobile;
   const portraitScale = Math.min(1.16, Math.max(1, aspect / 0.462));
   const composition = isPortrait
     ? {
@@ -682,44 +740,52 @@ function LaptopScene({
       />
 
       <hemisphereLight
-        intensity={0.8}
-        color="#fff9ef"
-        groundColor="#30352f"
+        intensity={useDesktopProductTreatment ? 1.06 : 0.8}
+        color={useDesktopProductTreatment ? "#fffdf8" : "#fff9ef"}
+        groundColor={useDesktopProductTreatment ? "#747773" : "#30352f"}
       />
       <directionalLight
         castShadow={!isPortrait}
-        color="#fff4d9"
-        intensity={2.85}
+        color={useDesktopProductTreatment ? "#fffdf8" : "#fff4d9"}
+        intensity={useDesktopProductTreatment ? 3.45 : 2.85}
         position={[-5.5, 8.5, 6.5]}
-        shadow-mapSize={[1024, 1024]}
+        shadow-mapSize={[512, 512]}
+        shadow-camera-left={-8}
+        shadow-camera-right={8}
+        shadow-camera-top={8}
+        shadow-camera-bottom={-8}
+        shadow-camera-near={0.1}
+        shadow-camera-far={30}
         shadow-bias={-0.00015}
+        shadow-radius={18}
+        shadow-blurSamples={24}
       />
       <directionalLight
-        color="#dfeae2"
-        intensity={0.85}
+        color={useDesktopProductTreatment ? "#edf3f2" : "#dfeae2"}
+        intensity={useDesktopProductTreatment ? 1.16 : 0.85}
         position={[5, 3.5, 8]}
       />
       <Environment resolution={isPortrait ? 64 : 128} frames={1}>
         <Lightformer
           form="rect"
-          color="#fffaf1"
-          intensity={4.5}
+          color={useDesktopProductTreatment ? "#ffffff" : "#fffaf1"}
+          intensity={useDesktopProductTreatment ? 5.8 : 4.5}
           position={[0, 5, -5]}
           rotation={[Math.PI / 2, 0, 0]}
           scale={[10, 8, 1]}
         />
         <Lightformer
           form="rect"
-          color="#d3b06b"
-          intensity={2.3}
+          color={useDesktopProductTreatment ? "#f4eadc" : "#d3b06b"}
+          intensity={useDesktopProductTreatment ? 3.15 : 2.3}
           position={[-5, 1, 0]}
           rotation={[0, Math.PI / 2, 0]}
           scale={[3, 7, 1]}
         />
         <Lightformer
           form="rect"
-          color="#dce9df"
-          intensity={2.8}
+          color={useDesktopProductTreatment ? "#edf3f2" : "#dce9df"}
+          intensity={useDesktopProductTreatment ? 3.4 : 2.8}
           position={[5, 0, 1]}
           rotation={[0, -Math.PI / 2, 0]}
           scale={[4, 8, 1]}
@@ -734,6 +800,7 @@ function LaptopScene({
       >
         <LaptopModel
           isPortrait={isPortrait}
+          useDesktopProductTreatment={useDesktopProductTreatment}
           progress={progress}
           onReady={onReady}
           onUnavailable={onUnavailable}
@@ -751,7 +818,19 @@ function LaptopScene({
             far={4.5}
             resolution={256}
           />
-        ) : null}
+        ) : (
+          <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry
+              args={[composition.shadowScale, composition.shadowScale]}
+            />
+            <shadowMaterial
+              color="#252a26"
+              opacity={0.5}
+              transparent
+              depthWrite={false}
+            />
+          </mesh>
+        )}
       </group>
     </>
   );
@@ -799,10 +878,11 @@ export function HeroCanvas({
       onCreated={({ gl }) => {
         gl.toneMappingExposure = 1.12;
       }}
-      shadows={!isMobile}
+      shadows={isMobile ? false : "variance"}
     >
       <WebGLContextLifecycle onUnavailable={onUnavailable} />
       <LaptopScene
+        isMobile={isMobile}
         progress={progress}
         onReady={onReady}
         onUnavailable={onUnavailable}
