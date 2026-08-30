@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ContactShadows,
   Environment,
   Lightformer,
   PerspectiveCamera,
@@ -76,14 +75,14 @@ const desktopComposition: Composition = {
 };
 
 const portraitComposition: Composition = {
-  camera: [0, 4.55, 15.8],
-  target: [0.2, -0.5, 0],
+  camera: [0, -1.35, 15.8],
+  target: [0.2, -1.55, 0],
   fov: 34,
-  modelPosition: [-0.4, -3.1, 0],
+  modelPosition: [-0.25, -4.27, 0],
   modelRotation: [0.095, -0.58, -0.024],
-  modelScale: 0.134,
-  shadowPosition: [-0.2, -3.09, 0.5],
-  shadowScale: 4.8,
+  modelScale: 0.181,
+  shadowPosition: [-0.2, -4.6, 0.5],
+  shadowScale: 8.4,
 };
 
 function clamp(value: number, minimum = 0, maximum = 1) {
@@ -538,24 +537,7 @@ function LaptopScene({
   const aspect = size.width / Math.max(size.height, 1);
   const isPortrait = aspect < 0.64;
   const useDesktopProductTreatment = !isMobile;
-  const portraitScale = Math.min(1.16, Math.max(1, aspect / 0.462));
-  const composition = isPortrait
-    ? {
-        ...portraitComposition,
-        modelPosition: [
-          portraitComposition.modelPosition[0],
-          portraitComposition.modelPosition[1] - (portraitScale - 1) * 2.7,
-          portraitComposition.modelPosition[2],
-        ] as [number, number, number],
-        modelScale: portraitComposition.modelScale * portraitScale,
-        shadowPosition: [
-          portraitComposition.shadowPosition[0],
-          portraitComposition.shadowPosition[1] - (portraitScale - 1) * 2.7,
-          portraitComposition.shadowPosition[2],
-        ] as [number, number, number],
-        shadowScale: portraitComposition.shadowScale * portraitScale,
-      }
-    : desktopComposition;
+  const composition = isPortrait ? portraitComposition : desktopComposition;
 
   useEffect(() => progress.subscribe(invalidate), [invalidate, progress]);
 
@@ -760,6 +742,24 @@ function LaptopScene({
         shadow-radius={30}
         shadow-blurSamples={32}
       />
+      {isPortrait ? (
+        <directionalLight
+          castShadow
+          color="#000000"
+          intensity={1}
+          position={[-5.5, 8.5, 0]}
+          shadow-mapSize={[512, 512]}
+          shadow-camera-left={-10.5}
+          shadow-camera-right={10.5}
+          shadow-camera-top={10.5}
+          shadow-camera-bottom={-10.5}
+          shadow-camera-near={0.1}
+          shadow-camera-far={30}
+          shadow-bias={-0.00015}
+          shadow-radius={18}
+          shadow-blurSamples={32}
+        />
+      ) : null}
       <directionalLight
         color={useDesktopProductTreatment ? "#edf3f2" : "#dfeae2"}
         intensity={useDesktopProductTreatment ? 1.16 : 0.85}
@@ -808,29 +808,20 @@ function LaptopScene({
       </group>
 
       <group ref={shadowRef} position={composition.shadowPosition}>
-        {isPortrait ? (
-          <ContactShadows
-            frames={1}
-            color="#013609"
-            opacity={0.15}
-            scale={composition.shadowScale}
-            blur={2.7}
-            far={4.5}
-            resolution={256}
+        <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry
+            args={[
+              composition.shadowScale,
+              composition.shadowScale * (isPortrait ? 0.76 : 0.66),
+            ]}
           />
-        ) : (
-          <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]}>
-            <planeGeometry
-              args={[composition.shadowScale, composition.shadowScale * 0.66]}
-            />
-            <shadowMaterial
-              color="#252a26"
-              opacity={0.72}
-              transparent
-              depthWrite={false}
-            />
-          </mesh>
-        )}
+          <shadowMaterial
+            color={isPortrait ? "#3c3c38" : "#252a26"}
+            opacity={isPortrait ? 0.76 : 0.72}
+            transparent
+            depthWrite={false}
+          />
+        </mesh>
       </group>
     </>
   );
@@ -878,7 +869,7 @@ export function HeroCanvas({
       onCreated={({ gl }) => {
         gl.toneMappingExposure = 1.12;
       }}
-      shadows={isMobile ? false : "variance"}
+      shadows="variance"
     >
       <WebGLContextLifecycle onUnavailable={onUnavailable} />
       <LaptopScene

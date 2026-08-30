@@ -112,6 +112,14 @@
     text-transform: uppercase;
   }
 
+  .hero-static__affiliation-mobile-break {
+    display: none;
+  }
+
+  .hero-static__location-icon {
+    display: none;
+  }
+
   .hero-static__affiliation::before,
   .hero-static__established::before {
     content: "";
@@ -486,23 +494,20 @@ body:has(.hero-static) .site-header__cta:hover {
 
     .hero-static__title {
       color: var(--mes-deep-green);
-      letter-spacing: -0.065em;
-      line-height: 0.76;
+      letter-spacing: normal;
+      line-height: 1;
       text-align: left;
     }
 
-    .hero-static__line--muslim,
-    .hero-static__line--entrepreneurs-mobile span {
-      padding-inline: var(--site-gutter);
-    }
-
     .hero-static__line--muslim {
-      inset-block-start: calc(var(--nav-height) + clamp(1.75rem, 5vh, 2.75rem));
-      inset-inline: 0;
-      color: inherit;
-      font-size: clamp(4.65rem, 22.5vw, 6.7rem);
-      letter-spacing: inherit;
-      line-height: inherit;
+      inset-block-start: calc(var(--nav-height) + clamp(3.75rem, 8svh, 4.25rem));
+      inset-inline-start: clamp(1.5rem, 6.4vw, 2rem);
+      color: var(--mes-green-ink);
+      font-family: var(--font-hero-apparel), Didot, "Bodoni MT", serif;
+      font-size: clamp(4rem, 16.7vw, 4.35rem);
+      font-weight: 400;
+      letter-spacing: -0.045em;
+      line-height: 0.78;
     }
 
     .hero-static__line--entrepreneurs-desktop {
@@ -511,14 +516,25 @@ body:has(.hero-static) .site-header__cta:hover {
 
     .hero-static__line--entrepreneurs-mobile {
       display: block;
-      inset-block-start: calc(var(--nav-height) + clamp(7.5rem, 20vh, 10.25rem));
-      inset-inline: 0;
+      inset-block-start: calc(var(--nav-height) + clamp(8.25rem, 16svh, 8.7rem));
+      inset-inline-start: clamp(1.5rem, 6.4vw, 2rem);
       z-index: 1;
-      font-size: clamp(3.5rem, 17.75vw, 5.2rem);
+      color: var(--mes-muted-green-deep);
+      font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+      font-size: clamp(1.35rem, 5.9vw, 1.6rem);
+      font-weight: 400;
+      letter-spacing: 0.235em;
+      line-height: 1;
     }
 
-    .hero-static__line--entrepreneurs-mobile span {
-      display: block;
+    .hero-static__line--entrepreneurs-mobile::after {
+      content: "";
+      position: absolute;
+      inset-block-start: calc(100% + 1.05rem);
+      inset-inline-start: 0;
+      width: 2.25rem;
+      height: 0.125rem;
+      background: var(--mes-gold);
     }
 
     .hero-static__ground-shadow {
@@ -526,7 +542,62 @@ body:has(.hero-static) .site-header__cta:hover {
     }
 
     .hero-static__facts {
-      display: none;
+      inset-block-start: auto;
+      inset-block-end: clamp(1.9rem, 3.9svh, 2.2rem);
+      inset-inline-start: 53%;
+      z-index: 3;
+      display: flex;
+      gap: 1.35rem;
+      transform: translate3d(
+        -50%,
+        calc(var(--hero-title-progress, 0) * -2vh),
+        0
+      );
+    }
+
+    .hero-static__affiliation,
+    .hero-static__established {
+      padding-inline-start: 0;
+      font-size: 0.625rem;
+      letter-spacing: 0.12em;
+      line-height: 1.4;
+      white-space: nowrap;
+    }
+
+    .hero-static__affiliation-mobile-break {
+      display: initial;
+    }
+
+    .hero-static__affiliation::before {
+      content: none;
+    }
+
+    .hero-static__location-icon {
+      position: absolute;
+      inset-block-start: -0.05rem;
+      inset-inline-start: -1.75rem;
+      display: block;
+      width: 1.2rem;
+      height: 1.5rem;
+      overflow: visible;
+      color: var(--mes-gold);
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.65;
+      vector-effect: non-scaling-stroke;
+    }
+
+    .hero-static__established {
+      padding-inline-start: 1rem;
+    }
+
+    .hero-static__established {
+      min-width: 4.5rem;
+    }
+
+    .hero-static__established strong {
+      font-size: 0.75rem;
     }
 
     .hero-static__webgl-fallback {
@@ -598,12 +669,59 @@ body:has(.hero-static) .site-header__cta:hover {
       height: 23.8889%;
     }
   }
+
+  body:has(.hero-static) .site-header > .site-container {
+    padding-inline: clamp(1.35rem, 6.4vw, 1.75rem);
+    transform: translateY(0.45rem);
+  }
+
+  body:has(.hero-static) .site-header__brand-mark {
+    height: 2.75rem;
+  }
+
+  body:has(.hero-static) .site-header__menu-trigger {
+    min-height: 3rem;
+    gap: 0.625rem;
+    border-color: rgb(1 80 11 / 72%);
+    border-radius: 0.625rem;
+    padding-inline: 0.75rem;
+    color: var(--mes-green-ink);
+    font-size: 0.8125rem;
+    font-weight: 540;
+    letter-spacing: 0.01em;
+  }
+
+  body:has(.hero-static) .site-header__menu-icon {
+    width: 1rem;
+    row-gap: 0.3rem;
+    opacity: 0.82;
+  }
 }
 
 @media (max-width: 22rem) {
   @layer components {
     .hero-static__line--muslim {
-      font-size: 21.5vw;
+      font-size: 4rem;
+    }
+  }
+}
+
+@media (max-width: 47.999rem) and (max-height: 38rem) {
+  @layer components {
+    .hero-static__line--muslim {
+      inset-block-start: calc(var(--nav-height) + 2.5rem);
+    }
+
+    .hero-static__line--entrepreneurs-mobile {
+      inset-block-start: calc(var(--nav-height) + 7rem);
+    }
+
+    .hero-static__line--entrepreneurs-mobile::after {
+      inset-block-start: calc(100% + 0.8rem);
+    }
+
+    .hero-static__facts {
+      inset-block-end: 1.25rem;
     }
   }
 }

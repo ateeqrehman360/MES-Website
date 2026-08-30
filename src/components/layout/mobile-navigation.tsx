@@ -49,9 +49,12 @@ export function MobileNavigation() {
         aria-expanded={isOpen}
         aria-controls="mobile-navigation"
         onClick={openMenu}
-        className="inline-flex min-h-12 items-center gap-3 rounded-[var(--radius-control)] border border-mes-deep-green px-4 text-sm font-semibold tracking-[-0.01em] text-mes-deep-green transition-colors duration-[var(--duration-fast)] hover:bg-mes-deep-green hover:text-mes-cream"
+        className="site-header__menu-trigger inline-flex min-h-12 items-center gap-3 rounded-[var(--radius-control)] border border-mes-deep-green px-4 text-sm font-semibold tracking-[-0.01em] text-mes-deep-green transition-colors duration-[var(--duration-fast)] hover:bg-mes-deep-green hover:text-mes-cream"
       >
-        <span aria-hidden="true" className="grid w-5 gap-1.5">
+        <span
+          aria-hidden="true"
+          className="site-header__menu-icon grid w-5 gap-1.5"
+        >
           <span className="h-px w-full bg-current" />
           <span className="h-px w-full bg-current" />
           <span className="h-px w-full bg-current" />

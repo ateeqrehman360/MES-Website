@@ -248,14 +248,24 @@ export function StaticHero() {
               className="hero-static__line hero-static__line--entrepreneurs-mobile"
               aria-hidden="true"
             >
-              <span>Entre</span>
-              <span>Preneurs</span>
+              Entrepreneurs
             </span>
           </h1>
 
           <div className="hero-static__facts">
             <p className="hero-static__affiliation">
-              Manchester Metropolitan
+              <svg
+                aria-hidden="true"
+                className="hero-static__location-icon"
+                fill="none"
+                viewBox="0 0 24 28"
+              >
+                <path d="M12 26C12 26 21.5 17.45 21.5 10.5C21.5 5.25 17.25 1 12 1C6.75 1 2.5 5.25 2.5 10.5C2.5 17.45 12 26 12 26Z" />
+                <circle cx="12" cy="10.5" r="3.4" />
+              </svg>
+              Manchester{" "}
+              <br className="hero-static__affiliation-mobile-break" />
+              Metropolitan
               <br />
               University
             </p>
