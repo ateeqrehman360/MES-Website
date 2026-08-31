@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope, Newsreader } from "next/font/google";
+import { Manrope, Montserrat, Newsreader } from "next/font/google";
 import localFont from "next/font/local";
 import type { ReactNode } from "react";
 
@@ -33,6 +33,14 @@ const heroKommonFont = localFont({
 const bodyFont = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+const brandFont = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+  weight: ["700", "800"],
   display: "swap",
 });
 
@@ -70,7 +78,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html
       lang="en-GB"
       data-scroll-behavior="smooth"
-      className={`${displayFont.variable} ${heroApparelFont.variable} ${heroKommonFont.variable} ${bodyFont.variable} antialiased`}
+      className={`${displayFont.variable} ${heroApparelFont.variable} ${heroKommonFont.variable} ${bodyFont.variable} ${brandFont.variable} antialiased`}
     >
       <body>
         <a className="skip-link" href="#main-content">

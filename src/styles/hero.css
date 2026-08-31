@@ -356,7 +356,8 @@
     inset: 0;
     z-index: 1;
     background: var(--mes-cream-soft);
-    clip-path: polygon(0 64%, 100% 52%, 100% 100%, 0 100%);
+    /* DOM ownership is square; perspective belongs only to the laptop. */
+    clip-path: inset(58% 0 0);
     pointer-events: none;
   }
 
@@ -385,10 +386,13 @@ body:has(.hero-static) .site-header {
 }
 
 .site-header__brand-abbreviation {
+  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
   font-size: 2.45rem;
-  font-weight: 400;
-  letter-spacing: -0.045em;
-  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  color: #00500a;
+  transform: translateY(-5px);
 }
 
 .site-header__brand-rule {
@@ -396,6 +400,10 @@ body:has(.hero-static) .site-header {
   height: 2.85rem;
   margin-inline: 1.15rem;
   background: rgb(194 146 49 / 78%);
+}
+
+.site-header__brand-mark {
+  transform: translateY(-12px);
 }
 
 .site-header__brand-name {
