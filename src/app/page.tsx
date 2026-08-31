@@ -1,4 +1,9 @@
 import { StaticHero } from "@/components/hero/static-hero";
+import { HomeContent } from "@/components/sections/home-content";
+import { ImpactSection } from "@/components/sections/impact-section";
+import { VisionSection } from "@/components/sections/vision-section";
+
+import "@/styles/home-content.css";
 
 export default function HomePage() {
   return (
@@ -11,6 +16,10 @@ export default function HomePage() {
         crossOrigin="anonymous"
       />
       <StaticHero />
+      <HomeContent>
+        <VisionSection />
+        <ImpactSection />
+      </HomeContent>
     </>
   );
 }
