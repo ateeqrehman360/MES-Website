@@ -388,7 +388,7 @@ body:has(.hero-static) .site-header {
 .site-header__brand-abbreviation {
   font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
   font-size: 2.45rem;
-  font-weight: 800;
+  font-weight: 750;
   letter-spacing: -0.05em;
   line-height: 0.9;
   color: #00500a;
