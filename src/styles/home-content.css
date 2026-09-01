@@ -197,7 +197,7 @@
 
   .impact {
     --impact-paper: #eee7db;
-    --impact-sage: #bac9a5;
+    --impact-sage: #8fac78;
     --impact-rule: rgb(186 201 165 / 44%);
     padding-block: clamp(3.5rem, 7vw, 6.5rem) clamp(5rem, 9vw, 8rem);
     background: #063b1e;
@@ -518,7 +518,7 @@ body:has(.home-content[data-content-navigation="visible"])
       grid-row: 4;
       align-self: start;
       gap: 1.5rem;
-      margin-block-start: 3rem;
+      margin-block-start: 2.5rem;
     }
 
     .impact__statistic[data-statistic="raised"] .impact__value {
@@ -528,7 +528,7 @@ body:has(.home-content[data-content-navigation="visible"])
     .impact__statistic[data-statistic="since"] {
       grid-column: 12 / -1;
       grid-row: 4;
-      margin-block-start: 3rem;
+      margin-block-start: 2.5rem;
     }
 
     .impact__year > span:first-child {
