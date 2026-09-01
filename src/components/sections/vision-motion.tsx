@@ -2,6 +2,23 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 
+// Three spatial beats: opening/student words, ambition/into, then action. Each
+// incoming principle takes its region after the outgoing words lift away.
+const MISSION_WINDOWS = [
+  [0.08, 0.31], // We help
+  [0.1, 0.34], // Muslim
+  [0.12, 0.37], // students
+  [0.26, 0.5], // turn
+  [0.28, 0.52], // ambition
+  [0.3, 0.54], // into
+  [0.46, 0.72], // action
+] as const;
+const PRINCIPLE_WINDOWS = [
+  [0.25, 0.48], // Learn
+  [0.36, 0.61], // Connect
+  [0.61, 0.84], // Build
+] as const;
+
 function segment(progress: number, start: number, end: number) {
   const value = Math.min(1, Math.max(0, (progress - start) / (end - start)));
   return value * value * (3 - 2 * value);
@@ -70,14 +87,18 @@ export function VisionMotion({ children }: { children: ReactNode }) {
       previousProgress = progress;
 
       mission.forEach((word, index) => {
-        const exit = segment(progress, 0.12 + index * 0.025, 0.38 + index * 0.025);
+        const [from, to] = MISSION_WINDOWS[index] ?? [0.46, 0.72];
+        const exit = segment(progress, from, to);
         word.style.transform = `translate3d(0, ${(-120 * exit).toFixed(3)}%, 0)`;
         word.style.opacity = (1 - exit).toFixed(3);
       });
       principles.forEach((word, index) => {
-        const enter = segment(progress, 0.28 + index * 0.07, 0.6 + index * 0.07);
+        const [from, to] = PRINCIPLE_WINDOWS[index] ?? [0.61, 0.84];
+        const enter = segment(progress, from, to);
         word.style.transform = `translate3d(0, ${(120 * (1 - enter)).toFixed(3)}%, 0)`;
-        word.style.opacity = enter.toFixed(3);
+        // Let the mask carry the reveal; visible letterforms gain full ink
+        // early, rather than spending most of their travel as pale ghosts.
+        word.style.opacity = Math.min(1, enter * 2).toFixed(3);
       });
     };
 

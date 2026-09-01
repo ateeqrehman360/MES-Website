@@ -24,7 +24,16 @@ export function ImpactSection() {
             >
               <dt className="impact__label">{statistic.label}</dt>
               <dd className="impact__value">
-                {statistic.value === undefined ? statistic.displayValue : (
+                {statistic.id === "since" ? (
+                  <>
+                    <span className="sr-only">{statistic.displayValue}</span>
+                    <span className="impact__year" aria-hidden="true">
+                      {statistic.displayValue.split(" ").map((part) => (
+                        <span key={part}>{part}</span>
+                      ))}
+                    </span>
+                  </>
+                ) : statistic.value === undefined ? statistic.displayValue : (
                   <>
                     <span className="sr-only">{statistic.displayValue}</span>
                     <span
