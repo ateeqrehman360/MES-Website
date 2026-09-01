@@ -29,9 +29,10 @@ export const impactStatistics: readonly ImpactStatistic[] = [
   },
   {
     id: "raised",
-    displayValue: "£1,400",
+    displayValue: "£1,400+",
     value: 1400,
     prefix: "£",
+    suffix: "+",
     label: "Raised",
   },
   {

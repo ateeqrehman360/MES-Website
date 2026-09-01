@@ -2,10 +2,14 @@ import { Fragment } from "react";
 
 import { VisionMotion } from "./vision-motion";
 
-const missionLines = [
-  "We help Muslim",
-  "students turn",
-  "ambition into action.",
+const missionWords = [
+  { text: "We help", position: "lead" },
+  { text: "Muslim", position: "muslim" },
+  { text: "students", position: "students" },
+  { text: "turn", position: "turn" },
+  { text: "ambition", position: "ambition" },
+  { text: "into", position: "into" },
+  { text: "action.", position: "action" },
 ];
 
 export function VisionSection() {
@@ -19,24 +23,20 @@ export function VisionSection() {
             <span className="sr-only">
               We help Muslim students turn ambition into action.
             </span>
-            <span aria-hidden="true">
-              {missionLines.map((line) => (
-                <span className="vision__line" key={line}>
-                  {line.split(" ").map((word) => (
-                    <Fragment key={word}>
-                      <span className="vision__word">
-                        <span className="vision__word-inner">{word}</span>
-                      </span>{" "}
-                    </Fragment>
-                  ))}
-                </span>
+            <span className="vision__mission-layout" aria-hidden="true">
+              {missionWords.map(({ text, position }) => (
+                <Fragment key={position}>
+                  <span className={`vision__word vision__word--${position}`}>
+                    <span className="vision__word-inner">{text}</span>
+                  </span>{" "}
+                </Fragment>
               ))}
             </span>
           </h2>
 
           <p className="vision__principles">
             <span className="sr-only">Learn. Connect. Build.</span>
-            <span aria-hidden="true">
+            <span className="vision__principles-layout" aria-hidden="true">
               {["Learn.", "Connect.", "Build."].map((word) => (
                 <Fragment key={word}>
                   <span className="vision__principle">
