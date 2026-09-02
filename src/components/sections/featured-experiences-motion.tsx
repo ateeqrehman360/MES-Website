@@ -2,12 +2,19 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 
-const EXPERIENCE_WINDOWS = [
-  { enter: [0.015, 0.14], exit: [0.28, 0.39], drift: -12, turn: -3.25 },
-  { enter: [0.245, 0.37], exit: [0.49, 0.6], drift: 11, turn: 3 },
-  { enter: [0.465, 0.59], exit: [0.7, 0.81], drift: -10, turn: -2.5 },
-  { enter: [0.685, 0.81], exit: null, drift: 0, turn: 0 },
+const INITIAL_EXPERIENCE_WINDOW = [0.015, 0.145] as const;
+const HANDOFF_WINDOWS = [
+  [0.205, 0.385],
+  [0.43, 0.61],
+  [0.655, 0.835],
 ] as const;
+const EXPERIENCE_OFFSETS = [
+  { drift: -7.5, turn: -1.75 },
+  { drift: 7, turn: 1.6 },
+  { drift: -8.5, turn: -1.6 },
+  { drift: 0, turn: 0 },
+] as const;
+const HISTORY_OPACITY = 0.08;
 
 function clamp(value: number, minimum = 0, maximum = 1) {
   return Math.min(maximum, Math.max(minimum, value));
@@ -17,6 +24,10 @@ function smoothSegment(value: number, start: number, end: number) {
   const progress = clamp((value - start) / (end - start));
 
   return progress * progress * (3 - 2 * progress);
+}
+
+function linearSegment(value: number, start: number, end: number) {
+  return clamp((value - start) / (end - start));
 }
 
 export function FeaturedExperiencesMotion({
@@ -116,28 +127,62 @@ export function FeaturedExperiencesMotion({
       root.style.setProperty("--featured-rule-progress", rule.toFixed(4));
 
       let activeIndex = 0;
+      let activeScore = -1;
 
       articles.forEach((article, index) => {
-        const window = EXPERIENCE_WINDOWS[index] ?? EXPERIENCE_WINDOWS[0];
-        const enter = smoothSegment(
-          progress,
-          window.enter[0],
-          window.enter[1],
-        );
-        const exit = window.exit
-          ? smoothSegment(progress, window.exit[0], window.exit[1])
+        const offset = EXPERIENCE_OFFSETS[index] ?? EXPERIENCE_OFFSETS[0];
+        const entryWindow = index > 0 ? HANDOFF_WINDOWS[index - 1] : null;
+        const exitWindow = HANDOFF_WINDOWS[index];
+        const retirementWindow = HANDOFF_WINDOWS[index + 1];
+        const entryPhase = entryWindow
+          ? linearSegment(progress, entryWindow[0], entryWindow[1])
+          : linearSegment(
+              progress,
+              INITIAL_EXPERIENCE_WINDOW[0],
+              INITIAL_EXPERIENCE_WINDOW[1],
+            );
+        const posterReveal = entryWindow
+          ? smoothSegment(entryPhase, 0, 0.88)
+          : smoothSegment(entryPhase, 0, 1);
+        const posterArrival = entryWindow
+          ? smoothSegment(entryPhase, 0, 0.78)
+          : posterReveal;
+        const copyArrival = entryWindow
+          ? smoothSegment(entryPhase, 0.12, 0.82)
+          : posterReveal;
+        const exitPhase = exitWindow
+          ? linearSegment(progress, exitWindow[0], exitWindow[1])
           : 0;
-        const copyExit = window.exit
-          ? smoothSegment(progress, window.exit[0] - 0.025, window.exit[1] - 0.02)
+        const posterExit = exitWindow
+          ? smoothSegment(exitPhase, 0.03, 0.75)
           : 0;
-        const posterOpacity = enter * (1 - exit * 0.78);
-        const copyOpacity = enter * (1 - copyExit);
+        const copyExit = exitWindow
+          ? smoothSegment(exitPhase, 0.01, 0.52)
+          : 0;
+        const retirementPhase = retirementWindow
+          ? linearSegment(
+              progress,
+              retirementWindow[0],
+              retirementWindow[1],
+            )
+          : 0;
+        const retirement = retirementWindow
+          ? smoothSegment(retirementPhase, 0, 0.55)
+          : 0;
+        const historyOpacity = HISTORY_OPACITY * (1 - retirement);
+        const posterOpacity =
+          posterArrival * (1 - posterExit * (1 - historyOpacity));
+        const copyOpacity = copyArrival * (1 - copyExit);
+        const score = copyOpacity + posterOpacity * 0.25;
 
-        if (copyOpacity > 0.42) activeIndex = index;
+        if (score > activeScore) {
+          activeIndex = index;
+          activeScore = score;
+        }
 
         article.style.setProperty(
           "--experience-poster-clip",
-          `${(49.5 * (1 - enter)).toFixed(3)}%`,
+          `${(49.5 * (1 - posterReveal)).toFixed(3)}%`,
         );
         article.style.setProperty(
           "--experience-poster-opacity",
@@ -145,19 +190,28 @@ export function FeaturedExperiencesMotion({
         );
         article.style.setProperty(
           "--experience-poster-scale",
-          (0.84 + enter * 0.16 - exit * 0.055).toFixed(4),
+          (
+            0.88 +
+            posterReveal * 0.12 -
+            posterExit * 0.055 -
+            retirement * 0.015
+          ).toFixed(4),
         );
         article.style.setProperty(
           "--experience-poster-x",
-          `${(window.drift * exit).toFixed(3)}vw`,
+          `${(offset.drift * (posterExit + retirement * 0.12)).toFixed(3)}vw`,
         );
         article.style.setProperty(
           "--experience-poster-y",
-          `${(2.5 * (1 - enter) - exit * 1.5).toFixed(3)}rem`,
+          `${(
+            1.75 * (1 - posterReveal) -
+            posterExit * 0.75 -
+            retirement * 0.2
+          ).toFixed(3)}rem`,
         );
         article.style.setProperty(
           "--experience-poster-rotate",
-          `${(window.turn * exit).toFixed(3)}deg`,
+          `${(offset.turn * (posterExit + retirement * 0.08)).toFixed(3)}deg`,
         );
         article.style.setProperty(
           "--experience-copy-opacity",
@@ -165,11 +219,15 @@ export function FeaturedExperiencesMotion({
         );
         article.style.setProperty(
           "--experience-copy-y",
-          `${(2.25 * (1 - enter) - copyExit).toFixed(3)}rem`,
+          `${(1.75 * (1 - copyArrival) - copyExit * 0.9).toFixed(3)}rem`,
         );
         article.style.setProperty(
           "--experience-field-opacity",
-          (enter * (1 - exit * 0.75)).toFixed(4),
+          (
+            posterReveal *
+            (1 - posterExit * 0.9) *
+            (1 - retirement)
+          ).toFixed(4),
         );
       });
 
