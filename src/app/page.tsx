@@ -1,8 +1,10 @@
 import { StaticHero } from "@/components/hero/static-hero";
+import { FeaturedExperiencesSection } from "@/components/sections/featured-experiences-section";
 import { HomeContent } from "@/components/sections/home-content";
 import { ImpactSection } from "@/components/sections/impact-section";
 import { VisionSection } from "@/components/sections/vision-section";
 
+import "@/styles/featured-experiences.css";
 import "@/styles/home-content.css";
 
 export default function HomePage() {
@@ -19,6 +21,7 @@ export default function HomePage() {
       <HomeContent>
         <VisionSection />
         <ImpactSection />
+        <FeaturedExperiencesSection />
       </HomeContent>
     </>
   );
