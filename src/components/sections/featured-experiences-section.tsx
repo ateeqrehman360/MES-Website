@@ -51,11 +51,6 @@ export function FeaturedExperiencesSection() {
                 className="featured-experience"
                 data-featured-experience={experience.id}
               >
-                <span
-                  className="featured-experience__field"
-                  aria-hidden="true"
-                />
-
                 <div className="featured-experience__copy">
                   <p className="featured-experience__position">
                     <span>{String(index + 1).padStart(2, "0")}</span>

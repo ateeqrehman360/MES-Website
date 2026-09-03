@@ -96,10 +96,6 @@
     gap: 1.5rem;
   }
 
-  .featured-experience__field {
-    display: none;
-  }
-
   .featured-experience__copy {
     position: relative;
     z-index: 2;
@@ -259,6 +255,8 @@
 @media (min-width: 64rem) and (prefers-reduced-motion: no-preference) {
   @layer components {
     .featured-experiences[data-featured-motion="desktop"] {
+      --featured-poster-stage-offset: clamp(3.25rem, 5.5svh, 3.5rem);
+
       height: 275svh;
       background: #063b1e;
       color: var(--featured-ink);
@@ -347,31 +345,6 @@
     }
 
     .featured-experiences[data-featured-motion="desktop"]
-      .featured-experience__field {
-      position: absolute;
-      z-index: 0;
-      display: block;
-      opacity: var(--experience-field-opacity, 0);
-      will-change: opacity;
-    }
-
-    .featured-experiences[data-featured-motion="desktop"]
-      .featured-experience[data-featured-experience="halal-business-series"]
-      .featured-experience__field {
-      inset: 18% auto 8% -4%;
-      width: 48%;
-      background: rgb(194 146 49 / 17%);
-    }
-
-    .featured-experiences[data-featured-motion="desktop"]
-      .featured-experience[data-featured-experience="learning-to-stay-ahead"]
-      .featured-experience__field {
-      inset: 0 0 0 auto;
-      width: 43%;
-      background: rgb(97 140 93 / 20%);
-    }
-
-    .featured-experiences[data-featured-motion="desktop"]
       .featured-experience__copy {
       position: absolute;
       z-index: 6;
@@ -386,7 +359,7 @@
       .featured-experience__poster {
       position: absolute;
       z-index: 4;
-      width: clamp(22rem, 32vw, 32rem);
+      width: clamp(22rem, min(32vw, 49svh), 32rem);
       max-height: calc(100% - 5rem);
       margin: 0;
       clip-path: inset(0 var(--experience-poster-clip, 49.5%));
@@ -423,7 +396,7 @@
     .featured-experiences[data-featured-motion="desktop"]
       .featured-experience[data-featured-experience="ramadhan-bazaar"]
       .featured-experience__poster {
-      inset-block-start: 52%;
+      inset-block-start: calc(52% + var(--featured-poster-stage-offset));
       inset-inline-start: 56%;
       translate: -50% -50%;
     }
@@ -438,7 +411,7 @@
     .featured-experiences[data-featured-motion="desktop"]
       .featured-experience[data-featured-experience="halal-business-series"]
       .featured-experience__poster {
-      inset-block-start: 56%;
+      inset-block-start: calc(56% + var(--featured-poster-stage-offset));
       inset-inline-start: 31%;
       translate: -50% -50%;
     }
@@ -453,7 +426,7 @@
     .featured-experiences[data-featured-motion="desktop"]
       .featured-experience[data-featured-experience="learning-to-stay-ahead"]
       .featured-experience__poster {
-      inset-block-start: 56%;
+      inset-block-start: calc(56% + var(--featured-poster-stage-offset));
       inset-inline-start: 70%;
       translate: -50% -50%;
     }
@@ -476,7 +449,7 @@
     .featured-experiences[data-featured-motion="desktop"]
       .featured-experience[data-featured-experience="tasbih-making"]
       .featured-experience__poster {
-      inset-block-start: 55%;
+      inset-block-start: calc(55% + var(--featured-poster-stage-offset));
       inset-inline-start: 70%;
       translate: -50% -50%;
     }

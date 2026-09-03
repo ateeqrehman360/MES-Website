@@ -9,11 +9,12 @@ const HANDOFF_WINDOWS = [
   [0.655, 0.835],
 ] as const;
 const EXPERIENCE_OFFSETS = [
-  { drift: -7.5, turn: -1.75 },
-  { drift: 7, turn: 1.6 },
-  { drift: -8.5, turn: -1.6 },
-  { drift: 0, turn: 0 },
+  { drift: -7.5 },
+  { drift: 7 },
+  { drift: -8.5 },
+  { drift: 0 },
 ] as const;
+const HANDOFF_LEAD = 0.6;
 const HISTORY_OPACITY = 0.08;
 
 function clamp(value: number, minimum = 0, maximum = 1) {
@@ -24,10 +25,6 @@ function smoothSegment(value: number, start: number, end: number) {
   const progress = clamp((value - start) / (end - start));
 
   return progress * progress * (3 - 2 * progress);
-}
-
-function linearSegment(value: number, start: number, end: number) {
-  return clamp((value - start) / (end - start));
 }
 
 export function FeaturedExperiencesMotion({
@@ -67,7 +64,6 @@ export function FeaturedExperiencesMotion({
         [
           "--experience-copy-opacity",
           "--experience-copy-y",
-          "--experience-field-opacity",
           "--experience-poster-clip",
           "--experience-poster-opacity",
           "--experience-poster-rotate",
@@ -128,51 +124,26 @@ export function FeaturedExperiencesMotion({
 
       let activeIndex = 0;
       let activeScore = -1;
+      const handoffProgress = HANDOFF_WINDOWS.map(([start, end]) => {
+        const eased = smoothSegment(progress, start, end);
+
+        return eased + eased * (1 - eased) * HANDOFF_LEAD;
+      });
 
       articles.forEach((article, index) => {
         const offset = EXPERIENCE_OFFSETS[index] ?? EXPERIENCE_OFFSETS[0];
-        const entryWindow = index > 0 ? HANDOFF_WINDOWS[index - 1] : null;
-        const exitWindow = HANDOFF_WINDOWS[index];
-        const retirementWindow = HANDOFF_WINDOWS[index + 1];
-        const entryPhase = entryWindow
-          ? linearSegment(progress, entryWindow[0], entryWindow[1])
-          : linearSegment(
+        const entry = index > 0
+          ? (handoffProgress[index - 1] ?? 0)
+          : smoothSegment(
               progress,
               INITIAL_EXPERIENCE_WINDOW[0],
               INITIAL_EXPERIENCE_WINDOW[1],
             );
-        const posterReveal = entryWindow
-          ? smoothSegment(entryPhase, 0, 0.88)
-          : smoothSegment(entryPhase, 0, 1);
-        const posterArrival = entryWindow
-          ? smoothSegment(entryPhase, 0, 0.78)
-          : posterReveal;
-        const copyArrival = entryWindow
-          ? smoothSegment(entryPhase, 0.12, 0.82)
-          : posterReveal;
-        const exitPhase = exitWindow
-          ? linearSegment(progress, exitWindow[0], exitWindow[1])
-          : 0;
-        const posterExit = exitWindow
-          ? smoothSegment(exitPhase, 0.03, 0.75)
-          : 0;
-        const copyExit = exitWindow
-          ? smoothSegment(exitPhase, 0.01, 0.52)
-          : 0;
-        const retirementPhase = retirementWindow
-          ? linearSegment(
-              progress,
-              retirementWindow[0],
-              retirementWindow[1],
-            )
-          : 0;
-        const retirement = retirementWindow
-          ? smoothSegment(retirementPhase, 0, 0.55)
-          : 0;
+        const exit = handoffProgress[index] ?? 0;
+        const retirement = handoffProgress[index + 1] ?? 0;
         const historyOpacity = HISTORY_OPACITY * (1 - retirement);
-        const posterOpacity =
-          posterArrival * (1 - posterExit * (1 - historyOpacity));
-        const copyOpacity = copyArrival * (1 - copyExit);
+        const posterOpacity = entry * (1 - exit * (1 - historyOpacity));
+        const copyOpacity = entry * (1 - exit) ** 3;
         const score = copyOpacity + posterOpacity * 0.25;
 
         if (score > activeScore) {
@@ -182,7 +153,7 @@ export function FeaturedExperiencesMotion({
 
         article.style.setProperty(
           "--experience-poster-clip",
-          `${(49.5 * (1 - posterReveal)).toFixed(3)}%`,
+          `${(49.5 * (1 - entry)).toFixed(3)}%`,
         );
         article.style.setProperty(
           "--experience-poster-opacity",
@@ -190,28 +161,15 @@ export function FeaturedExperiencesMotion({
         );
         article.style.setProperty(
           "--experience-poster-scale",
-          (
-            0.88 +
-            posterReveal * 0.12 -
-            posterExit * 0.055 -
-            retirement * 0.015
-          ).toFixed(4),
+          (index === 0 ? 0.88 + entry * 0.12 : 1).toFixed(4),
         );
         article.style.setProperty(
           "--experience-poster-x",
-          `${(offset.drift * (posterExit + retirement * 0.12)).toFixed(3)}vw`,
+          `${(offset.drift * exit).toFixed(3)}vw`,
         );
         article.style.setProperty(
           "--experience-poster-y",
-          `${(
-            1.75 * (1 - posterReveal) -
-            posterExit * 0.75 -
-            retirement * 0.2
-          ).toFixed(3)}rem`,
-        );
-        article.style.setProperty(
-          "--experience-poster-rotate",
-          `${(offset.turn * (posterExit + retirement * 0.08)).toFixed(3)}deg`,
+          `${(index === 0 ? 1.75 * (1 - entry) : 0).toFixed(3)}rem`,
         );
         article.style.setProperty(
           "--experience-copy-opacity",
@@ -219,15 +177,7 @@ export function FeaturedExperiencesMotion({
         );
         article.style.setProperty(
           "--experience-copy-y",
-          `${(1.75 * (1 - copyArrival) - copyExit * 0.9).toFixed(3)}rem`,
-        );
-        article.style.setProperty(
-          "--experience-field-opacity",
-          (
-            posterReveal *
-            (1 - posterExit * 0.9) *
-            (1 - retirement)
-          ).toFixed(4),
+          `${(index === 0 ? 1.75 * (1 - entry) : 0).toFixed(3)}rem`,
         );
       });
 
