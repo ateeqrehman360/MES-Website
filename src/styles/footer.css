@@ -243,6 +243,16 @@
   }
 }
 
+@media (max-width: 47.999rem) {
+  @layer components {
+    .site-footer__meta {
+      gap: 0.2rem;
+      margin-block-start: 1.25rem;
+      padding-block-start: 1rem;
+    }
+  }
+}
+
 @media (min-width: 48rem) {
   @layer components {
     .site-footer__identity {
@@ -305,7 +315,7 @@
     }
 
     .site-footer__closing {
-      font-size: clamp(3.75rem, 4.8vw, 5rem);
+      font-size: clamp(3.6rem, 4.6vw, 4.8rem);
     }
 
     .site-footer__closing span:last-child {
