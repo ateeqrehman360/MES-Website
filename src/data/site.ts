@@ -23,7 +23,4 @@ export const navigationItems = [
   { label: "Work With Us", href: "/work-with-us" },
 ] satisfies readonly NavigationItem[];
 
-export const mobileNavigationItems = [
-  { label: "Home", href: "/" },
-  ...navigationItems,
-] satisfies readonly NavigationItem[];
+export const mobileNavigationItems = navigationItems;

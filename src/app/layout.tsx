@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { siteConfig } from "@/data/site";
 
 import "./globals.css";
+import "@/styles/navigation.css";
 import "@/styles/footer.css";
 
 const displayFont = Newsreader({
