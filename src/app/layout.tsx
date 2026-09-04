@@ -3,10 +3,12 @@ import { Manrope, Montserrat, Newsreader } from "next/font/google";
 import localFont from "next/font/local";
 import type { ReactNode } from "react";
 
+import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { siteConfig } from "@/data/site";
 
 import "./globals.css";
+import "@/styles/footer.css";
 
 const displayFont = Newsreader({
   variable: "--font-newsreader",
@@ -88,6 +90,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <main id="main-content" tabIndex={-1}>
           {children}
         </main>
+        <SiteFooter />
       </body>
     </html>
   );
