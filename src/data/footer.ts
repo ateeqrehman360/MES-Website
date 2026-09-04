@@ -10,7 +10,16 @@ type FooterNavigationItem = {
 type FooterExternalLink = {
   label: string;
   href: string;
-  handle?: string;
+};
+
+export type FooterSocialIcon =
+  | "instagram"
+  | "tiktok"
+  | "linkedin"
+  | "facebook";
+
+type FooterSocialLink = FooterExternalLink & {
+  icon: FooterSocialIcon;
 };
 
 export const footerNavigationItems = [
@@ -21,23 +30,25 @@ export const footerNavigationItems = [
 export const footerSocialLinks = [
   {
     label: "Instagram",
-    handle: "@mmu.mes",
+    icon: "instagram",
     href: "https://www.instagram.com/mmu.mes",
   },
   {
     label: "TikTok",
-    handle: "@mmu.mes",
+    icon: "tiktok",
     href: "https://www.tiktok.com/@mmu.mes",
   },
   {
     label: "LinkedIn",
+    icon: "linkedin",
     href: "https://www.linkedin.com/company/muslimentrepreneurs",
   },
   {
     label: "Facebook",
+    icon: "facebook",
     href: "https://www.facebook.com/people/Muslims-Entrepreneurs-Manchester/61588418034482/",
   },
-] satisfies readonly FooterExternalLink[];
+] satisfies readonly FooterSocialLink[];
 
 export const footerCommunityLinks = [
   {
