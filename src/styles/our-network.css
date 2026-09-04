@@ -1,7 +1,7 @@
 @layer components {
   .our-network {
     --network-paper: #f1e9dc;
-    --network-frame: rgb(255 255 255 / 22%);
+    --network-frame: rgb(255 255 255 / 10%);
     --network-rule: rgb(1 80 11 / 15%);
     --network-gap: clamp(1.25rem, 3vw, 3rem);
     --network-fade: clamp(1.25rem, 5vw, 4rem);
@@ -101,6 +101,7 @@
 
   .network-logo {
     --network-logo-width: 7.75rem;
+    --network-logo-scale: 1;
     display: flex;
     flex: 0 0 var(--network-logo-width);
     align-items: center;
@@ -109,8 +110,7 @@
     height: 6.25rem;
     padding: 0.875rem;
     overflow: hidden;
-    border: 1px solid rgb(1 80 11 / 4%);
-    border-radius: 0.4rem;
+    border-radius: 0.25rem;
     background: var(--network-frame);
   }
 
@@ -123,6 +123,14 @@
     --network-logo-width: 6.5rem;
   }
 
+  .network-logo--optical-reduced {
+    --network-logo-scale: 0.92;
+  }
+
+  .network-logo--optical-increased {
+    --network-logo-scale: 1.08;
+  }
+
   .network-logo img {
     display: block;
     width: 100%;
@@ -130,7 +138,7 @@
     object-fit: contain;
     opacity: 0.78;
     filter: saturate(0.58) contrast(0.94);
-    transform: translateZ(0);
+    transform: translateZ(0) scale(var(--network-logo-scale));
     transition:
       opacity var(--duration-base) var(--ease-premium),
       filter var(--duration-base) var(--ease-premium);
@@ -225,6 +233,37 @@
 
     .network-logo--tall {
       --network-logo-width: 7.25rem;
+    }
+  }
+}
+
+@media (max-width: 47.999rem) {
+  @layer components {
+    .our-network {
+      --network-gap: 1rem;
+    }
+
+    .network-marquee {
+      --network-duration: 95s;
+    }
+
+    .network-marquee--right {
+      --network-duration: 100s;
+    }
+
+    .network-logo {
+      --network-logo-width: 6.5rem;
+      height: 5.25rem;
+      padding: 0.75rem;
+    }
+
+    .network-logo--wide {
+      --network-logo-width: 9rem;
+      padding-inline: 0.875rem;
+    }
+
+    .network-logo--tall {
+      --network-logo-width: 5.5rem;
     }
   }
 }

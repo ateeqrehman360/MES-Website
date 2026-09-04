@@ -21,8 +21,14 @@ function NetworkLogo({
   loadAssets: boolean;
   decorative?: boolean;
 }) {
+  const opticalClass = entry.opticalSize
+    ? ` network-logo--optical-${entry.opticalSize}`
+    : "";
+
   return (
-    <li className={`network-logo network-logo--${entry.shape}`}>
+    <li
+      className={`network-logo network-logo--${entry.shape}${opticalClass}`}
+    >
       <Image
         src={loadAssets ? entry.logo.src : TRANSPARENT_PIXEL}
         alt={decorative ? "" : entry.alt}

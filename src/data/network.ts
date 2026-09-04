@@ -1,5 +1,6 @@
 export type NetworkCategory = "business" | "partner" | "speaker";
 export type NetworkLogoShape = "square" | "wide" | "tall";
+export type NetworkLogoOpticalSize = "reduced" | "increased";
 
 export type NetworkEntry = {
   id: string;
@@ -12,6 +13,7 @@ export type NetworkEntry = {
     height: number;
   };
   shape: NetworkLogoShape;
+  opticalSize?: NetworkLogoOpticalSize;
 };
 
 export const networkRows = [
@@ -51,6 +53,7 @@ export const networkRows = [
         height: 176,
       },
       shape: "wide",
+      opticalSize: "reduced",
     },
     {
       id: "ifg",
@@ -63,6 +66,7 @@ export const networkRows = [
         height: 464,
       },
       shape: "square",
+      opticalSize: "reduced",
     },
     {
       id: "manchester-central-mosque",
@@ -75,6 +79,7 @@ export const networkRows = [
         height: 480,
       },
       shape: "square",
+      opticalSize: "increased",
     },
     {
       id: "melted-moments",
@@ -87,6 +92,7 @@ export const networkRows = [
         height: 480,
       },
       shape: "square",
+      opticalSize: "increased",
     },
     {
       id: "entrepreneurs-society",
@@ -99,6 +105,7 @@ export const networkRows = [
         height: 479,
       },
       shape: "square",
+      opticalSize: "increased",
     },
     {
       id: "remarquable",
@@ -111,6 +118,7 @@ export const networkRows = [
         height: 480,
       },
       shape: "square",
+      opticalSize: "increased",
     },
     {
       id: "greentech",
@@ -123,6 +131,7 @@ export const networkRows = [
         height: 143,
       },
       shape: "wide",
+      opticalSize: "reduced",
     },
     {
       id: "mmu-isoc",
@@ -183,6 +192,7 @@ export const networkRows = [
         height: 452,
       },
       shape: "square",
+      opticalSize: "increased",
     },
     {
       id: "redwood-founders",
@@ -207,6 +217,7 @@ export const networkRows = [
         height: 263,
       },
       shape: "wide",
+      opticalSize: "reduced",
     },
     {
       id: "manchester-isoc",
@@ -257,6 +268,7 @@ export const networkRows = [
         height: 195,
       },
       shape: "wide",
+      opticalSize: "reduced",
     },
     {
       id: "andaaz-manchester",
@@ -293,6 +305,7 @@ export const networkRows = [
         height: 480,
       },
       shape: "square",
+      opticalSize: "increased",
     },
     {
       id: "alfurqan-islamic-centre-manchester",
@@ -317,6 +330,7 @@ export const networkRows = [
         height: 304,
       },
       shape: "wide",
+      opticalSize: "increased",
     },
     {
       id: "destane-hunar",
@@ -389,6 +403,7 @@ export const networkRows = [
         height: 480,
       },
       shape: "square",
+      opticalSize: "increased",
     },
     {
       id: "salford-isoc",
