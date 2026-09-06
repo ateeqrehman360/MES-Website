@@ -385,6 +385,30 @@ function LaptopModel({
     invalidate();
   }, [displayTexture, invalidate, photographyRevision, progress]);
 
+  useEffect(() => {
+    if (!displayTexture) {
+      return;
+    }
+
+    let isActive = true;
+
+    void document.fonts.ready.then(() => {
+      if (!isActive) {
+        return;
+      }
+
+      const artworkProgress = getHeroDisplayDrawProgress(progress.value);
+
+      displayTexture.draw(artworkProgress);
+      lastArtworkProgress.current = artworkProgress;
+      invalidate();
+    });
+
+    return () => {
+      isActive = false;
+    };
+  }, [displayTexture, invalidate, progress]);
+
   useFrame(() => {
     if (!displayTexture) {
       return;

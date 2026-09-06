@@ -562,6 +562,23 @@ body:has(.hero-static) .site-header__cta:hover {
 }
 
 @media (min-width: 48rem) {
+  .hero-screen-artboard__statement-lead.font-display {
+    font-family: var(--font-hero-apparel), Didot, "Bodoni MT", serif;
+    font-synthesis: none;
+  }
+
+  .hero-screen-artboard__statement-lead span:last-child {
+    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+    font-size: 14.125cqh;
+    letter-spacing: 0.025em;
+  }
+
+  .hero-screen-artboard__statement-close.font-display {
+    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+    font-synthesis: none;
+    letter-spacing: 0.015em;
+  }
+
   body:has(.hero-static) .hero-static__line--muslim {
     inset-block-start: calc(var(--nav-height) + clamp(4.5rem, 8vh, 5.5rem));
     inset-inline-start: calc(5vw - 1rem);
@@ -608,7 +625,7 @@ body:has(.hero-static) .site-header__cta:hover {
 
 @media (min-width: 72rem) {
   .hero-static__editorial {
-    gap: clamp(4.75rem, 6.5vw, 6rem);
+    gap: clamp(5.125rem, 7vw, 6.5rem);
   }
 
   .hero-static__since {
@@ -634,8 +651,8 @@ body:has(.hero-static) .site-header__cta:hover {
   }
 
   .hero-static__facts {
-    gap: clamp(3rem, 4vw, 4.25rem);
-    margin-block-start: clamp(3.5rem, 6.75vh, 4.25rem);
+    gap: clamp(3.5rem, 4.4vw, 4.75rem);
+    margin-block-start: clamp(3.125rem, 6.1vh, 3.75rem);
   }
 
   .hero-static__affiliation,
@@ -644,7 +661,7 @@ body:has(.hero-static) .site-header__cta:hover {
   }
 
   .hero-static__affiliation {
-    gap: 0.95rem;
+    gap: 1.125rem;
   }
 
   .hero-static__location-icon {
@@ -655,7 +672,7 @@ body:has(.hero-static) .site-header__cta:hover {
 
   .hero-static__established {
     min-width: 6.5rem;
-    padding-inline-start: clamp(2rem, 2.4vw, 2.5rem);
+    padding-inline-start: clamp(2.25rem, 2.7vw, 2.75rem);
   }
 
   .hero-static__established::before {
@@ -668,9 +685,9 @@ body:has(.hero-static) .site-header__cta:hover {
 
   .hero-static__scroll-cue {
     gap: 1rem;
-    margin-block-start: clamp(3.5rem, 6.75vh, 4.75rem);
+    margin-block-start: clamp(2.875rem, 5.8vh, 4.25rem);
     font-size: 0.875rem;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.125em;
   }
 
   .hero-static__scroll-arrow {
@@ -679,7 +696,7 @@ body:has(.hero-static) .site-header__cta:hover {
     transform-origin: center;
     transform-box: fill-box;
     vector-effect: non-scaling-stroke;
-    scale: 1 1.5;
+    scale: 1 1.68;
   }
 }
 
