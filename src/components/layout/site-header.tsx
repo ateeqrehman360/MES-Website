@@ -46,25 +46,24 @@ export function SiteHeader() {
 
         <nav
           aria-label="Primary navigation"
-          className="ml-auto hidden items-center gap-7 lg:flex xl:gap-10"
+          className="site-header__desktop-navigation ml-auto"
         >
-          {primaryNavigationItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="border-b border-transparent py-3 text-sm font-medium tracking-[-0.01em] text-mes-green-ink transition-colors duration-[var(--duration-fast)] hover:border-mes-gold hover:text-mes-deep-green"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+          <ul className="site-header__desktop-navigation-list">
+            {primaryNavigationItems.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className="site-header__nav-link">
+                  {item.label}
+                </Link>
+              </li>
+            ))}
 
-        <Link
-          href="/work-with-us"
-          className="site-header__cta hidden min-h-12 items-center justify-center rounded-[var(--radius-control)] bg-mes-deep-green px-6 text-sm font-semibold text-mes-cream transition-colors duration-[var(--duration-fast)] hover:bg-mes-green-ink lg:inline-flex"
-        >
-          Work With Us
-        </Link>
+            <li className="site-header__desktop-cta-item">
+              <Link href="/work-with-us" className="site-header__cta">
+                Work With Us
+              </Link>
+            </li>
+          </ul>
+        </nav>
 
         <MobileNavigation />
       </div>
