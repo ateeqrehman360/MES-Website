@@ -252,27 +252,54 @@ export function StaticHero() {
             </span>
           </h1>
 
-          <div className="hero-static__facts">
-            <p className="hero-static__affiliation">
-              <svg
-                aria-hidden="true"
-                className="hero-static__location-icon"
-                fill="none"
-                viewBox="0 0 24 28"
-              >
-                <path d="M12 26C12 26 21.5 17.45 21.5 10.5C21.5 5.25 17.25 1 12 1C6.75 1 2.5 5.25 2.5 10.5C2.5 17.45 12 26 12 26Z" />
-                <circle cx="12" cy="10.5" r="3.4" />
-              </svg>
-              Manchester{" "}
-              <br className="hero-static__affiliation-mobile-break" />
-              Metropolitan
-              <br />
-              University
-            </p>
-            <p className="hero-static__established">
-              <span>Est.</span>
-              <strong>2024</strong>
-            </p>
+          <div className="hero-static__editorial">
+            <div className="hero-static__since" aria-hidden="true">
+              <span className="hero-static__since-rule" />
+              <span className="hero-static__since-label">Since 2024</span>
+              <span className="hero-static__since-rule" />
+            </div>
+
+            <div className="hero-static__editorial-body">
+              <p className="hero-static__editorial-statement">
+                <span>Building ethical businesses.</span>
+                <span>Creating impact. Inspiring change.</span>
+              </p>
+
+              <div className="hero-static__facts">
+                <p className="hero-static__affiliation">
+                  <svg
+                    aria-hidden="true"
+                    className="hero-static__location-icon"
+                    fill="none"
+                    viewBox="0 0 24 28"
+                  >
+                    <path d="M12 26C12 26 21.5 17.45 21.5 10.5C21.5 5.25 17.25 1 12 1C6.75 1 2.5 5.25 2.5 10.5C2.5 17.45 12 26 12 26Z" />
+                    <circle cx="12" cy="10.5" r="3.4" />
+                  </svg>
+                  <span className="hero-static__location-copy">
+                    <span>Manchester</span>
+                    <span>Metropolitan</span>
+                    <span>University</span>
+                  </span>
+                </p>
+                <p className="hero-static__established">
+                  <span>Est.</span>
+                  <strong>2024</strong>
+                </p>
+              </div>
+
+              <p className="hero-static__scroll-cue">
+                <svg
+                  aria-hidden="true"
+                  className="hero-static__scroll-arrow"
+                  fill="none"
+                  viewBox="0 0 24 28"
+                >
+                  <path d="M12 1.5V25.5M5.5 19L12 25.5L18.5 19" />
+                </svg>
+                <span>Scroll to discover</span>
+              </p>
+            </div>
           </div>
 
           <span className="hero-static__ground-shadow" aria-hidden="true" />
