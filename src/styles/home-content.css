@@ -2,7 +2,7 @@
   .home-content {
     position: relative;
     /* Reuse the blank tail of the square DOM handoff, not the WebGL stage. */
-    margin-block-start: -60svh;
+    margin-block-start: -75svh;
     background: var(--mes-cream-soft);
   }
 
