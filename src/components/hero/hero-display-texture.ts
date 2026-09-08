@@ -31,6 +31,13 @@ type HeroDisplayAssets = {
   photographs: HeroDisplayPhotographs;
 };
 
+type HeroDisplayFontFamilies = {
+  kommon: string;
+  legacy: string;
+  montserrat: string;
+  tanHeadline: string;
+};
+
 export type HeroDisplayTextureController = {
   texture: CanvasTexture;
   draw: (progress: number) => void;
@@ -129,12 +136,29 @@ function drawLogo(
   context.drawImage(image, x, y, height * (560 / 610), height);
 }
 
+function drawTrackedText(
+  context: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  tracking: number,
+) {
+  let cursor = x;
+
+  for (const character of text) {
+    context.fillText(character, cursor, y);
+    cursor += context.measureText(character).width + tracking;
+  }
+}
+
 function drawBrandArtwork(
   context: CanvasRenderingContext2D,
   logo: HTMLImageElement,
-  fontFamily: string,
+  fontFamilies: HeroDisplayFontFamilies,
+  isPortrait: boolean,
 ) {
   const { width, height } = HERO_DISPLAY_TEXTURE_SIZE;
+  const lockupOffsetY = isPortrait ? 0 : 72;
 
   context.globalAlpha = 1;
   context.fillStyle = GREEN;
@@ -145,20 +169,28 @@ function drawBrandArtwork(
   context.fillRect(810, 0, width - 810, height);
 
   context.fillStyle = GOLD;
-  context.fillRect(76, 108, 116, 8);
+  context.fillRect(76, 108 + lockupOffsetY, 116, 8);
   context.fillStyle = CREAM;
   context.textBaseline = "alphabetic";
-  context.font = `400 126px ${fontFamily}`;
-  context.fillText("MUSLIM", 72, 303);
-  context.font = `400 67px ${fontFamily}`;
-  context.fillText("ENTREPRENEURS", 72, 405);
+  context.font = `400 ${isPortrait ? 126 : 132}px ${
+    isPortrait ? fontFamilies.legacy : fontFamilies.tanHeadline
+  }`;
+  context.fillText("MUSLIM", 72, 303 + lockupOffsetY);
+  context.font = `400 ${isPortrait ? 67 : 56}px ${
+    isPortrait ? fontFamilies.legacy : fontFamilies.montserrat
+  }`;
 
-  context.strokeStyle = "rgba(244, 237, 226, 0.55)";
-  context.lineWidth = 2;
-  context.beginPath();
-  context.moveTo(74, 555);
-  context.lineTo(700, 555);
-  context.stroke();
+  if (isPortrait) {
+    context.fillText("ENTREPRENEURS", 72, 405);
+    context.strokeStyle = "rgba(244, 237, 226, 0.55)";
+    context.lineWidth = 2;
+    context.beginPath();
+    context.moveTo(74, 555);
+    context.lineTo(700, 555);
+    context.stroke();
+  } else {
+    drawTrackedText(context, "ENTREPRENEURS", 72, 405 + lockupOffsetY, 6);
+  }
 
   const logoHeight = 400;
   const logoWidth = logoHeight * (560 / 610);
@@ -281,7 +313,7 @@ function drawStatementBackground(context: CanvasRenderingContext2D) {
 function drawStatementContent(
   context: CanvasRenderingContext2D,
   logo: HTMLImageElement,
-  fontFamily: string,
+  fontFamilies: HeroDisplayFontFamilies,
   isPortrait: boolean,
   opacity = 1,
   offsetY = 0,
@@ -294,9 +326,9 @@ function drawStatementContent(
     context.fillStyle = GOLD;
     context.fillRect(820, 88 + offsetY, 82, 6);
     context.fillStyle = GREEN;
-    context.font = `400 50px ${fontFamily}`;
+    context.font = `400 50px ${fontFamilies.legacy}`;
     context.fillText(heroStatement.leadLines[0], 820, 143 + offsetY);
-    context.font = `400 68px ${fontFamily}`;
+    context.font = `400 68px ${fontFamilies.legacy}`;
     context.fillText(heroStatement.leadLines[1], 818, 195 + offsetY);
 
     context.strokeStyle = "rgba(1, 54, 9, 0.38)";
@@ -306,7 +338,7 @@ function drawStatementContent(
     context.lineTo(1054, 298 + offsetY);
     context.stroke();
 
-    context.font = `400 33px ${fontFamily}`;
+    context.font = `400 33px ${fontFamilies.legacy}`;
     context.fillText(heroStatement.closeLines[0], 820, 344 + offsetY);
     context.fillText(heroStatement.closeLines[1], 820, 382 + offsetY);
     drawLogo(context, logo, 890, 495 + offsetY, 172);
@@ -314,10 +346,16 @@ function drawStatementContent(
     context.fillStyle = GOLD;
     context.fillRect(170, 108 + offsetY, 110, 8);
     context.fillStyle = CREAM;
-    context.font = `400 82px ${fontFamily}`;
+    context.font = `400 82px ${fontFamilies.tanHeadline}`;
     context.fillText(heroStatement.leadLines[0], 166, 212 + offsetY);
-    context.font = `400 110px ${fontFamily}`;
-    context.fillText(heroStatement.leadLines[1], 164, 290 + offsetY);
+    context.font = `400 88px ${fontFamilies.montserrat}`;
+    drawTrackedText(
+      context,
+      heroStatement.leadLines[1],
+      164,
+      290 + offsetY,
+      1.25,
+    );
 
     context.strokeStyle = "rgba(244, 237, 226, 0.55)";
     context.lineWidth = 2;
@@ -327,9 +365,21 @@ function drawStatementContent(
     context.stroke();
 
     context.fillStyle = GREEN;
-    context.font = `400 39px ${fontFamily}`;
-    context.fillText(heroStatement.closeLines[0], 834, 236 + offsetY);
-    context.fillText(heroStatement.closeLines[1], 834, 282 + offsetY);
+    context.font = `400 34px ${fontFamilies.kommon}`;
+    drawTrackedText(
+      context,
+      heroStatement.closeLines[0],
+      834,
+      236 + offsetY,
+      0.5,
+    );
+    drawTrackedText(
+      context,
+      heroStatement.closeLines[1],
+      834,
+      282 + offsetY,
+      0.5,
+    );
     drawLogo(context, logo, 906, 438 + offsetY, 160);
   }
 
@@ -339,11 +389,11 @@ function drawStatementContent(
 function drawStatementArtwork(
   context: CanvasRenderingContext2D,
   logo: HTMLImageElement,
-  fontFamily: string,
+  fontFamilies: HeroDisplayFontFamilies,
   isPortrait: boolean,
 ) {
   drawStatementBackground(context);
-  drawStatementContent(context, logo, fontFamily, isPortrait);
+  drawStatementContent(context, logo, fontFamilies, isPortrait);
 }
 
 function drawDiagonalReveal(
@@ -444,7 +494,7 @@ function drawUpwardReveal(
 function drawStatementTransition(
   context: CanvasRenderingContext2D,
   assets: HeroDisplayAssets,
-  fontFamily: string,
+  fontFamilies: HeroDisplayFontFamilies,
   isPortrait: boolean,
   progress: number,
 ) {
@@ -474,7 +524,7 @@ function drawStatementTransition(
   drawStatementContent(
     context,
     assets.logo,
-    fontFamily,
+    fontFamilies,
     isPortrait,
     contentReveal,
     MathUtils.lerp(18, 0, contentReveal),
@@ -511,10 +561,23 @@ export function createHeroDisplayTexture(
     throw new Error("Unable to create the MES display texture.");
   }
 
-  const displayFont = getComputedStyle(document.documentElement)
+  const rootStyles = getComputedStyle(document.documentElement);
+  const displayFont = rootStyles
     .getPropertyValue("--font-newsreader")
     .trim();
-  const fontFamily = displayFont || "Georgia, serif";
+  const fontFamilies: HeroDisplayFontFamilies = {
+    legacy: displayFont || "Georgia, serif",
+    kommon:
+      rootStyles.getPropertyValue("--font-hero-kommon").trim() ||
+      "Arial, Helvetica, sans-serif",
+    montserrat:
+      rootStyles.getPropertyValue("--font-laptop-montserrat").trim() ||
+      "Arial, Helvetica, sans-serif",
+    tanHeadline:
+      rootStyles.getPropertyValue("--font-laptop-tan-headline").trim() ||
+      displayFont ||
+      "Georgia, serif",
+  };
   const texture = new CanvasTexture(canvas);
 
   context.imageSmoothingEnabled = true;
@@ -532,9 +595,9 @@ export function createHeroDisplayTexture(
     context.clearRect(0, 0, canvas.width, canvas.height);
 
     if (progress < BRAND_TO_PHOTO.start) {
-      drawBrandArtwork(context, assets.logo, fontFamily);
+      drawBrandArtwork(context, assets.logo, fontFamilies, isPortrait);
     } else if (progress < BRAND_TO_PHOTO.end) {
-      drawBrandArtwork(context, assets.logo, fontFamily);
+      drawBrandArtwork(context, assets.logo, fontFamilies, isPortrait);
       drawDiagonalReveal(
         context,
         smoothSegment(progress, BRAND_TO_PHOTO.start, BRAND_TO_PHOTO.end),
@@ -609,7 +672,7 @@ export function createHeroDisplayTexture(
       drawStatementTransition(
         context,
         assets,
-        fontFamily,
+        fontFamilies,
         isPortrait,
         smoothSegment(
           progress,
@@ -618,7 +681,7 @@ export function createHeroDisplayTexture(
         ),
       );
     } else {
-      drawStatementArtwork(context, assets.logo, fontFamily, isPortrait);
+      drawStatementArtwork(context, assets.logo, fontFamilies, isPortrait);
     }
 
     context.globalAlpha = 1;

@@ -33,6 +33,22 @@ const heroKommonFont = localFont({
   display: "swap",
 });
 
+const laptopTanHeadlineFont = localFont({
+  src: "../assets/fonts/TAN-Headline/TANHEADLINE-Regular.ttf",
+  weight: "400",
+  style: "normal",
+  variable: "--font-laptop-tan-headline",
+  display: "swap",
+});
+
+const laptopMontserratFont = localFont({
+  src: "../assets/fonts/montserrat/Montserrat-Regular.ttf",
+  weight: "400",
+  style: "normal",
+  variable: "--font-laptop-montserrat",
+  display: "swap",
+});
+
 const bodyFont = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
@@ -81,7 +97,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html
       lang="en-GB"
       data-scroll-behavior="smooth"
-      className={`${displayFont.variable} ${heroApparelFont.variable} ${heroKommonFont.variable} ${bodyFont.variable} ${brandFont.variable} antialiased`}
+      className={`${displayFont.variable} ${heroApparelFont.variable} ${heroKommonFont.variable} ${laptopTanHeadlineFont.variable} ${laptopMontserratFont.variable} ${bodyFont.variable} ${brandFont.variable} antialiased`}
     >
       <body>
         <a className="skip-link" href="#main-content">
