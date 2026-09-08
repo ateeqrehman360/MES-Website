@@ -625,7 +625,7 @@ body:has(.hero-static) .site-header__cta:hover {
 
 @media (min-width: 72rem) {
   .hero-static__editorial {
-    gap: clamp(4.625rem, 6.45vw, 6rem);
+    gap: clamp(4.9375rem, 6.8vw, 6.3125rem);
   }
 
   .hero-static__since {

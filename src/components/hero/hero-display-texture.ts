@@ -158,7 +158,10 @@ function drawBrandArtwork(
   isPortrait: boolean,
 ) {
   const { width, height } = HERO_DISPLAY_TEXTURE_SIZE;
-  const lockupOffsetY = isPortrait ? 0 : 72;
+  const lockupOffsetY = isPortrait ? 56 : 72;
+  const muslimFontSize = isPortrait ? 118 : 132;
+  const entrepreneursFontSize = isPortrait ? 43 : 56;
+  const entrepreneursTracking = isPortrait ? 4.5 : 6;
 
   context.globalAlpha = 1;
   context.fillStyle = GREEN;
@@ -172,25 +175,16 @@ function drawBrandArtwork(
   context.fillRect(76, 108 + lockupOffsetY, 116, 8);
   context.fillStyle = CREAM;
   context.textBaseline = "alphabetic";
-  context.font = `400 ${isPortrait ? 126 : 132}px ${
-    isPortrait ? fontFamilies.legacy : fontFamilies.tanHeadline
-  }`;
+  context.font = `400 ${muslimFontSize}px ${fontFamilies.tanHeadline}`;
   context.fillText("MUSLIM", 72, 303 + lockupOffsetY);
-  context.font = `400 ${isPortrait ? 67 : 56}px ${
-    isPortrait ? fontFamilies.legacy : fontFamilies.montserrat
-  }`;
-
-  if (isPortrait) {
-    context.fillText("ENTREPRENEURS", 72, 405);
-    context.strokeStyle = "rgba(244, 237, 226, 0.55)";
-    context.lineWidth = 2;
-    context.beginPath();
-    context.moveTo(74, 555);
-    context.lineTo(700, 555);
-    context.stroke();
-  } else {
-    drawTrackedText(context, "ENTREPRENEURS", 72, 405 + lockupOffsetY, 6);
-  }
+  context.font = `400 ${entrepreneursFontSize}px ${fontFamilies.montserrat}`;
+  drawTrackedText(
+    context,
+    "ENTREPRENEURS",
+    72,
+    405 + lockupOffsetY,
+    entrepreneursTracking,
+  );
 
   const logoHeight = 400;
   const logoWidth = logoHeight * (560 / 610);
