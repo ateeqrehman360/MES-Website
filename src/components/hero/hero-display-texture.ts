@@ -32,9 +32,10 @@ type HeroDisplayAssets = {
 };
 
 type HeroDisplayFontFamilies = {
-  apparel: string;
   kommon: string;
   legacy: string;
+  montserrat: string;
+  tanHeadline: string;
 };
 
 export type HeroDisplayTextureController = {
@@ -171,17 +172,17 @@ function drawBrandArtwork(
   context.fillStyle = CREAM;
   context.textBaseline = "alphabetic";
   context.font = `400 ${isPortrait ? 126 : 132}px ${
-    isPortrait ? fontFamilies.legacy : fontFamilies.apparel
+    isPortrait ? fontFamilies.legacy : fontFamilies.tanHeadline
   }`;
   context.fillText("MUSLIM", 72, 303);
-  context.font = `400 ${isPortrait ? 67 : 62}px ${
-    isPortrait ? fontFamilies.legacy : fontFamilies.kommon
+  context.font = `400 ${isPortrait ? 67 : 56}px ${
+    isPortrait ? fontFamilies.legacy : fontFamilies.montserrat
   }`;
 
   if (isPortrait) {
     context.fillText("ENTREPRENEURS", 72, 405);
   } else {
-    drawTrackedText(context, "ENTREPRENEURS", 72, 405, 2.25);
+    drawTrackedText(context, "ENTREPRENEURS", 72, 405, 6);
   }
 
   context.strokeStyle = "rgba(244, 237, 226, 0.55)";
@@ -345,15 +346,15 @@ function drawStatementContent(
     context.fillStyle = GOLD;
     context.fillRect(170, 108 + offsetY, 110, 8);
     context.fillStyle = CREAM;
-    context.font = `400 82px ${fontFamilies.apparel}`;
+    context.font = `400 82px ${fontFamilies.tanHeadline}`;
     context.fillText(heroStatement.leadLines[0], 166, 212 + offsetY);
-    context.font = `400 94px ${fontFamilies.kommon}`;
+    context.font = `400 88px ${fontFamilies.montserrat}`;
     drawTrackedText(
       context,
       heroStatement.leadLines[1],
       164,
       290 + offsetY,
-      1.5,
+      1.25,
     );
 
     context.strokeStyle = "rgba(244, 237, 226, 0.55)";
@@ -566,13 +567,16 @@ export function createHeroDisplayTexture(
     .trim();
   const fontFamilies: HeroDisplayFontFamilies = {
     legacy: displayFont || "Georgia, serif",
-    apparel:
-      rootStyles.getPropertyValue("--font-hero-apparel").trim() ||
-      displayFont ||
-      "Georgia, serif",
     kommon:
       rootStyles.getPropertyValue("--font-hero-kommon").trim() ||
       "Arial, Helvetica, sans-serif",
+    montserrat:
+      rootStyles.getPropertyValue("--font-laptop-montserrat").trim() ||
+      "Arial, Helvetica, sans-serif",
+    tanHeadline:
+      rootStyles.getPropertyValue("--font-laptop-tan-headline").trim() ||
+      displayFont ||
+      "Georgia, serif",
   };
   const texture = new CanvasTexture(canvas);
 

@@ -563,14 +563,14 @@ body:has(.hero-static) .site-header__cta:hover {
 
 @media (min-width: 48rem) {
   .hero-screen-artboard__statement-lead.font-display {
-    font-family: var(--font-hero-apparel), Didot, "Bodoni MT", serif;
+    font-family: var(--font-laptop-tan-headline), Georgia, serif;
     font-synthesis: none;
   }
 
   .hero-screen-artboard__statement-lead span:last-child {
-    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
-    font-size: 14.125cqh;
-    letter-spacing: 0.025em;
+    font-family: var(--font-laptop-montserrat), Arial, Helvetica, sans-serif;
+    font-size: 13.5cqh;
+    letter-spacing: 0.04em;
   }
 
   .hero-screen-artboard__statement-close.font-display {
