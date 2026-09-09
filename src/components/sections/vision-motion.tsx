@@ -64,6 +64,7 @@ export function VisionMotion({ children }: { children: ReactNode }) {
       // composition instead of a sticky panel taller than the viewport.
       enabled =
         !reducedMotion.matches &&
+        window.innerHeight >= 640 &&
         inner.offsetHeight + inset + 16 <= window.innerHeight;
 
       if (!enabled) {

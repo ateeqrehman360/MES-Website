@@ -535,6 +535,20 @@ body:has(.home-content[data-content-navigation="visible"])
   }
 }
 
+@media (min-width: 64rem) and (max-width: 71.999rem) {
+  @layer components {
+    .vision {
+      /* Bridge the portrait and wide-desktop compositions without letting
+         the first desktop breakpoint overpower a landscape tablet. */
+      --vision-size: min(calc(20vw - 4rem), 21svh, 10.5rem);
+    }
+
+    .vision__support {
+      grid-column: 1 / 6;
+    }
+  }
+}
+
 @media (max-width: 47.999rem) {
   @layer components {
     .home-content {
