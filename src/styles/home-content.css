@@ -2,7 +2,7 @@
   .home-content {
     position: relative;
     /* Reuse the blank tail of the square DOM handoff, not the WebGL stage. */
-    margin-block-start: -60svh;
+    margin-block-start: -75svh;
     background: var(--mes-cream-soft);
   }
 
@@ -541,6 +541,14 @@ body:has(.home-content[data-content-navigation="visible"])
 
     .impact__statistic[data-statistic="since"] .impact__label {
       max-width: 17rem;
+    }
+  }
+}
+
+@media (max-width: 47.999rem) {
+  @layer components {
+    .home-content {
+      margin-block-start: -85svh;
     }
   }
 }
