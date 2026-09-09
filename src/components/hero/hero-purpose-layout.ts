@@ -51,7 +51,7 @@ export const HERO_PURPOSE_ARTBOARD_SIZE = {
 export const HERO_PURPOSE_COLORS = {
   cream: "#f4ede2",
   gold: "#c29231",
-  green: "#013609",
+  green: "#01500b",
 } as const;
 
 export const HERO_PURPOSE_LAYOUTS = {
@@ -59,29 +59,43 @@ export const HERO_PURPOSE_LAYOUTS = {
     greenEnd: 804,
     divider: { x: 804, width: 6 },
     creamStart: 810,
-    labelRule: { x: 166, y: 101, width: 48, height: 3 },
-    label: { x: 234, y: 91, fontSize: 17, tracking: 2.8 },
+    labelRule: { x: 132, y: 106, width: 38, height: 2 },
+    label: { x: 177, y: 101, fontSize: 13, tracking: 1 },
     lead: [
-      { x: 166, y: 205, fontSize: 82, tracking: 0 },
-      { x: 164, y: 288, fontSize: 88, tracking: 1.25 },
+      { x: 166, y: 220, fontSize: 88, tracking: 0 },
+      { x: 164, y: 298, fontSize: 144, tracking: 0 },
     ],
     stackRule: null,
-    support: { x: 834, y: 232, fontSize: 30, lineGap: 42, tracking: 0.45 },
-    logo: { x: 925, y: 455, height: 120 },
+    support: { x: 852, y: 192, fontSize: 28, lineGap: 36, tracking: 0 },
+    logo: { x: 950, y: 470, height: 86 },
   },
   mobile: {
-    greenEnd: 790,
-    divider: { x: 790, width: 0 },
-    creamStart: 790,
-    labelRule: { x: 820, y: 82, width: 52, height: 4 },
-    label: { x: 894, y: 70, fontSize: 16, tracking: 2.4 },
+    greenEnd: 804,
+    divider: { x: 804, width: 7 },
+    creamStart: 811,
+    labelRule: { x: 820, y: 88, width: 42, height: 2 },
+    label: { x: 870, y: 84, fontSize: 12, tracking: 1.8 },
     lead: [
-      { x: 820, y: 144, fontSize: 48, tracking: 0 },
-      { x: 818, y: 197, fontSize: 62, tracking: 0 },
+      { x: 820, y: 163, fontSize: 50, tracking: 0 },
+      { x: 818, y: 220, fontSize: 71, tracking: 0 },
     ],
-    stackRule: { x: 820, y: 292, width: 250, height: 3 },
-    support: { x: 820, y: 328, fontSize: 28, lineGap: 38, tracking: 0 },
-    logo: { x: 925, y: 515, height: 105 },
+    stackRule: { x: 820, y: 304, width: 236, height: 2 },
+    support: { x: 820, y: 348, fontSize: 33, lineGap: 39, tracking: 0 },
+    logo: { x: 907, y: 491, height: 101 },
+  },
+} as const satisfies Record<"desktop" | "mobile", PurposeArtworkLayout>;
+
+export const HERO_PURPOSE_CANVAS_LAYOUTS = {
+  desktop: HERO_PURPOSE_LAYOUTS.desktop,
+  mobile: {
+    ...HERO_PURPOSE_LAYOUTS.mobile,
+    lead: [
+      HERO_PURPOSE_LAYOUTS.mobile.lead[0],
+      {
+        ...HERO_PURPOSE_LAYOUTS.mobile.lead[1],
+        fontSize: 65,
+      },
+    ],
   },
 } as const satisfies Record<"desktop" | "mobile", PurposeArtworkLayout>;
 

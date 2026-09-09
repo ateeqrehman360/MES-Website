@@ -9,6 +9,7 @@ import { heroStatement } from "@/data/hero";
 
 import {
   HERO_PURPOSE_ARTBOARD_SIZE,
+  HERO_PURPOSE_CANVAS_LAYOUTS,
   HERO_PURPOSE_COLORS,
   HERO_PURPOSE_HANDOFF_WINDOWS,
   HERO_PURPOSE_LAYOUTS,
@@ -19,6 +20,7 @@ export const HERO_DISPLAY_TEXTURE_SIZE = HERO_PURPOSE_ARTBOARD_SIZE;
 const CREAM = HERO_PURPOSE_COLORS.cream;
 const GOLD = HERO_PURPOSE_COLORS.gold;
 const GREEN = HERO_PURPOSE_COLORS.green;
+const BRAND_GREEN = "#013609";
 const BRAND_TO_PHOTO = { start: 0.275, end: 0.34 } as const;
 const PHOTO_ONE_TO_TWO = { start: 0.435, end: 0.5 } as const;
 const PHOTO_TWO_TO_THREE = { start: 0.575, end: 0.645 } as const;
@@ -36,8 +38,8 @@ type HeroDisplayAssets = {
 };
 
 type HeroDisplayFontFamilies = {
+  apparel: string;
   kommon: string;
-  legacy: string;
   montserrat: string;
   tanHeadline: string;
 };
@@ -168,7 +170,7 @@ function drawBrandArtwork(
   const entrepreneursTracking = isPortrait ? 4.5 : 6;
 
   context.globalAlpha = 1;
-  context.fillStyle = GREEN;
+  context.fillStyle = BRAND_GREEN;
   context.fillRect(0, 0, 790, height);
   context.fillStyle = GOLD;
   context.fillRect(790, 0, 20, height);
@@ -207,7 +209,7 @@ function drawBrandedFallback(
 ) {
   const { width, height } = HERO_DISPLAY_TEXTURE_SIZE;
 
-  context.fillStyle = GREEN;
+  context.fillStyle = BRAND_GREEN;
   context.fillRect(0, 0, width, height);
   context.fillStyle = GOLD;
   context.fillRect(72, 104, 112, 8);
@@ -274,7 +276,7 @@ function drawBazaarArtwork(
   const { width, height } = HERO_DISPLAY_TEXTURE_SIZE;
   const panelX = isPortrait ? 548 : 568;
 
-  context.fillStyle = GREEN;
+  context.fillStyle = BRAND_GREEN;
   context.fillRect(0, 0, width, height);
   context.globalAlpha = 0.9;
   drawLogo(context, logo, 154, 208, 304);
@@ -303,8 +305,8 @@ function drawStatementBackground(
 ) {
   const { width, height } = HERO_DISPLAY_TEXTURE_SIZE;
   const layout = isPortrait
-    ? HERO_PURPOSE_LAYOUTS.mobile
-    : HERO_PURPOSE_LAYOUTS.desktop;
+    ? HERO_PURPOSE_CANVAS_LAYOUTS.mobile
+    : HERO_PURPOSE_CANVAS_LAYOUTS.desktop;
 
   context.fillStyle = GREEN;
   context.fillRect(0, 0, layout.greenEnd, height);
@@ -334,10 +336,22 @@ function drawStatementContent(
   isPortrait: boolean,
   opacity = 1,
   offsetY = 0,
+  artworkProgress: number | null = null,
 ) {
   const layout = isPortrait
-    ? HERO_PURPOSE_LAYOUTS.mobile
-    : HERO_PURPOSE_LAYOUTS.desktop;
+    ? HERO_PURPOSE_CANVAS_LAYOUTS.mobile
+    : HERO_PURPOSE_CANVAS_LAYOUTS.desktop;
+  const mobileLeadScale =
+    isPortrait && artworkProgress !== null
+      ? smoothSegment(artworkProgress, 0.8, 0.9)
+      : 0;
+  const leadTwoFontSize = MathUtils.lerp(
+    layout.lead[1].fontSize,
+    isPortrait
+      ? HERO_PURPOSE_LAYOUTS.mobile.lead[1].fontSize
+      : layout.lead[1].fontSize,
+    mobileLeadScale,
+  );
 
   context.save();
   context.globalAlpha = opacity;
@@ -360,37 +374,21 @@ function drawStatementContent(
     layout.label.tracking,
   );
 
-  if (isPortrait) {
-    context.fillStyle = GREEN;
-    context.font = `400 ${layout.lead[0].fontSize}px ${fontFamilies.legacy}`;
-    context.fillText(
-      heroStatement.leadLines[0],
-      layout.lead[0].x,
-      layout.lead[0].y + offsetY,
-    );
-    context.font = `400 ${layout.lead[1].fontSize}px ${fontFamilies.legacy}`;
-    context.fillText(
-      heroStatement.leadLines[1],
-      layout.lead[1].x,
-      layout.lead[1].y + offsetY,
-    );
-  } else {
-    context.fillStyle = CREAM;
-    context.font = `400 ${layout.lead[0].fontSize}px ${fontFamilies.tanHeadline}`;
-    context.fillText(
-      heroStatement.leadLines[0],
-      layout.lead[0].x,
-      layout.lead[0].y + offsetY,
-    );
-    context.font = `400 ${layout.lead[1].fontSize}px ${fontFamilies.montserrat}`;
-    drawTrackedText(
-      context,
-      heroStatement.leadLines[1],
-      layout.lead[1].x,
-      layout.lead[1].y + offsetY,
-      layout.lead[1].tracking,
-    );
-  }
+  context.fillStyle = isPortrait ? GREEN : CREAM;
+  context.font = `400 ${layout.lead[0].fontSize}px ${fontFamilies.apparel}`;
+  context.fillText(
+    heroStatement.leadLines[0],
+    layout.lead[0].x,
+    layout.lead[0].y + offsetY,
+  );
+  context.font = `400 ${leadTwoFontSize}px ${fontFamilies.apparel}`;
+  drawTrackedText(
+    context,
+    heroStatement.leadLines[1],
+    layout.lead[1].x,
+    layout.lead[1].y + offsetY,
+    layout.lead[1].tracking,
+  );
 
   if (layout.stackRule) {
     context.fillStyle = GOLD;
@@ -403,9 +401,7 @@ function drawStatementContent(
   }
 
   context.fillStyle = GREEN;
-  context.font = `400 ${layout.support.fontSize}px ${
-    isPortrait ? fontFamilies.legacy : fontFamilies.kommon
-  }`;
+  context.font = `400 ${layout.support.fontSize}px ${fontFamilies.kommon}`;
   heroStatement.closeLines.forEach((line, index) => {
     drawTrackedText(
       context,
@@ -451,6 +447,8 @@ function drawStatementArtwork(
     fontFamilies,
     isPortrait,
     contentOpacity,
+    0,
+    progress,
   );
 }
 
@@ -559,8 +557,8 @@ function drawStatementTransition(
   const { width, height } = HERO_DISPLAY_TEXTURE_SIZE;
   const bazaarPanelX = isPortrait ? 548 : 568;
   const layout = isPortrait
-    ? HERO_PURPOSE_LAYOUTS.mobile
-    : HERO_PURPOSE_LAYOUTS.desktop;
+    ? HERO_PURPOSE_CANVAS_LAYOUTS.mobile
+    : HERO_PURPOSE_CANVAS_LAYOUTS.desktop;
   const transition = clamp(progress);
   const greenEdge = MathUtils.lerp(
     bazaarPanelX,
@@ -580,6 +578,10 @@ function drawStatementTransition(
     assets.logo,
     isPortrait,
   );
+  context.globalAlpha = transition;
+  context.fillStyle = GREEN;
+  context.fillRect(0, 0, bazaarPanelX, height);
+  context.globalAlpha = 1;
   context.fillStyle = GREEN;
   context.fillRect(bazaarPanelX, 0, greenEdge - bazaarPanelX, height);
   context.fillStyle = CREAM;
@@ -607,15 +609,26 @@ function drawStatementTransition(
   );
 }
 
-export function getHeroDisplayDrawProgress(progress: number) {
+export function getHeroDisplayDrawProgress(
+  progress: number,
+  isPortrait: boolean,
+) {
   if (progress <= BRAND_TO_PHOTO.start) {
     return 0;
   }
 
+  const handoff = isPortrait
+    ? HERO_PURPOSE_HANDOFF_WINDOWS.mobile
+    : HERO_PURPOSE_HANDOFF_WINDOWS.desktop;
+
   if (
     progress >= PHOTO_TO_STATEMENT.end &&
-    progress < HERO_PURPOSE_HANDOFF_WINDOWS.mobile.canvasContentOut.start
+    progress < handoff.canvasContentOut.start
   ) {
+    if (isPortrait && progress >= 0.8) {
+      return Math.round(progress * 240) / 240;
+    }
+
     return PHOTO_TO_STATEMENT.end;
   }
 
@@ -649,7 +662,10 @@ export function createHeroDisplayTexture(
     .getPropertyValue("--font-newsreader")
     .trim();
   const fontFamilies: HeroDisplayFontFamilies = {
-    legacy: displayFont || "Georgia, serif",
+    apparel:
+      rootStyles.getPropertyValue("--font-hero-apparel").trim() ||
+      displayFont ||
+      "Georgia, serif",
     kommon:
       rootStyles.getPropertyValue("--font-hero-kommon").trim() ||
       "Arial, Helvetica, sans-serif",

@@ -356,13 +356,13 @@
     position: absolute;
     inset-block-start: 50%;
     inset-inline-start: 50%;
-    width: max(111.4812vw, 192.9255vh);
-    height: max(111.4812vh, 64.4193vw);
+    width: max(107.4vw, 185.8627vh);
+    height: max(107.4vh, 62.061vw);
     overflow: hidden;
     background: linear-gradient(
       to right,
-      #013609 0 var(--purpose-desktop-green-end),
-      #f4ede2 var(--purpose-desktop-green-end) 100%
+      var(--mes-deep-green) 0 var(--purpose-desktop-green-end),
+      var(--mes-cream-soft) var(--purpose-desktop-green-end) 100%
     );
     transform: translate3d(
       var(--hero-artboard-translate-x, -50%),
@@ -608,21 +608,17 @@ body:has(.hero-static) .site-header__cta:hover {
   color: var(--mes-cream-soft);
 }
 
+.hero-screen-artboard__statement-lead.font-display {
+  font-family: var(--font-hero-apparel), Didot, "Bodoni MT", serif;
+  font-synthesis: none;
+}
+
+.hero-screen-artboard__statement-close.font-display {
+  font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+  font-synthesis: none;
+}
+
 @media (min-width: 48rem) {
-  .hero-screen-artboard__statement-lead.font-display {
-    font-family: var(--font-laptop-tan-headline), Georgia, serif;
-    font-synthesis: none;
-  }
-
-  .hero-screen-artboard__statement-lead span:last-child {
-    font-family: var(--font-laptop-montserrat), Arial, Helvetica, sans-serif;
-  }
-
-  .hero-screen-artboard__statement-close.font-display {
-    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
-    font-synthesis: none;
-    letter-spacing: var(--purpose-desktop-support-tracking);
-  }
 
   body:has(.hero-static) .hero-static__line--muslim {
     inset-block-start: calc(var(--nav-height) + clamp(4.5rem, 8vh, 5.5rem));
@@ -891,13 +887,15 @@ body:has(.hero-static) .site-header__cta:hover {
     .hero-screen-artboard {
       background: linear-gradient(
         to right,
-        #013609 0 var(--purpose-mobile-green-end),
-        #f4ede2 var(--purpose-mobile-green-end) 100%
+        var(--mes-deep-green) 0 var(--purpose-mobile-green-end),
+        var(--mes-cream-soft) var(--purpose-mobile-green-end) 100%
       );
     }
 
     .hero-screen-artboard__divider {
-      display: none;
+      inset-inline-start: var(--purpose-mobile-divider-x);
+      display: block;
+      width: var(--purpose-mobile-divider-width);
     }
 
     .hero-screen-artboard__utility {
