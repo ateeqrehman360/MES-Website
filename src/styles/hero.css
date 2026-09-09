@@ -45,6 +45,11 @@
     white-space: nowrap;
   }
 
+  .hero-static__title-stack {
+    position: absolute;
+    inset: 0;
+  }
+
   .hero-static__line--muslim {
     inset-block-start: calc(var(--nav-height) + clamp(5rem, 9vh, 6rem));
     inset-inline-start: 5vw;
@@ -1128,5 +1133,46 @@ body:has(.hero-static) .site-header__cta:hover {
     .hero-static__line--muslim {
       inset-block-start: calc(var(--nav-height) + 1.5rem);
     }
+  }
+}
+
+@media (min-width: 48rem) and (min-aspect-ratio: 4 / 3) {
+  body:has(.hero-static) .hero-static__title-stack {
+    /* Keep the approved desktop coordinates where they already have room,
+       but never let viewport-height math collapse the optical separation. */
+    --hero-title-stack-gap: max(
+      1rem,
+      calc(
+        clamp(18rem, 36vh, 22.5rem) + 1rem -
+          clamp(4.5rem, 8vh, 5.5rem) - min(18.05vw, 16.34rem)
+      )
+    );
+    inset-block-start: calc(
+      var(--nav-height) + clamp(4.5rem, 8vh, 5.5rem)
+    );
+    inset-block-end: auto;
+    inset-inline-start: calc(5vw - 1rem);
+    inset-inline-end: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  body:has(.hero-static) .hero-static__line--muslim {
+    position: relative;
+    inset-block-start: auto;
+    inset-block-end: auto;
+    inset-inline-start: auto;
+    inset-inline-end: auto;
+  }
+
+  body:has(.hero-static) .hero-static__line--entrepreneurs-desktop {
+    position: relative;
+    inset-block-start: auto;
+    inset-block-end: auto;
+    inset-inline-start: auto;
+    inset-inline-end: auto;
+    margin-block-start: var(--hero-title-stack-gap);
+    margin-inline-start: calc(0.75vw + 1rem);
   }
 }
