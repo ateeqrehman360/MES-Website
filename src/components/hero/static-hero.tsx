@@ -262,23 +262,16 @@ export function StaticHero() {
             aria-label="Muslim Entrepreneurs"
             className="hero-static__title font-display"
           >
-            <span
-              className="hero-static__line hero-static__line--muslim"
-              aria-hidden="true"
-            >
-              Muslim
-            </span>
-            <span
-              className="hero-static__line hero-static__line--entrepreneurs-desktop"
-              aria-hidden="true"
-            >
-              Entrepreneurs
-            </span>
-            <span
-              className="hero-static__line hero-static__line--entrepreneurs-mobile"
-              aria-hidden="true"
-            >
-              Entrepreneurs
+            <span className="hero-static__title-stack" aria-hidden="true">
+              <span className="hero-static__line hero-static__line--muslim">
+                Muslim
+              </span>
+              <span className="hero-static__line hero-static__line--entrepreneurs-desktop">
+                Entrepreneurs
+              </span>
+              <span className="hero-static__line hero-static__line--entrepreneurs-mobile">
+                Entrepreneurs
+              </span>
             </span>
           </h1>
 
