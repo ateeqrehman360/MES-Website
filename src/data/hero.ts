@@ -17,7 +17,8 @@ export const heroPhotography = [
 ] as const;
 
 export const heroStatement = {
+  label: "OUR PURPOSE",
   leadLines: ["Built by", "Muslims."],
   closeLines: ["For Muslims", "with ambition."],
-  accessibleText: "Built by Muslims. For Muslims with ambition.",
+  accessibleText: "Our purpose. Built by Muslims. For Muslims with ambition.",
 } as const;

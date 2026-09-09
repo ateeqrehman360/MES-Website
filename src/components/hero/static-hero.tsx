@@ -1,12 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, type CSSProperties } from "react";
 
 import { heroPhotography, heroStatement } from "@/data/hero";
 
 import { HeroCanvasLoader } from "./hero-canvas-loader";
 import { createHeroProgressSignal } from "./hero-progress";
+import {
+  HERO_PURPOSE_ARTBOARD_STYLE,
+  HERO_PURPOSE_HANDOFF_WINDOWS,
+} from "./hero-purpose-layout";
 
 const DISPLAY_ASPECT = 1246 / 720;
 const SCREEN_OVERSCAN = 1.074;
@@ -27,18 +31,23 @@ function HeroStatementArtboard({ continuation = false }) {
       className={`hero-screen-artboard${
         continuation ? " hero-screen-artboard--continuation" : ""
       }`}
+      style={HERO_PURPOSE_ARTBOARD_STYLE as CSSProperties}
     >
       {continuation ? (
         <p className="sr-only">{heroStatement.accessibleText}</p>
       ) : null}
+      <span className="hero-screen-artboard__divider" aria-hidden="true" />
       <div className="hero-screen-artboard__content" aria-hidden="true">
-        <span className="hero-screen-artboard__accent" />
+        <div className="hero-screen-artboard__utility">
+          <span className="hero-screen-artboard__utility-rule" />
+          <span>{heroStatement.label}</span>
+        </div>
         <div className="hero-screen-artboard__statement-lead font-display">
           {heroStatement.leadLines.map((line) => (
             <span key={line}>{line}</span>
           ))}
         </div>
-        <span className="hero-screen-artboard__rule" />
+        <span className="hero-screen-artboard__stack-rule" />
         <div className="hero-screen-artboard__statement-close font-display">
           {heroStatement.closeLines.map((line) => (
             <span key={line}>{line}</span>
@@ -129,6 +138,19 @@ export function StaticHero() {
         isDesktop ? 0.94 : 0.9,
         isDesktop ? 0.99 : 0.97,
       );
+      const purposeHandoff = isDesktop
+        ? HERO_PURPOSE_HANDOFF_WINDOWS.desktop
+        : HERO_PURPOSE_HANDOFF_WINDOWS.mobile;
+      const takeoverContent = smoothSegment(
+        rawProgress,
+        purposeHandoff.domContentIn.start,
+        purposeHandoff.domContentIn.end,
+      );
+      const takeoverDivider = smoothSegment(
+        rawProgress,
+        purposeHandoff.domDividerIn.start,
+        purposeHandoff.domDividerIn.end,
+      );
       const canvasExit = smoothSegment(
         rawProgress,
         isDesktop ? 0.99 : 0.97,
@@ -161,6 +183,14 @@ export function StaticHero() {
       stage.style.setProperty("--hero-title-progress", titleExit.toFixed(4));
       stage.style.setProperty("--hero-title-opacity", (1 - titleExit).toFixed(4));
       stage.style.setProperty("--hero-takeover-opacity", takeover.toFixed(4));
+      stage.style.setProperty(
+        "--hero-takeover-content-opacity",
+        takeoverContent.toFixed(4),
+      );
+      stage.style.setProperty(
+        "--hero-takeover-divider-opacity",
+        takeoverDivider.toFixed(4),
+      );
       stage.style.setProperty("--hero-canvas-opacity", (1 - canvasExit).toFixed(4));
       document.documentElement.style.setProperty(
         "--hero-artboard-translate-x",
