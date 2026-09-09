@@ -545,6 +545,14 @@ body:has(.home-content[data-content-navigation="visible"])
   }
 }
 
+@media (max-width: 47.999rem) {
+  @layer components {
+    .home-content {
+      margin-block-start: -85svh;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   @layer components {
     .home-content {
