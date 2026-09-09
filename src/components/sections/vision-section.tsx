@@ -16,8 +16,6 @@ export function VisionSection() {
   return (
     <VisionMotion>
       <div className="site-container vision__inner">
-        <p className="home-section-label vision__label">Our purpose</p>
-
         <div className="vision__passages">
           <h2 id="vision-title" className="vision__mission">
             <span className="sr-only">

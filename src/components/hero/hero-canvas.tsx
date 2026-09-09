@@ -378,12 +378,15 @@ function LaptopModel({
       displayTexture.setPhotograph(index, image);
     });
 
-    const artworkProgress = getHeroDisplayDrawProgress(progress.value);
+    const artworkProgress = getHeroDisplayDrawProgress(
+      progress.value,
+      isPortrait,
+    );
 
     displayTexture.draw(artworkProgress);
     lastArtworkProgress.current = artworkProgress;
     invalidate();
-  }, [displayTexture, invalidate, photographyRevision, progress]);
+  }, [displayTexture, invalidate, isPortrait, photographyRevision, progress]);
 
   useEffect(() => {
     if (!displayTexture) {
@@ -397,7 +400,10 @@ function LaptopModel({
         return;
       }
 
-      const artworkProgress = getHeroDisplayDrawProgress(progress.value);
+      const artworkProgress = getHeroDisplayDrawProgress(
+        progress.value,
+        isPortrait,
+      );
 
       displayTexture.draw(artworkProgress);
       lastArtworkProgress.current = artworkProgress;
@@ -407,14 +413,17 @@ function LaptopModel({
     return () => {
       isActive = false;
     };
-  }, [displayTexture, invalidate, progress]);
+  }, [displayTexture, invalidate, isPortrait, progress]);
 
   useFrame(() => {
     if (!displayTexture) {
       return;
     }
 
-    const artworkProgress = getHeroDisplayDrawProgress(progress.value);
+    const artworkProgress = getHeroDisplayDrawProgress(
+      progress.value,
+      isPortrait,
+    );
 
     if (Math.abs(artworkProgress - lastArtworkProgress.current) < 0.001) {
       return;

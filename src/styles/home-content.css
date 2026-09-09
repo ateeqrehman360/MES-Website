@@ -37,12 +37,7 @@
     scroll-margin-block-start: var(--nav-height);
   }
 
-  .vision__label {
-    margin-block-end: 1.125rem;
-  }
-
   /* Keep the still copy above the transforming text's paint layer. */
-  .vision__label,
   .vision__support {
     position: relative;
     z-index: 1;
@@ -384,14 +379,9 @@ body:has(.home-content[data-content-navigation="visible"])
       row-gap: 2rem;
     }
 
-    .vision__label {
-      grid-column: 1 / -1;
-      margin: 0;
-    }
-
     .vision__passages {
       grid-column: 1 / -1;
-      grid-row: 2;
+      grid-row: 1;
     }
 
     .vision__word--lead,
@@ -453,7 +443,7 @@ body:has(.home-content[data-content-navigation="visible"])
 
     .vision__support {
       grid-column: 1 / 5;
-      grid-row: 2;
+      grid-row: 1;
       align-self: end;
       margin: 0 0 0.25rem;
       font-size: clamp(1.125rem, 1.5vw, 1.375rem);
