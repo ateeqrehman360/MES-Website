@@ -29,17 +29,19 @@ function HeroStatementArtboard({ continuation = false }) {
       }`}
     >
       {continuation ? (
-        <p className="sr-only">{heroStatement.accessibleText}</p>
+        <h2 className="sr-only">Our purpose. {heroStatement.accessibleText}</h2>
       ) : null}
       <div className="hero-screen-artboard__content" aria-hidden="true">
-        <span className="hero-screen-artboard__accent" />
-        <div className="hero-screen-artboard__statement-lead font-display">
+        <p className="hero-screen-artboard__purpose-label">
+          <span className="hero-screen-artboard__purpose-label-rule" />
+          <span>Our purpose</span>
+        </p>
+        <div className="hero-screen-artboard__statement-lead">
           {heroStatement.leadLines.map((line) => (
             <span key={line}>{line}</span>
           ))}
         </div>
-        <span className="hero-screen-artboard__rule" />
-        <div className="hero-screen-artboard__statement-close font-display">
+        <div className="hero-screen-artboard__statement-close">
           {heroStatement.closeLines.map((line) => (
             <span key={line}>{line}</span>
           ))}
