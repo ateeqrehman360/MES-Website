@@ -1,4 +1,5 @@
 import { AboutHero } from "@/components/sections/about-hero";
+import { JourneySection } from "@/components/sections/journey-section";
 import { createPageMetadata } from "@/lib/metadata";
 
 const description =
@@ -7,5 +8,10 @@ const description =
 export const metadata = createPageMetadata("About", description);
 
 export default function AboutPage() {
-  return <AboutHero />;
+  return (
+    <>
+      <AboutHero />
+      <JourneySection />
+    </>
+  );
 }

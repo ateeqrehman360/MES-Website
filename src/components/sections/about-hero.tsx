@@ -29,7 +29,8 @@ export function AboutHero() {
             width={900}
             height={1600}
             sizes="(min-width: 64rem) 26vw, (min-width: 48rem) 30vw, 72vw"
-            priority
+            loading="eager"
+            fetchPriority="high"
             className="about-hero__image"
           />
         </figure>
