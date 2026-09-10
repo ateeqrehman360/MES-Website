@@ -7,6 +7,11 @@ type Point = Readonly<{
   y: number;
 }>;
 
+type PathSample = Point &
+  Readonly<{
+    length: number;
+  }>;
+
 function clamp(value: number, minimum = 0, maximum = 1) {
   return Math.min(maximum, Math.max(minimum, value));
 }
@@ -22,26 +27,47 @@ function createJourneyPath(points: readonly Point[]) {
   }, `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`);
 }
 
-function findLengthAtY(
-  path: SVGPathElement,
-  pathLength: number,
-  targetY: number,
-) {
+function createPathLookup(path: SVGPathElement, pathLength: number) {
+  const sampleCount = Math.max(2, Math.ceil(pathLength / 4));
+
+  return Array.from({ length: sampleCount + 1 }, (_, index) => {
+    const length = (pathLength * index) / sampleCount;
+    const point = path.getPointAtLength(length);
+
+    return { x: point.x, y: point.y, length };
+  });
+}
+
+function findLengthAtY(samples: readonly PathSample[], targetY: number) {
+  if (samples.length < 2) return 0;
+  if (targetY <= samples[0].y) return samples[0].length;
+
+  const finalSample = samples[samples.length - 1];
+  if (targetY >= finalSample.y) return finalSample.length;
+
   let lower = 0;
-  let upper = pathLength;
+  let upper = samples.length - 1;
 
-  for (let index = 0; index < 14; index += 1) {
-    const midpoint = (lower + upper) * 0.5;
-    const point = path.getPointAtLength(midpoint);
+  while (upper - lower > 1) {
+    const midpoint = Math.floor((lower + upper) * 0.5);
 
-    if (point.y < targetY) {
+    if (samples[midpoint].y < targetY) {
       lower = midpoint;
     } else {
       upper = midpoint;
     }
   }
 
-  return (lower + upper) * 0.5;
+  const lowerSample = samples[lower];
+  const upperSample = samples[upper];
+  const yDistance = upperSample.y - lowerSample.y;
+  const localProgress =
+    yDistance > 0 ? clamp((targetY - lowerSample.y) / yDistance) : 0;
+
+  return (
+    lowerSample.length +
+    (upperSample.length - lowerSample.length) * localProgress
+  );
 }
 
 export function JourneyMotion({ children }: { children: ReactNode }) {
@@ -68,7 +94,9 @@ export function JourneyMotion({ children }: { children: ReactNode }) {
     );
     let animationFrame = 0;
     let geometryNeedsUpdate = true;
+    let geometrySignature = "";
     let pathLength = 0;
+    let pathLookup: readonly PathSample[] = [];
     let disposed = false;
 
     const measurePath = () => {
@@ -99,6 +127,16 @@ export function JourneyMotion({ children }: { children: ReactNode }) {
         { x: endingPoint.x, y: stageHeight },
       ];
       const pathData = createJourneyPath(points);
+      const nextGeometrySignature = `${stageWidth}:${stageHeight}:${pathData}`;
+
+      if (
+        nextGeometrySignature === geometrySignature &&
+        pathLength > 0 &&
+        pathLookup.length > 1
+      ) {
+        geometryNeedsUpdate = false;
+        return;
+      }
 
       svg.setAttribute("width", `${stageWidth}`);
       svg.setAttribute("height", `${stageHeight}`);
@@ -107,10 +145,9 @@ export function JourneyMotion({ children }: { children: ReactNode }) {
       basePath.setAttribute("d", pathData);
       progressPath.setAttribute("d", pathData);
       pathLength = progressPath.getTotalLength();
+      pathLookup = createPathLookup(progressPath, pathLength);
       progressPath.style.strokeDasharray = `${pathLength}`;
-      progressPath.style.strokeDashoffset = reducedMotionQuery.matches
-        ? "0"
-        : `${pathLength}`;
+      geometrySignature = nextGeometrySignature;
       geometryNeedsUpdate = false;
     };
 
@@ -136,11 +173,7 @@ export function JourneyMotion({ children }: { children: ReactNode }) {
       const stageBounds = stage.getBoundingClientRect();
       const readingLine = window.innerHeight * 0.66;
       const revealedY = clamp(readingLine - stageBounds.top, 0, stageBounds.height);
-      const revealedLength = findLengthAtY(
-        progressPath,
-        pathLength,
-        revealedY,
-      );
+      const revealedLength = findLengthAtY(pathLookup, revealedY);
       const progress = clamp(revealedLength / pathLength);
 
       stage.style.setProperty("--journey-progress", progress.toFixed(4));
@@ -180,8 +213,17 @@ export function JourneyMotion({ children }: { children: ReactNode }) {
       "ResizeObserver" in window
         ? new ResizeObserver(() => scheduleUpdate(true))
         : null;
+    const milestoneElements = nodes
+      .map((node) =>
+        node.closest<HTMLElement>("[data-journey-milestone]"),
+      )
+      .filter((milestone): milestone is HTMLElement => milestone !== null);
+    const journeyImages = Array.from(
+      stage.querySelectorAll<HTMLImageElement>(".journey__media img"),
+    );
     const handleScroll = () => scheduleUpdate();
     const handleResize = () => scheduleUpdate(true);
+    const handleAssetLoad = () => scheduleUpdate(true);
     const handleMotionPreference = () => scheduleUpdate(true);
     const supportsModernMotionListener =
       typeof reducedMotionQuery.addEventListener === "function";
@@ -190,8 +232,13 @@ export function JourneyMotion({ children }: { children: ReactNode }) {
     update();
 
     resizeObserver?.observe(stage);
+    milestoneElements.forEach((milestone) => resizeObserver?.observe(milestone));
+    journeyImages.forEach((image) => {
+      image.addEventListener("load", handleAssetLoad, { once: true });
+    });
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", handleResize);
+    window.addEventListener("orientationchange", handleResize);
     if (supportsModernMotionListener) {
       reducedMotionQuery.addEventListener("change", handleMotionPreference);
     } else {
@@ -205,6 +252,10 @@ export function JourneyMotion({ children }: { children: ReactNode }) {
       resizeObserver?.disconnect();
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("orientationchange", handleResize);
+      journeyImages.forEach((image) => {
+        image.removeEventListener("load", handleAssetLoad);
+      });
       if (supportsModernMotionListener) {
         reducedMotionQuery.removeEventListener("change", handleMotionPreference);
       } else {

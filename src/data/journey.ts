@@ -34,7 +34,11 @@ export type JourneyMilestone = Readonly<{
   route: JourneyRoutePosition;
   image?: JourneyMilestoneImage;
   supportingDetails?: readonly JourneySupportingDetail[];
+  speakers?: readonly string[];
 }>;
+
+const journeyImageBlurDataURL =
+  "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
 export const journeyMilestones = [
   {
@@ -96,7 +100,7 @@ export const journeyMilestones = [
     date: "November 2025",
     dateTime: "2025-11",
     title: "Halal Business Series",
-    description: "A landmark session with Ibrahim Khan.",
+    description: "Three events across three weeks, with 60+ attendees at each.",
     importance: "major",
     placement: "media-left",
     route: "centre",
@@ -107,10 +111,17 @@ export const journeyMilestones = [
       height: 1200,
       kind: "photo",
       objectPosition: "center 58%",
+      blurDataURL: journeyImageBlurDataURL,
     },
     supportingDetails: [
-      { value: "60", label: "attendees" },
-      { value: "£1,400", label: "raised" },
+      { value: "3", label: "weeks" },
+      { value: "3", label: "events" },
+      { value: "60+", label: "attendees per event" },
+    ],
+    speakers: [
+      "Omar DaCosta-Shahid",
+      "Ibrahim Khan (IFG)",
+      "Shaykh Dr. Mostafa al-Shaybani",
     ],
   },
   {
@@ -129,10 +140,13 @@ export const journeyMilestones = [
       height: 1600,
       kind: "photo",
       objectPosition: "center 50%",
-      blurDataURL:
-        "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+      blurDataURL: journeyImageBlurDataURL,
     },
-    supportingDetails: [{ value: "15", label: "stalls" }],
+    supportingDetails: [
+      { value: "15", label: "stalls" },
+      { value: "300+", label: "attendees" },
+      { value: "£1,400", label: "raised" },
+    ],
   },
   {
     id: "independent-mmu-society",

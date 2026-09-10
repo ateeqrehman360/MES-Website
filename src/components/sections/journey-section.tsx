@@ -66,6 +66,17 @@ export function JourneySection() {
                       ))}
                     </dl>
                   ) : null}
+
+                  {milestone.speakers ? (
+                    <div className="journey__speakers">
+                      <p>Speakers</p>
+                      <ul>
+                        {milestone.speakers.map((speaker) => (
+                          <li key={speaker}>{speaker}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
                 </article>
 
                 {milestone.image ? (
@@ -81,7 +92,7 @@ export function JourneySection() {
                       sizes={
                         milestone.image.kind === "photo"
                           ? "(min-width: 80rem) 34vw, (min-width: 48rem) 38vw, calc(100vw - 5.5rem)"
-                          : "(min-width: 48rem) 10rem, 7rem"
+                          : "(min-width: 80rem) 11rem, (min-width: 48rem) 10.5rem, 9rem"
                       }
                       loading="lazy"
                       placeholder={
