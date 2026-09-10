@@ -1,11 +1,11 @@
-import { FoundationPage } from "@/components/sections/foundation-page";
+import { AboutHero } from "@/components/sections/about-hero";
 import { createPageMetadata } from "@/lib/metadata";
 
 const description =
-  "This page will introduce the Muslim Entrepreneurs society at Manchester Metropolitan University in a later implementation phase.";
+  "The Muslim Entrepreneurs Society at Manchester Metropolitan University, founded in 2024.";
 
 export const metadata = createPageMetadata("About", description);
 
 export default function AboutPage() {
-  return <FoundationPage title="About" description={description} />;
+  return <AboutHero />;
 }

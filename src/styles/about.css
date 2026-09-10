@@ -1,0 +1,303 @@
+@layer components {
+  .about-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    border-block-end: 1px solid var(--mes-border);
+    background: var(--mes-cream);
+    color: var(--mes-green-ink);
+  }
+
+  .about-hero__inner {
+    min-height: calc(100svh - var(--nav-height));
+    display: grid;
+    grid-template-areas:
+      "eyebrow"
+      "title"
+      "media"
+      "support"
+      "journey";
+    align-content: start;
+    padding-block: clamp(1.75rem, 4.5svh, 3.75rem) 1.25rem;
+  }
+
+  .about-hero__eyebrow,
+  .about-hero__journey-cue {
+    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .about-hero__eyebrow {
+    grid-area: eyebrow;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    color: var(--mes-deep-green);
+  }
+
+  .about-hero__eyebrow::before {
+    content: "";
+    width: 2.5rem;
+    height: 1px;
+    background: var(--mes-gold);
+  }
+
+  .about-hero__title {
+    grid-area: title;
+    max-width: 10ch;
+    margin: clamp(1.75rem, 4svh, 3rem) 0 0;
+    font-family: var(--font-hero-apparel), Georgia, serif;
+    font-size: clamp(2.95rem, 13.5vw, 4.55rem);
+    font-weight: 400;
+    letter-spacing: -0.055em;
+    line-height: 0.86;
+    text-wrap: balance;
+  }
+
+  .about-hero__title-layout,
+  .about-hero__title-line {
+    display: block;
+  }
+
+  .about-hero__title-line--accent {
+    color: var(--mes-muted-green-deep);
+  }
+
+  .about-hero__media {
+    position: relative;
+    z-index: 0;
+    grid-area: media;
+    width: min(72%, 22rem);
+    margin: clamp(1.5rem, 4svh, 2.5rem) 0 0 auto;
+  }
+
+  .about-hero__media::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 12%;
+    inset-inline-start: -0.5rem;
+    z-index: 1;
+    width: 1px;
+    height: 48%;
+    background: var(--mes-gold);
+  }
+
+  .about-hero__image {
+    display: block;
+    width: 100%;
+    height: clamp(10.75rem, 34svh, 17.5rem);
+    object-fit: cover;
+    object-position: center 54%;
+  }
+
+  .about-hero__support {
+    position: relative;
+    z-index: 1;
+    grid-area: support;
+    width: min(88%, 31rem);
+    margin: clamp(-3.25rem, -7svh, -2.25rem) auto 0 0;
+    padding: 1rem 1.5rem 0 0;
+    background: var(--mes-cream);
+    color: rgb(1 54 9 / 88%);
+    font-size: clamp(0.9375rem, 0.86rem + 0.45vw, 1.0625rem);
+    font-weight: 500;
+    letter-spacing: -0.018em;
+    line-height: 1.58;
+    text-wrap: pretty;
+  }
+
+  .about-hero__journey-cue {
+    grid-area: journey;
+    align-self: end;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-block-start: clamp(1.5rem, 4svh, 2.5rem);
+    color: var(--mes-deep-green);
+  }
+
+  .about-hero__journey-rule {
+    width: 2.5rem;
+    height: 1px;
+    background: var(--mes-gold);
+  }
+
+  @media (min-width: 48rem) {
+    .about-hero__inner {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      grid-template-areas:
+        "eyebrow eyebrow eyebrow eyebrow eyebrow eyebrow"
+        "title title title title title title"
+        "support support support support media media"
+        "journey journey journey journey journey journey";
+      column-gap: clamp(1rem, 2vw, 1.5rem);
+      padding-block-end: 1.75rem;
+    }
+
+    .about-hero__title {
+      max-width: 11ch;
+      margin-block-start: clamp(2.25rem, 5svh, 3.75rem);
+      font-size: clamp(4.35rem, 9.2vw, 6.25rem);
+    }
+
+    .about-hero__title-line {
+      white-space: nowrap;
+    }
+
+    .about-hero__media {
+      align-self: end;
+      width: 100%;
+      margin: clamp(2rem, 5svh, 3.5rem) 0 0;
+    }
+
+    .about-hero__image {
+      height: clamp(21rem, 45svh, 30rem);
+    }
+
+    .about-hero__support {
+      align-self: end;
+      width: min(100%, 24rem);
+      margin: 0;
+      padding: 0 2rem 0 0;
+      background: transparent;
+      font-size: clamp(1rem, 0.92rem + 0.4vw, 1.125rem);
+    }
+
+    .about-hero__journey-cue {
+      justify-self: end;
+      margin-block-start: clamp(1.5rem, 4svh, 2.5rem);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .about-hero__inner {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      grid-template-areas:
+        "eyebrow eyebrow . . . . . . . media media media"
+        "title title title title title title title title title media media media"
+        ". support support support support support . . . journey journey journey";
+      column-gap: clamp(1rem, 1.7vw, 1.5rem);
+      align-content: stretch;
+      padding-block: clamp(2rem, 4.5svh, 3.75rem) 1.75rem;
+    }
+
+    .about-hero__eyebrow {
+      align-self: start;
+    }
+
+    .about-hero__title {
+      align-self: center;
+      max-width: none;
+      margin: 0;
+      font-size: clamp(5.15rem, 7.25vw, 8.25rem);
+    }
+
+    .about-hero__media {
+      align-self: stretch;
+      width: 100%;
+      min-height: 0;
+      margin: 0;
+    }
+
+    .about-hero__image {
+      width: 100%;
+      height: clamp(
+        24rem,
+        calc(100svh - var(--nav-height) - 15rem),
+        42rem
+      );
+      min-height: 0;
+      max-height: none;
+    }
+
+    .about-hero__support {
+      align-self: end;
+      max-width: 25rem;
+      padding: 1.125rem 0 0;
+      border-block-start: 1px solid var(--mes-border);
+      font-size: clamp(1rem, 0.9rem + 0.48vw, 1.1875rem);
+    }
+
+    .about-hero__journey-cue {
+      align-self: end;
+      justify-self: end;
+      margin: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .about-hero__eyebrow {
+      animation: about-hero-fade-up 520ms var(--ease-premium) 90ms both;
+    }
+
+    .about-hero__title-line {
+      animation: about-hero-line-reveal 700ms var(--ease-premium) both;
+    }
+
+    .about-hero__title-line:nth-child(1) {
+      animation-delay: 150ms;
+    }
+
+    .about-hero__title-line:nth-child(2) {
+      animation-delay: 215ms;
+    }
+
+    .about-hero__title-line:nth-child(3) {
+      animation-delay: 280ms;
+    }
+
+    .about-hero__media {
+      animation: about-hero-image-reveal 760ms var(--ease-premium) 220ms both;
+    }
+
+    .about-hero__support {
+      animation: about-hero-fade-up 560ms var(--ease-premium) 360ms both;
+    }
+
+    .about-hero__journey-cue {
+      animation: about-hero-fade-up 480ms var(--ease-premium) 440ms both;
+    }
+  }
+
+  @keyframes about-hero-fade-up {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 0.75rem, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes about-hero-line-reveal {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 0.8em, 0);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes about-hero-image-reveal {
+    from {
+      opacity: 0;
+      clip-path: inset(0 0 100% 0);
+    }
+
+    to {
+      opacity: 1;
+      clip-path: inset(0 0 0 0);
+    }
+  }
+}
