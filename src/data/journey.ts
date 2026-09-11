@@ -8,6 +8,13 @@ export type JourneyMilestonePlacement =
 
 export type JourneyRoutePosition = "left" | "centre" | "right";
 
+export type JourneyMobileRoutePosition =
+  | "outer"
+  | "near"
+  | "middle"
+  | "inner"
+  | "lead";
+
 export type JourneyMilestoneImage = Readonly<{
   src: string;
   alt: string;
@@ -32,6 +39,7 @@ export type JourneyMilestone = Readonly<{
   importance: JourneyMilestoneImportance;
   placement: JourneyMilestonePlacement;
   route: JourneyRoutePosition;
+  mobileRoute: JourneyMobileRoutePosition;
   image?: JourneyMilestoneImage;
   supportingDetails?: readonly JourneySupportingDetail[];
   speakers?: readonly string[];
@@ -50,6 +58,7 @@ export const journeyMilestones = [
     importance: "major",
     placement: "copy-left",
     route: "centre",
+    mobileRoute: "outer",
   },
   {
     id: "entrepreneurs-society",
@@ -60,6 +69,7 @@ export const journeyMilestones = [
     importance: "minor",
     placement: "media-left",
     route: "left",
+    mobileRoute: "inner",
     image: {
       src: "/network/logos/partner-entrepreneurs_society.webp",
       alt: "Entrepreneurs Society logo.",
@@ -77,6 +87,7 @@ export const journeyMilestones = [
     importance: "major",
     placement: "copy-left",
     route: "right",
+    mobileRoute: "near",
   },
   {
     id: "mmu-isoc",
@@ -87,6 +98,7 @@ export const journeyMilestones = [
     importance: "minor",
     placement: "media-right",
     route: "left",
+    mobileRoute: "lead",
     image: {
       src: "/network/logos/partner-mmu_isoc.webp",
       alt: "MMU Islamic Society logo.",
@@ -104,6 +116,7 @@ export const journeyMilestones = [
     importance: "major",
     placement: "media-left",
     route: "centre",
+    mobileRoute: "middle",
     image: {
       src: "/hero/halal-business-series-audience.webp",
       alt: "An audience listening during an MES Halal Business Series event.",
@@ -133,6 +146,7 @@ export const journeyMilestones = [
     importance: "major",
     placement: "media-right",
     route: "left",
+    mobileRoute: "lead",
     image: {
       src: "/hero/ramadhan-bazaar-crowd.webp",
       alt: "Visitors browsing independent businesses at the MES Ramadhan Bazaar.",
@@ -158,5 +172,6 @@ export const journeyMilestones = [
     importance: "current",
     placement: "copy-right",
     route: "right",
+    mobileRoute: "middle",
   },
 ] satisfies readonly JourneyMilestone[];

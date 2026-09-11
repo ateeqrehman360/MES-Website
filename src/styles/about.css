@@ -384,6 +384,7 @@
 
   .journey__path-progress {
     stroke-width: 2;
+    will-change: stroke-dashoffset;
   }
 
   .journey__milestones {
@@ -395,17 +396,40 @@
   }
 
   .journey__milestone {
+    --journey-content-inset: 4rem;
+    --journey-mobile-node-x: 1.25rem;
     --journey-node-size: 0.875rem;
     position: relative;
     display: grid;
     gap: 1.4rem;
     padding-block: clamp(3.4rem, 14vw, 5rem);
-    padding-inline-start: 4rem;
+    padding-inline-start: var(--journey-content-inset);
+  }
+
+  .journey__milestone[data-mobile-route="outer"] {
+    --journey-mobile-node-x: 1.25rem;
+  }
+
+  .journey__milestone[data-mobile-route="near"] {
+    --journey-mobile-node-x: 1.5rem;
+  }
+
+  .journey__milestone[data-mobile-route="middle"] {
+    --journey-mobile-node-x: 1.875rem;
+  }
+
+  .journey__milestone[data-mobile-route="inner"] {
+    --journey-mobile-node-x: 2.125rem;
+  }
+
+  .journey__milestone[data-mobile-route="lead"] {
+    --journey-mobile-node-x: 2.625rem;
   }
 
   .journey__milestone[data-importance="minor"] {
     --journey-node-size: 0.625rem;
-    padding-block: clamp(2.25rem, 9vw, 3.25rem);
+    gap: 1.05rem;
+    padding-block: clamp(2rem, 7vw, 2.75rem);
   }
 
   .journey__milestone[data-importance="current"] {
@@ -416,7 +440,7 @@
   .journey__node {
     position: absolute;
     inset-block-start: clamp(4rem, 15vw, 5.25rem);
-    inset-inline-start: 1.25rem;
+    inset-inline-start: var(--journey-mobile-node-x);
     z-index: 4;
     width: var(--journey-node-size);
     height: var(--journey-node-size);
@@ -425,6 +449,28 @@
     background: var(--mes-cream);
     box-shadow: 0 0 0 0.55rem var(--mes-cream);
     transform: translate(-50%, -50%);
+  }
+
+  .journey__milestone[data-importance="major"] .journey__node::before,
+  .journey__milestone[data-importance="minor"] .journey__node::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: calc(100% + 0.25rem);
+    width: max(
+      0.45rem,
+      calc(
+        var(--journey-content-inset) - var(--journey-mobile-node-x) -
+          var(--journey-node-size) - 0.5rem
+      )
+    );
+    height: 1px;
+    background: rgb(194 146 49 / 62%);
+    transform: translateY(-50%);
+  }
+
+  .journey__milestone[data-importance="minor"] .journey__node::before {
+    background: rgb(97 140 93 / 55%);
   }
 
   .journey__milestone[data-importance="minor"] .journey__node {
@@ -723,7 +769,7 @@
   .journey__continuation-mark {
     position: absolute;
     inset-block-start: 50%;
-    inset-inline-start: 1.25rem;
+    inset-inline-start: 1.875rem;
     width: 2.5rem;
     height: 1px;
     background: var(--mes-gold);
@@ -786,6 +832,10 @@
     .journey__milestone[data-importance="minor"] .journey__node {
       inset-block-start: 50%;
       inset-inline-start: var(--journey-tablet-node-x);
+    }
+
+    .journey__node::before {
+      display: none;
     }
 
     .journey__milestone[data-placement="copy-left"] .journey__copy,
@@ -986,7 +1036,7 @@
     }
 
     .journey__milestone {
-      padding-inline-start: 3.6rem;
+      --journey-content-inset: 3.6rem;
     }
 
     .journey__copy h3 {

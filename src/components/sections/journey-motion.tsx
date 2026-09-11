@@ -146,7 +146,6 @@ export function JourneyMotion({ children }: { children: ReactNode }) {
       progressPath.setAttribute("d", pathData);
       pathLength = progressPath.getTotalLength();
       pathLookup = createPathLookup(progressPath, pathLength);
-      progressPath.style.strokeDasharray = `${pathLength}`;
       geometrySignature = nextGeometrySignature;
       geometryNeedsUpdate = false;
     };
@@ -176,8 +175,7 @@ export function JourneyMotion({ children }: { children: ReactNode }) {
       const revealedLength = findLengthAtY(pathLookup, revealedY);
       const progress = clamp(revealedLength / pathLength);
 
-      stage.style.setProperty("--journey-progress", progress.toFixed(4));
-      progressPath.style.strokeDashoffset = `${pathLength - revealedLength}`;
+      progressPath.style.strokeDashoffset = (1 - progress).toFixed(5);
 
       let activeIndex = -1;
       nodes.forEach((node, index) => {
@@ -288,11 +286,13 @@ export function JourneyMotion({ children }: { children: ReactNode }) {
           className="journey__path-progress"
           data-journey-path-progress
           fill="none"
+          pathLength="1"
           stroke="#01500B"
+          strokeDasharray="1"
+          strokeDashoffset="1"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          vectorEffect="non-scaling-stroke"
         />
       </svg>
 
