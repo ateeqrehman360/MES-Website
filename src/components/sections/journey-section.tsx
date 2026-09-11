@@ -28,6 +28,7 @@ export function JourneySection() {
                 data-importance={milestone.importance}
                 data-placement={milestone.placement}
                 data-route={milestone.route}
+                data-mobile-route={milestone.mobileRoute}
                 data-has-media={milestone.image ? "true" : "false"}
               >
                 <span
