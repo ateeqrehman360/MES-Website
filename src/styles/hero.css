@@ -361,7 +361,7 @@
     position: absolute;
     inset-block-start: 50%;
     inset-inline-start: 50%;
-    width: max(107.4vw, 185.8627vh);
+    width: min(max(107.4vw, 185.8627vh), 132vw);
     height: max(107.4vh, 62.061vw);
     overflow: hidden;
     background: linear-gradient(
@@ -464,13 +464,13 @@
   .hero-screen-artboard__statement-lead span:first-child {
     inset-block-start: var(--purpose-desktop-lead-one-y);
     inset-inline-start: var(--purpose-desktop-lead-one-x);
-    font-size: var(--purpose-desktop-lead-one-size);
+    font-size: min(var(--purpose-desktop-lead-one-size), 7.0626cqw);
   }
 
   .hero-screen-artboard__statement-lead span:last-child {
     inset-block-start: var(--purpose-desktop-lead-two-y);
     inset-inline-start: var(--purpose-desktop-lead-two-x);
-    font-size: var(--purpose-desktop-lead-two-size);
+    font-size: min(var(--purpose-desktop-lead-two-size), 11.557cqw);
     letter-spacing: var(--purpose-desktop-lead-two-tracking);
   }
 
@@ -481,7 +481,7 @@
 
   .hero-screen-artboard__statement-close span {
     inset-inline-start: var(--purpose-desktop-support-x);
-    font-size: var(--purpose-desktop-support-size);
+    font-size: min(var(--purpose-desktop-support-size), 2.2472cqw);
   }
 
   .hero-screen-artboard__statement-close span:first-child {
