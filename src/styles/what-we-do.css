@@ -1,0 +1,569 @@
+@layer components {
+  .what-we-do {
+    --what-connect-field: #a6b69d;
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    background: var(--mes-cream);
+    color: var(--mes-green-ink);
+  }
+
+  .what-we-do__intro {
+    display: grid;
+    gap: 2rem;
+    padding-block: clamp(5rem, 16vw, 8rem) clamp(6rem, 20vw, 10rem);
+  }
+
+  .what-we-do__label,
+  .what-we-do__counter {
+    margin: 0;
+    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+    font-size: 0.75rem;
+    font-variant-numeric: lining-nums tabular-nums;
+    letter-spacing: 0.17em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .what-we-do__label {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    color: var(--mes-deep-green);
+  }
+
+  .what-we-do__label::before {
+    content: "";
+    width: 2.5rem;
+    height: 1px;
+    flex: 0 0 auto;
+    background: var(--mes-gold);
+  }
+
+  .what-we-do__title {
+    max-width: 13ch;
+    margin: 0;
+    font-family: var(--font-hero-apparel), Georgia, serif;
+    font-size: clamp(3rem, 12vw, 5rem);
+    font-weight: 400;
+    font-synthesis: none;
+    letter-spacing: -0.05em;
+    line-height: 0.92;
+    text-wrap: balance;
+  }
+
+  .what-we-do__introduction {
+    max-width: 40rem;
+    margin: 0;
+    color: rgb(1 54 9 / 88%);
+    font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+    font-size: clamp(1rem, 0.94rem + 0.3vw, 1.125rem);
+    font-weight: 500;
+    letter-spacing: -0.018em;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .what-we-do__track,
+  .what-we-do__stage {
+    position: relative;
+  }
+
+  .what-we-do__surface {
+    display: none;
+  }
+
+  .what-we-do__chapter {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .what-we-do__chapter--learn {
+    background: var(--mes-cream);
+    color: var(--mes-deep-green);
+  }
+
+  .what-we-do__chapter--connect {
+    background: var(--what-connect-field);
+    color: var(--mes-deep-green);
+  }
+
+  .what-we-do__chapter--build {
+    background: var(--mes-deep-green);
+    color: var(--mes-cream);
+  }
+
+  .what-we-do__chapter-grid {
+    position: relative;
+    min-height: clamp(38rem, 92svh, 52rem);
+    display: grid;
+    grid-template-rows: auto minmax(9rem, 1fr) auto auto;
+    align-items: start;
+    gap: 1.4rem;
+    padding-block: clamp(3rem, 10vw, 4.5rem) clamp(4rem, 13vw, 6rem);
+  }
+
+  .what-we-do__counter {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    color: currentColor;
+  }
+
+  .what-we-do__counter-rule {
+    width: 1.8rem;
+    height: 1px;
+    background: var(--mes-gold);
+  }
+
+  .what-we-do__word {
+    align-self: center;
+    margin: 0;
+    font-family: var(--font-hero-apparel), Georgia, serif;
+    font-size: clamp(3.5rem, 20vw, 8rem);
+    font-weight: 400;
+    font-synthesis: none;
+    letter-spacing: -0.07em;
+    line-height: 0.78;
+  }
+
+  .what-we-do__word-letters {
+    display: flex;
+    width: 100%;
+    align-items: baseline;
+    white-space: nowrap;
+  }
+
+  .what-we-do__word-letters[data-what-we-do-word="connect"] {
+    justify-content: space-between;
+    font-size: clamp(2.65rem, 14.5vw, 6rem);
+    letter-spacing: -0.06em;
+  }
+
+  .what-we-do__letter {
+    display: inline-block;
+  }
+
+  .what-we-do__statement {
+    max-width: 18ch;
+    margin: 0;
+    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+    font-size: clamp(1.8rem, 7.8vw, 2.6rem);
+    font-weight: 400;
+    font-synthesis: none;
+    letter-spacing: -0.038em;
+    line-height: 0.98;
+    text-wrap: balance;
+  }
+
+  .what-we-do__description {
+    max-width: 39ch;
+    margin: 0;
+    color: rgb(1 54 9 / 88%);
+    font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+    font-size: clamp(0.9375rem, 0.89rem + 0.24vw, 1.0625rem);
+    font-weight: 500;
+    letter-spacing: -0.016em;
+    line-height: 1.58;
+    text-wrap: pretty;
+  }
+
+  .what-we-do__chapter--build .what-we-do__description {
+    color: rgb(234 226 212 / 86%);
+  }
+
+  .what-we-do__structural-rule {
+    width: 100%;
+    height: 1px;
+    margin-block-start: 0.6rem;
+    background: var(--mes-gold);
+    opacity: 0.75;
+  }
+}
+
+@media (min-width: 48rem) {
+  @layer components {
+    .what-we-do__intro {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: 1.5rem;
+      row-gap: clamp(2rem, 4vw, 3.5rem);
+      padding-block: clamp(7rem, 12vw, 11rem) clamp(8rem, 14vw, 12rem);
+    }
+
+    .what-we-do__label {
+      grid-column: 1 / 4;
+      align-self: start;
+    }
+
+    .what-we-do__title {
+      grid-column: 4 / 12;
+      max-width: 12ch;
+      font-size: clamp(4.5rem, 7.3vw, 7rem);
+    }
+
+    .what-we-do__introduction {
+      grid-column: 8 / 13;
+      max-width: 35rem;
+    }
+
+    .what-we-do__chapter-grid {
+      min-height: clamp(44rem, 84svh, 58rem);
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: auto 1fr auto;
+      column-gap: 1.5rem;
+      padding-block: clamp(4rem, 7vw, 6rem);
+    }
+
+    .what-we-do__counter {
+      grid-column: 1 / 4;
+    }
+
+    .what-we-do__chapter-grid > div {
+      grid-column: 1 / -1;
+      align-self: center;
+    }
+
+    .what-we-do__word {
+      font-size: clamp(7.5rem, 18vw, 16rem);
+    }
+
+    .what-we-do__word-letters[data-what-we-do-word="connect"] {
+      font-size: clamp(5rem, 11.8vw, 10rem);
+    }
+
+    .what-we-do__statement {
+      grid-column: 2 / 7;
+      align-self: end;
+      font-size: clamp(2rem, 3.4vw, 3rem);
+    }
+
+    .what-we-do__description {
+      grid-column: 8 / 13;
+      align-self: end;
+    }
+
+    .what-we-do__structural-rule {
+      position: absolute;
+      inset-inline: var(--site-gutter);
+      inset-block-end: 2rem;
+      width: auto;
+      margin: 0;
+    }
+  }
+}
+
+@media (min-width: 48rem) and (min-height: 40rem) and (prefers-reduced-motion: no-preference) {
+  @layer components {
+    .what-we-do[data-what-we-do-motion="desktop"] {
+      --what-learn-opacity: 1;
+      --what-learn-y: 0rem;
+      --what-connect-opacity: 0;
+      --what-connect-tint: 0;
+      --what-connect-statement-x: 4.5vw;
+      --what-connect-description-x: -4.5vw;
+      --what-connect-rule: 0;
+      --what-build-opacity: 0;
+      --what-build-inset: 50%;
+      --what-build-rule: 0;
+      --what-scroll-progress: 0;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"] .what-we-do__track {
+      height: 290svh;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"] .what-we-do__stage {
+      position: sticky;
+      inset-block-start: var(--nav-height);
+      height: calc(100svh - var(--nav-height));
+      overflow: clip;
+      background: var(--mes-cream);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"] .what-we-do__surface {
+      position: absolute;
+      inset: 0;
+      display: block;
+      pointer-events: none;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__surface--connect {
+      z-index: 0;
+      background: var(--what-connect-field);
+      opacity: var(--what-connect-tint);
+      will-change: opacity;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__surface--build {
+      z-index: 2;
+      background: var(--mes-deep-green);
+      clip-path: inset(var(--what-build-inset) 0 var(--what-build-inset) 0);
+      will-change: clip-path;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"] .what-we-do__chapter {
+      position: absolute;
+      inset: 0;
+      background: transparent;
+      pointer-events: none;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--learn {
+      z-index: 1;
+      opacity: var(--what-learn-opacity);
+      transform: translate3d(0, var(--what-learn-y), 0);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--connect {
+      z-index: 1;
+      opacity: var(--what-connect-opacity);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--build {
+      z-index: 3;
+      opacity: var(--what-build-opacity);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter-grid {
+      height: 100%;
+      min-height: 0;
+      display: block;
+      padding-block: 0;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"] .what-we-do__counter,
+    .what-we-do[data-what-we-do-motion="desktop"] .what-we-do__word,
+    .what-we-do[data-what-we-do-motion="desktop"] .what-we-do__statement,
+    .what-we-do[data-what-we-do-motion="desktop"] .what-we-do__description,
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__structural-rule {
+      position: absolute;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"] .what-we-do__counter {
+      inset-block-start: clamp(2rem, 5svh, 3.5rem);
+      inset-inline-start: var(--site-gutter);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"] .what-we-do__word {
+      inset-inline: 0;
+      width: 100%;
+      font-size: clamp(8.25rem, 18vw, 17rem);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__word-letters {
+      justify-content: center;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__word-letters[data-what-we-do-word="connect"] {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      justify-content: initial;
+      padding-inline: clamp(2rem, 6vw, 6.5rem);
+      font-size: clamp(5.4rem, 11.65vw, 10.5rem);
+      letter-spacing: -0.04em;
+      text-align: center;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"] .what-we-do__letter {
+      will-change: transform;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"] .what-we-do__statement {
+      max-width: 16ch;
+      font-size: clamp(1.85rem, 2.7vw, 2.8rem);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"] .what-we-do__description {
+      max-width: 37ch;
+      font-size: clamp(0.9375rem, 1.2vw, 1.0625rem);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--learn
+      .what-we-do__word {
+      inset-block-start: 31%;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--learn
+      .what-we-do__statement {
+      inset-block-start: 10%;
+      inset-inline-end: var(--site-gutter);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--learn
+      .what-we-do__description {
+      inset-block-end: 7%;
+      inset-inline-start: var(--site-gutter);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--connect
+      .what-we-do__word {
+      inset-block-start: 33%;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--connect
+      .what-we-do__statement {
+      inset-block-start: 10%;
+      inset-inline-start: var(--site-gutter);
+      transform: translate3d(var(--what-connect-statement-x), 0, 0);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--connect
+      .what-we-do__description {
+      inset-block-end: 7%;
+      inset-inline-end: var(--site-gutter);
+      transform: translate3d(var(--what-connect-description-x), 0, 0);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--connect
+      .what-we-do__structural-rule {
+      inset-block-start: 68%;
+      inset-inline: var(--site-gutter);
+      width: auto;
+      margin: 0;
+      opacity: 0.8;
+      transform: scaleX(var(--what-connect-rule));
+      transform-origin: center;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--build {
+      color: var(--mes-cream);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--build
+      .what-we-do__word {
+      inset-block-start: 29%;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--build
+      .what-we-do__statement {
+      inset-block-start: 10%;
+      inset-inline-end: var(--site-gutter);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--build
+      .what-we-do__description {
+      inset-block-end: 7%;
+      inset-inline-start: var(--site-gutter);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--build
+      .what-we-do__structural-rule {
+      inset-inline-start: var(--site-gutter);
+      inset-block-end: 4.5%;
+      width: clamp(3rem, 7vw, 7rem);
+      margin: 0;
+      opacity: 0.9;
+      transform: scaleX(var(--what-build-rule));
+      transform-origin: left;
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--build
+      .what-we-do__counter-rule {
+      transform: scaleX(var(--what-build-rule));
+      transform-origin: left;
+    }
+  }
+}
+
+@media (max-width: 47.999rem) {
+  @layer components {
+    .what-we-do__chapter--connect .what-we-do__statement,
+    .what-we-do__chapter--connect .what-we-do__description {
+      justify-self: end;
+      text-align: end;
+    }
+
+    .what-we-do__chapter--connect .what-we-do__counter {
+      justify-content: flex-end;
+    }
+
+    .what-we-do__chapter--connect .what-we-do__structural-rule {
+      transform-origin: right;
+    }
+  }
+}
+
+@media (max-width: 24rem) {
+  @layer components {
+    .what-we-do__intro {
+      padding-block-start: 4.5rem;
+    }
+
+    .what-we-do__title {
+      font-size: 11.8vw;
+    }
+
+    .what-we-do__chapter-grid {
+      gap: 1.2rem;
+      padding-block-start: 2.75rem;
+    }
+
+    .what-we-do__word {
+      font-size: 18.5vw;
+    }
+
+    .what-we-do__word-letters[data-what-we-do-word="connect"] {
+      font-size: 13.9vw;
+    }
+
+    .what-we-do__statement {
+      font-size: 1.65rem;
+    }
+
+    .what-we-do__description {
+      font-size: 0.9rem;
+      line-height: 1.54;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @layer components {
+    .what-we-do__track {
+      height: auto !important;
+    }
+
+    .what-we-do__stage {
+      position: relative !important;
+      inset: auto !important;
+      height: auto !important;
+      overflow: visible !important;
+    }
+
+    .what-we-do__surface {
+      display: none !important;
+    }
+
+    .what-we-do__chapter,
+    .what-we-do__letter,
+    .what-we-do__statement,
+    .what-we-do__description,
+    .what-we-do__structural-rule {
+      clip-path: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+  }
+}
