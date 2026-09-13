@@ -4,6 +4,7 @@
 @import "../styles/hero.css";
 @import "../styles/about.css";
 @import "../styles/what-we-do.css";
+@import "../styles/team.css";
 
 @theme inline {
   --color-mes-cream: var(--mes-cream);
