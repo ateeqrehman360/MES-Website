@@ -684,6 +684,13 @@
     object-fit: cover;
   }
 
+  .journey__milestone[data-journey-milestone="first-event"]
+    .journey__media {
+    width: min(100%, 20rem);
+    aspect-ratio: 4 / 5;
+    justify-self: start;
+  }
+
   .journey__milestone[data-journey-milestone="halal-business-series"]
     .journey__media {
     aspect-ratio: 4 / 3;
@@ -900,6 +907,12 @@
       width: clamp(5.25rem, 8.5vw, 6.25rem);
     }
 
+    .journey__milestone[data-journey-milestone="first-event"]
+      .journey__media {
+      width: min(74%, 18rem);
+      justify-self: end;
+    }
+
     .journey__milestone[data-journey-milestone="ramadhan-bazaar"]
       .journey__media {
       width: min(100%, 20rem);
@@ -1014,6 +1027,12 @@
 
     .journey__media[data-media-kind="photo"] {
       max-width: 31rem;
+    }
+
+    .journey__milestone[data-journey-milestone="first-event"]
+      .journey__media {
+      width: min(72%, 19rem);
+      justify-self: end;
     }
 
     .journey__milestone[data-journey-milestone="ramadhan-bazaar"]
