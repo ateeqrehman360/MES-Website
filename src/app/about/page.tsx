@@ -1,5 +1,6 @@
 import { AboutHero } from "@/components/sections/about-hero";
 import { JourneySection } from "@/components/sections/journey-section";
+import { TeamSection } from "@/components/sections/team-section";
 import { WhatWeDoSection } from "@/components/sections/what-we-do-section";
 import { createPageMetadata } from "@/lib/metadata";
 
@@ -14,6 +15,7 @@ export default function AboutPage() {
       <AboutHero />
       <JourneySection />
       <WhatWeDoSection />
+      <TeamSection />
     </>
   );
 }
