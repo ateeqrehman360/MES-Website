@@ -45,6 +45,11 @@ export function WhatWeDoMotion({ children }: { children: ReactNode }) {
           ),
         )
       : [];
+    const mobileChapters = root
+      ? Array.from(
+          root.querySelectorAll<HTMLElement>("[data-what-we-do-chapter]"),
+        )
+      : [];
 
     if (!root || !track || !stage) return;
 
@@ -70,9 +75,25 @@ export function WhatWeDoMotion({ children }: { children: ReactNode }) {
     let travel = 1;
     let active = false;
     let enabled = false;
+    let mobileMotionEnabled = false;
     let disposed = false;
     let needsMeasurement = true;
     let previousProgress = -1;
+
+    const mobileEntryObserver = new IntersectionObserver(
+      (entries) => {
+        if (!mobileMotionEnabled) return;
+
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          const chapter = entry.target as HTMLElement;
+          chapter.dataset.whatWeDoMobileEntered = "true";
+          mobileEntryObserver.unobserve(chapter);
+        });
+      },
+      { rootMargin: "0px 0px -8%", threshold: 0.12 },
+    );
 
     const reset = () => {
       inlineProperties.forEach((property) =>
@@ -84,6 +105,27 @@ export function WhatWeDoMotion({ children }: { children: ReactNode }) {
       delete root.dataset.whatWeDoChapter;
     };
 
+    const configureMobileMotion = () => {
+      mobileMotionEnabled =
+        !tabletQuery.matches && !reducedMotionQuery.matches;
+
+      if (!mobileMotionEnabled) {
+        mobileEntryObserver.disconnect();
+        delete root.dataset.whatWeDoMobileMotion;
+        mobileChapters.forEach(
+          (chapter) => delete chapter.dataset.whatWeDoMobileEntered,
+        );
+        return;
+      }
+
+      root.dataset.whatWeDoMobileMotion = "ready";
+      mobileChapters.forEach((chapter) => {
+        if (chapter.dataset.whatWeDoMobileEntered !== "true") {
+          mobileEntryObserver.observe(chapter);
+        }
+      });
+    };
+
     const measure = () => {
       enabled =
         tabletQuery.matches &&
@@ -91,6 +133,7 @@ export function WhatWeDoMotion({ children }: { children: ReactNode }) {
         window.innerHeight >= 640;
       root.dataset.whatWeDoMotion = enabled ? "desktop" : "static";
       reset();
+      configureMobileMotion();
 
       if (enabled) {
         void track.offsetHeight;
@@ -225,12 +268,17 @@ export function WhatWeDoMotion({ children }: { children: ReactNode }) {
       window.cancelAnimationFrame(frame);
       visibilityObserver.disconnect();
       resizeObserver.disconnect();
+      mobileEntryObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", remeasure);
       window.removeEventListener("orientationchange", remeasure);
       tabletQuery.removeEventListener("change", remeasure);
       reducedMotionQuery.removeEventListener("change", remeasure);
       reset();
+      delete root.dataset.whatWeDoMobileMotion;
+      mobileChapters.forEach(
+        (chapter) => delete chapter.dataset.whatWeDoMobileEntered,
+      );
       delete root.dataset.whatWeDoMotion;
     };
   }, []);
