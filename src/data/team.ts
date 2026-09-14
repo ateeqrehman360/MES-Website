@@ -33,18 +33,17 @@ export type TeamMember = Readonly<{
   placeholderTone: TeamPlaceholderTone;
 }>;
 
-// Portraits are intentionally null while the approved team photography is
-// pending. To replace a placeholder, add /public/about/team/{id}.webp and set
-// only `portrait` below; `objectPosition` remains available for crop tuning.
+// To replace a placeholder, add /public/about/team/{id}.webp and set only
+// `portrait` below; `objectPosition` remains available for crop tuning.
 export const teamMembers = [
   {
     id: "anees",
     name: "Anees",
     role: "Founder",
     tier: "primary",
-    portrait: null,
+    portrait: "/about/team/anees.webp",
     alt: "Portrait of Anees",
-    objectPosition: "50% 38%",
+    objectPosition: "50% 50%",
     layout: "left-anchor",
     placeholderTone: "deep",
   },
@@ -64,9 +63,9 @@ export const teamMembers = [
     name: "Ateeq",
     role: "Operations Lead",
     tier: "primary",
-    portrait: null,
+    portrait: "/about/team/ateeq.webp",
     alt: "Portrait of Ateeq",
-    objectPosition: "50% 38%",
+    objectPosition: "50% 50%",
     layout: "right-anchor",
     placeholderTone: "gold",
   },
@@ -75,9 +74,9 @@ export const teamMembers = [
     name: "Isha",
     role: "Events Lead",
     tier: "secondary",
-    portrait: null,
+    portrait: "/about/team/isha.webp",
     alt: "Portrait of Isha",
-    objectPosition: "50% 40%",
+    objectPosition: "50% 48%",
     layout: "lower-left",
     placeholderTone: "soft",
   },
@@ -86,9 +85,9 @@ export const teamMembers = [
     name: "Cherine",
     role: "Publicity Lead",
     tier: "secondary",
-    portrait: null,
+    portrait: "/about/team/cherine.webp",
     alt: "Portrait of Cherine",
-    objectPosition: "50% 40%",
+    objectPosition: "48% 50%",
     layout: "lower-right",
     placeholderTone: "forest",
   },
