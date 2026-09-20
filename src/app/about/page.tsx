@@ -1,4 +1,5 @@
 import { AboutHero } from "@/components/sections/about-hero";
+import { BuiltAtMmuSection } from "@/components/sections/built-at-mmu-section";
 import { JourneySection } from "@/components/sections/journey-section";
 import { TeamSection } from "@/components/sections/team-section";
 import { WhatWeDoSection } from "@/components/sections/what-we-do-section";
@@ -16,6 +17,7 @@ export default function AboutPage() {
       <JourneySection />
       <WhatWeDoSection />
       <TeamSection />
+      <BuiltAtMmuSection />
     </>
   );
 }
