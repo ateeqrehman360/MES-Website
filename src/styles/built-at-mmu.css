@@ -1,0 +1,257 @@
+@layer components {
+  .built-at-mmu {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    overflow: clip;
+    border-block-start: 1px solid rgb(1 80 11 / 12%);
+    background: var(--mes-cream);
+    color: var(--mes-deep-green);
+  }
+
+  .built-at-mmu__inner {
+    position: relative;
+    display: grid;
+    padding-block: clamp(5.25rem, 18vw, 7rem) clamp(5.5rem, 19vw, 7.5rem);
+  }
+
+  .built-at-mmu__background-type {
+    position: absolute;
+    z-index: -1;
+    inset-block-start: 28%;
+    inset-inline-start: 8%;
+    color: rgb(1 80 11 / 4.5%);
+    font-family: var(--font-hero-apparel), Georgia, serif;
+    font-size: clamp(12rem, 58vw, 24rem);
+    font-weight: 400;
+    font-synthesis: none;
+    letter-spacing: -0.11em;
+    line-height: 0.72;
+    pointer-events: none;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .built-at-mmu__label {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin: 0;
+    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.17em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .built-at-mmu__label::before {
+    content: "";
+    width: 2.5rem;
+    height: 1px;
+    flex: 0 0 auto;
+    background: var(--mes-gold);
+  }
+
+  .built-at-mmu__title {
+    max-width: 10.5ch;
+    margin: clamp(3.75rem, 15vw, 5.5rem) 0 0;
+    font-family: var(--font-hero-apparel), Georgia, serif;
+    font-size: clamp(2.8rem, 14vw, 5rem);
+    font-weight: 400;
+    font-synthesis: none;
+    letter-spacing: -0.052em;
+    line-height: 0.92;
+    text-wrap: balance;
+  }
+
+  .built-at-mmu__support {
+    max-width: 35ch;
+    margin: clamp(3.25rem, 13vw, 4.5rem) 0 0;
+    color: rgb(1 54 9 / 78%);
+    font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: -0.014em;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .built-at-mmu__institution {
+    display: grid;
+    gap: 1rem;
+    margin-block-start: clamp(4.75rem, 18vw, 6.5rem);
+  }
+
+  .built-at-mmu__institution p {
+    margin: 0;
+    color: rgb(1 54 9 / 72%);
+    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    line-height: 1.5;
+  }
+
+  .built-at-mmu__rule {
+    width: 100%;
+    height: 1px;
+    background: var(--mes-gold);
+    transform-origin: left;
+  }
+
+  .built-at-mmu__background-type,
+  .built-at-mmu__title,
+  .built-at-mmu__support,
+  .built-at-mmu__institution,
+  .built-at-mmu__rule {
+    transition-duration: 920ms;
+    transition-property: transform;
+    transition-timing-function: var(--ease-premium);
+  }
+
+  .built-at-mmu__support {
+    transition-delay: 90ms;
+  }
+
+  .built-at-mmu__institution,
+  .built-at-mmu__rule {
+    transition-delay: 150ms;
+  }
+
+  .built-at-mmu[data-built-at-mmu-motion="ready"]:not(
+      [data-built-at-mmu-entered="true"]
+    )
+    .built-at-mmu__background-type {
+    transform: translate3d(-1.5rem, 0.5rem, 0);
+  }
+
+  .built-at-mmu[data-built-at-mmu-motion="ready"]:not(
+      [data-built-at-mmu-entered="true"]
+    )
+    .built-at-mmu__title {
+    transform: translate3d(0, 1rem, 0);
+  }
+
+  .built-at-mmu[data-built-at-mmu-motion="ready"]:not(
+      [data-built-at-mmu-entered="true"]
+    )
+    .built-at-mmu__support {
+    transform: translate3d(0, 0.75rem, 0);
+  }
+
+  .built-at-mmu[data-built-at-mmu-motion="ready"]:not(
+      [data-built-at-mmu-entered="true"]
+    )
+    .built-at-mmu__institution {
+    transform: translate3d(0, 0.4rem, 0);
+  }
+
+  .built-at-mmu[data-built-at-mmu-motion="ready"]:not(
+      [data-built-at-mmu-entered="true"]
+    )
+    .built-at-mmu__rule {
+    transform: scaleX(0.18);
+  }
+}
+
+@media (min-width: 48rem) {
+  @layer components {
+    .built-at-mmu__inner {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: 1.5rem;
+      padding-block: clamp(7.5rem, 12vw, 10.5rem)
+        clamp(7rem, 11vw, 9.5rem);
+    }
+
+    .built-at-mmu__background-type {
+      inset-block-start: 25%;
+      inset-inline-start: 6%;
+      font-size: clamp(22rem, 42vw, 38rem);
+    }
+
+    .built-at-mmu__label {
+      grid-column: 1 / 4;
+    }
+
+    .built-at-mmu__title {
+      grid-column: 2 / 11;
+      max-width: 10.5ch;
+      margin-block-start: clamp(5rem, 7vw, 7.5rem);
+      font-size: clamp(5rem, 8.5vw, 8.5rem);
+      line-height: 0.88;
+    }
+
+    .built-at-mmu__support {
+      grid-column: 8 / 13;
+      max-width: 34ch;
+      margin-block-start: clamp(4rem, 6vw, 6rem);
+      font-size: clamp(1rem, 1.35vw, 1.1875rem);
+      line-height: 1.62;
+    }
+
+    .built-at-mmu__institution {
+      grid-column: 1 / 13;
+      grid-template-columns: minmax(4rem, 1fr) auto;
+      align-items: center;
+      gap: clamp(1.5rem, 3vw, 3rem);
+      margin-block-start: clamp(6.5rem, 9vw, 9rem);
+    }
+
+    .built-at-mmu__institution p {
+      font-size: 0.78125rem;
+      white-space: nowrap;
+    }
+  }
+}
+
+@media (min-width: 64rem) {
+  @layer components {
+    .built-at-mmu__title {
+      grid-column: 2 / 10;
+      font-size: clamp(6rem, 8.2vw, 8.5rem);
+    }
+
+    .built-at-mmu__support {
+      grid-column: 9 / 13;
+    }
+  }
+}
+
+@media (max-width: 24rem) {
+  @layer components {
+    .built-at-mmu__inner {
+      padding-block: 4.75rem 5rem;
+    }
+
+    .built-at-mmu__background-type {
+      inset-block-start: 31%;
+      inset-inline-start: 4%;
+      font-size: 55vw;
+    }
+
+    .built-at-mmu__title {
+      margin-block-start: 3.25rem;
+      font-size: 13.25vw;
+    }
+
+    .built-at-mmu__support {
+      margin-block-start: 2.75rem;
+    }
+
+    .built-at-mmu__institution {
+      margin-block-start: 4.25rem;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @layer components {
+    .built-at-mmu__background-type,
+    .built-at-mmu__title,
+    .built-at-mmu__support,
+    .built-at-mmu__institution,
+    .built-at-mmu__rule {
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+}
