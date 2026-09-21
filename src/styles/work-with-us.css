@@ -83,15 +83,6 @@
     background: var(--mes-gold);
   }
 
-  .work-with-us-hero__structure-word {
-    margin-inline-end: -0.06em;
-    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
-    font-size: clamp(2rem, 11vw, 3.5rem);
-    font-weight: 400;
-    letter-spacing: -0.08em;
-    line-height: 0.72;
-  }
-
   @media (min-width: 48rem) {
     .work-with-us-hero__inner {
       grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -183,14 +174,6 @@
       width: min(9vw, 8rem);
     }
 
-    .work-with-us-hero__structure-word {
-      position: absolute;
-      inset-inline-end: clamp(-0.5rem, -0.8vw, -0.15rem);
-      inset-block-end: calc(100% + clamp(2.5rem, 7svh, 5rem));
-      font-size: clamp(4.5rem, 8vw, 8rem);
-      letter-spacing: -0.11em;
-      opacity: 0.46;
-    }
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -220,9 +203,6 @@
       transform-origin: left center;
     }
 
-    .work-with-us-hero[data-revealed="true"] [data-reveal="word"] {
-      animation-delay: 320ms;
-    }
   }
 
   @keyframes work-with-us-reveal {

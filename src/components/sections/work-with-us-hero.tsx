@@ -35,9 +35,6 @@ export function WorkWithUsHero() {
 
         <div className="work-with-us-hero__structure" aria-hidden="true">
           <span className="work-with-us-hero__structure-rule" data-reveal="rule" />
-          <span className="work-with-us-hero__structure-word" data-reveal="word">
-            WITH
-          </span>
         </div>
       </div>
     </WorkWithUsHeroMotion>
