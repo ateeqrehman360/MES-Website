@@ -1,4 +1,5 @@
 import { WorkWithUsHero } from "@/components/sections/work-with-us-hero";
+import { WaysToWorkWithUs } from "@/components/sections/ways-to-work-with-us";
 import { createPageMetadata } from "@/lib/metadata";
 
 const description =
@@ -7,5 +8,10 @@ const description =
 export const metadata = createPageMetadata("Work With Us", description);
 
 export default function WorkWithUsPage() {
-  return <WorkWithUsHero />;
+  return (
+    <>
+      <WorkWithUsHero />
+      <WaysToWorkWithUs />
+    </>
+  );
 }
