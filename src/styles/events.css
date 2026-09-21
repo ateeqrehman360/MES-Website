@@ -1,0 +1,185 @@
+@layer components {
+  .events-holding {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    border-block-end: 1px solid var(--mes-border);
+    background: var(--mes-cream);
+    color: var(--mes-green-ink);
+  }
+
+  .events-holding__inner {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0;
+    padding-block: clamp(2.25rem, 7svh, 4.5rem) clamp(3.25rem, 9svh, 5.5rem);
+  }
+
+  .events-holding__label,
+  .events-holding__status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    line-height: 1.25;
+    text-transform: uppercase;
+  }
+
+  .events-holding__label {
+    color: var(--mes-deep-green);
+  }
+
+  .events-holding__label-rule {
+    width: 2.5rem;
+    height: 1px;
+    flex: 0 0 auto;
+    background: var(--mes-gold);
+  }
+
+  .events-holding__title {
+    max-width: 10ch;
+    margin: clamp(2rem, 6svh, 3.5rem) 0 0;
+    font-family: var(--font-hero-apparel), Georgia, serif;
+    font-size: clamp(3.35rem, 13.5vw, 5.2rem);
+    font-weight: 400;
+    letter-spacing: -0.055em;
+    line-height: 0.88;
+    text-wrap: balance;
+  }
+
+  .events-holding__support {
+    width: min(100%, 31rem);
+    margin: clamp(2rem, 6svh, 3.25rem) 0 0;
+    color: rgb(1 54 9 / 88%);
+    font-size: clamp(0.9375rem, 0.88rem + 0.35vw, 1.0625rem);
+    font-weight: 500;
+    letter-spacing: -0.018em;
+    line-height: 1.58;
+    text-wrap: pretty;
+  }
+
+  .events-holding__status {
+    margin-block-start: clamp(2.25rem, 7svh, 3.75rem);
+    color: var(--mes-deep-green);
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  .events-holding__status span {
+    color: var(--mes-gold);
+  }
+
+  .events-holding__mark {
+    display: none;
+  }
+
+  @media (min-width: 48rem) {
+    .events-holding__inner {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      column-gap: clamp(1rem, 2vw, 1.5rem);
+      padding-block: clamp(3rem, 8svh, 5rem) clamp(4rem, 10svh, 6rem);
+    }
+
+    .events-holding__title {
+      grid-column: 1 / span 5;
+      max-width: 11ch;
+      margin-block-start: clamp(2.75rem, 7svh, 4.5rem);
+      font-size: clamp(4.5rem, 10vw, 6.75rem);
+    }
+
+    .events-holding__support {
+      grid-column: 3 / span 4;
+      margin-block-start: clamp(2.5rem, 6svh, 4rem);
+    }
+
+    .events-holding__status {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .events-holding__inner {
+      min-height: calc(100svh - var(--nav-height));
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      column-gap: clamp(1rem, 1.7vw, 1.5rem);
+      padding-block: clamp(2rem, 4.5svh, 3.75rem) clamp(1.75rem, 4svh, 3.25rem);
+    }
+
+    .events-holding__label {
+      grid-column: 1 / span 3;
+      grid-row: 1;
+      align-self: start;
+    }
+
+    .events-holding__title {
+      z-index: 1;
+      grid-column: 1 / span 8;
+      grid-row: 2;
+      align-self: center;
+      max-width: 10ch;
+      margin: 0;
+      font-size: clamp(5.25rem, 8.25vw, 8.75rem);
+    }
+
+    .events-holding__title span {
+      display: block;
+      white-space: nowrap;
+    }
+
+    .events-holding__support {
+      z-index: 1;
+      grid-column: 9 / -1;
+      grid-row: 2;
+      align-self: end;
+      width: min(100%, 21.5rem);
+      margin: 0 0 clamp(3rem, 9svh, 6.5rem);
+      padding-block-start: 1.125rem;
+      border-block-start: 1px solid var(--mes-border);
+      font-size: clamp(1rem, 0.9rem + 0.42vw, 1.125rem);
+    }
+
+    .events-holding__status {
+      z-index: 1;
+      grid-column: 1 / span 5;
+      grid-row: 3;
+      align-self: end;
+      margin: 0;
+    }
+
+    .events-holding__mark {
+      position: absolute;
+      inset-block-start: 50%;
+      inset-inline-end: clamp(-16rem, -12vw, -8rem);
+      z-index: 0;
+      display: block;
+      width: clamp(28rem, 42vw, 43rem);
+      aspect-ratio: 560 / 610;
+      background: url("/brand/mes-logo.svg") center / contain no-repeat;
+      transform: translateY(-47%);
+      opacity: 0.1;
+      pointer-events: none;
+    }
+  }
+
+  @media (max-width: 23.4375rem) {
+    .events-holding__inner {
+      padding-block-start: 2rem;
+    }
+
+    .events-holding__title {
+      font-size: clamp(3rem, 16vw, 3.5rem);
+    }
+
+    .events-holding__status {
+      align-items: flex-start;
+      gap: 0.55rem;
+      font-size: 0.625rem;
+      line-height: 1.45;
+    }
+  }
+}
