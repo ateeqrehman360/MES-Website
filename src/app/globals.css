@@ -3,6 +3,10 @@
 @import "../styles/base.css";
 @import "../styles/hero.css";
 @import "../styles/about.css";
+@import "../styles/what-we-do.css";
+@import "../styles/team.css";
+@import "../styles/built-at-mmu.css";
+@import "../styles/about-work-with-us.css";
 @import "../styles/events.css";
 
 @theme inline {

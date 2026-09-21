@@ -8,12 +8,15 @@ export type JourneyMilestonePlacement =
 
 export type JourneyRoutePosition = "left" | "centre" | "right";
 
-export type JourneyMobileRoutePosition =
+type JourneySideRoutePosition =
   | "outer"
   | "near"
   | "middle"
   | "inner"
   | "lead";
+
+export type JourneyMediumRoutePosition = JourneySideRoutePosition;
+export type JourneyMobileRoutePosition = JourneySideRoutePosition;
 
 export type JourneyMilestoneImage = Readonly<{
   src: string;
@@ -39,6 +42,7 @@ export type JourneyMilestone = Readonly<{
   importance: JourneyMilestoneImportance;
   placement: JourneyMilestonePlacement;
   route: JourneyRoutePosition;
+  mediumRoute: JourneyMediumRoutePosition;
   mobileRoute: JourneyMobileRoutePosition;
   image?: JourneyMilestoneImage;
   supportingDetails?: readonly JourneySupportingDetail[];
@@ -58,6 +62,7 @@ export const journeyMilestones = [
     importance: "major",
     placement: "copy-left",
     route: "centre",
+    mediumRoute: "outer",
     mobileRoute: "outer",
   },
   {
@@ -69,6 +74,7 @@ export const journeyMilestones = [
     importance: "minor",
     placement: "media-left",
     route: "left",
+    mediumRoute: "inner",
     mobileRoute: "inner",
     image: {
       src: "/network/logos/partner-entrepreneurs_society.webp",
@@ -85,9 +91,19 @@ export const journeyMilestones = [
     title: "First event",
     description: "MES hosted its first event.",
     importance: "major",
-    placement: "copy-left",
+    placement: "media-right",
     route: "right",
+    mediumRoute: "near",
     mobileRoute: "near",
+    image: {
+      src: "/about/first-event-2024.webp",
+      alt: "Audience watching a speaker at MES's first event in 2024",
+      width: 960,
+      height: 1280,
+      kind: "photo",
+      objectPosition: "center bottom",
+      blurDataURL: journeyImageBlurDataURL,
+    },
   },
   {
     id: "mmu-isoc",
@@ -98,6 +114,7 @@ export const journeyMilestones = [
     importance: "minor",
     placement: "media-right",
     route: "left",
+    mediumRoute: "lead",
     mobileRoute: "lead",
     image: {
       src: "/network/logos/partner-mmu_isoc.webp",
@@ -116,6 +133,7 @@ export const journeyMilestones = [
     importance: "major",
     placement: "media-left",
     route: "centre",
+    mediumRoute: "middle",
     mobileRoute: "middle",
     image: {
       src: "/hero/halal-business-series-audience.webp",
@@ -146,6 +164,7 @@ export const journeyMilestones = [
     importance: "major",
     placement: "media-right",
     route: "left",
+    mediumRoute: "lead",
     mobileRoute: "lead",
     image: {
       src: "/hero/ramadhan-bazaar-crowd.webp",
@@ -172,6 +191,7 @@ export const journeyMilestones = [
     importance: "current",
     placement: "copy-right",
     route: "right",
+    mediumRoute: "middle",
     mobileRoute: "middle",
   },
 ] satisfies readonly JourneyMilestone[];

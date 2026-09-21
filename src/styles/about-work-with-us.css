@@ -1,0 +1,250 @@
+@layer components {
+  .about-work-with-us {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    overflow: clip;
+    background: var(--mes-deep-green);
+    color: var(--mes-cream);
+  }
+
+  .about-work-with-us__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: clamp(4.5rem, 18vw, 6rem) clamp(4.75rem, 19vw, 6.5rem);
+  }
+
+  .about-work-with-us__label {
+    margin: 0;
+    color: var(--mes-cream);
+    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.17em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .about-work-with-us__axis {
+    width: 100%;
+    height: 1px;
+    margin-block-start: 1.25rem;
+    background: var(--mes-gold);
+    transform-origin: left center;
+  }
+
+  .about-work-with-us__title {
+    max-width: 11ch;
+    margin: clamp(3.25rem, 13vw, 4.75rem) 0 0;
+    font-family: var(--font-hero-apparel), Georgia, serif;
+    font-size: clamp(2.75rem, 13vw, 4.75rem);
+    font-weight: 400;
+    font-synthesis: none;
+    letter-spacing: -0.052em;
+    line-height: 0.9;
+    text-wrap: balance;
+  }
+
+  .about-work-with-us__title span {
+    display: block;
+  }
+
+  .about-work-with-us__action {
+    width: min(100%, 35rem);
+    margin-block-start: clamp(3rem, 12vw, 4.5rem);
+  }
+
+  .about-work-with-us__support {
+    max-width: 39ch;
+    margin: 0;
+    color: rgb(234 226 212 / 82%);
+    font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+    font-size: clamp(0.9375rem, 0.9rem + 0.25vw, 1.0625rem);
+    font-weight: 500;
+    letter-spacing: -0.014em;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .about-work-with-us__cta {
+    min-height: 3.25rem;
+    width: fit-content;
+    max-width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-block-start: 2rem;
+    border: 1px solid var(--mes-cream);
+    border-radius: var(--radius-control);
+    background: var(--mes-cream);
+    padding-inline: 1.35rem;
+    color: var(--mes-deep-green);
+    font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-decoration: none;
+    transition:
+      background-color var(--duration-fast) var(--ease-premium),
+      border-color var(--duration-fast) var(--ease-premium),
+      color var(--duration-fast) var(--ease-premium),
+      transform var(--duration-fast) var(--ease-premium);
+  }
+
+  .about-work-with-us__cta-arrow {
+    color: var(--mes-gold);
+    font-size: 1.125rem;
+    line-height: 1;
+    transition:
+      color var(--duration-fast) var(--ease-premium),
+      transform var(--duration-fast) var(--ease-premium);
+  }
+
+  .about-work-with-us__axis,
+  .about-work-with-us__title,
+  .about-work-with-us__support,
+  .about-work-with-us__cta {
+    transition-duration: 760ms;
+    transition-property: transform;
+    transition-timing-function: var(--ease-premium);
+  }
+
+  .about-work-with-us__support {
+    transition-delay: 80ms;
+  }
+
+  .about-work-with-us__cta {
+    transition-delay: 150ms;
+  }
+
+  .about-work-with-us[data-work-with-us-motion="ready"]:not(
+      [data-work-with-us-entered="true"]
+    )
+    .about-work-with-us__axis {
+    transform: scaleX(0.16);
+  }
+
+  .about-work-with-us[data-work-with-us-motion="ready"]:not(
+      [data-work-with-us-entered="true"]
+    )
+    .about-work-with-us__title {
+    transform: translate3d(0, 1rem, 0);
+  }
+
+  .about-work-with-us[data-work-with-us-motion="ready"]:not(
+      [data-work-with-us-entered="true"]
+    )
+    .about-work-with-us__support {
+    transform: translate3d(0, 0.7rem, 0);
+  }
+
+  .about-work-with-us[data-work-with-us-motion="ready"]:not(
+      [data-work-with-us-entered="true"]
+    )
+    .about-work-with-us__cta {
+    transform: translate3d(0, 0.45rem, 0);
+  }
+}
+
+@media (hover: hover) {
+  @layer components {
+    .about-work-with-us__cta:hover {
+      border-color: var(--mes-gold);
+      background: var(--mes-gold);
+      transform: translateY(-1px);
+    }
+
+    .about-work-with-us__cta:hover .about-work-with-us__cta-arrow {
+      color: var(--mes-deep-green);
+      transform: translateX(0.2rem);
+    }
+  }
+}
+
+@media (min-width: 48rem) {
+  @layer components {
+    .about-work-with-us__inner {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: 1.5rem;
+      padding-block: clamp(6.5rem, 10vw, 8.5rem)
+        clamp(6.75rem, 9vw, 8rem);
+    }
+
+    .about-work-with-us__label {
+      grid-column: 1 / 4;
+      align-self: center;
+    }
+
+    .about-work-with-us__axis {
+      grid-column: 4 / 13;
+      align-self: center;
+      margin: 0;
+    }
+
+    .about-work-with-us__title {
+      grid-column: 1 / 11;
+      max-width: none;
+      margin-block-start: clamp(4.5rem, 6.5vw, 6.5rem);
+      font-size: clamp(4.25rem, 7.8vw, 7.5rem);
+      line-height: 0.88;
+    }
+
+    .about-work-with-us__action {
+      grid-column: 8 / 13;
+      justify-self: end;
+      margin-block-start: clamp(4rem, 6vw, 5.5rem);
+    }
+
+    .about-work-with-us__cta {
+      margin-block-start: 2.25rem;
+    }
+  }
+}
+
+@media (min-width: 64rem) {
+  @layer components {
+    .about-work-with-us__title {
+      grid-column: 1 / 10;
+      font-size: clamp(5rem, 7.15vw, 7.5rem);
+    }
+
+    .about-work-with-us__action {
+      grid-column: 9 / 13;
+    }
+  }
+}
+
+@media (max-width: 24rem) {
+  @layer components {
+    .about-work-with-us__inner {
+      padding-block: 4rem 4.25rem;
+    }
+
+    .about-work-with-us__title {
+      margin-block-start: 2.75rem;
+      font-size: clamp(2.55rem, 12.75vw, 3rem);
+    }
+
+    .about-work-with-us__action {
+      margin-block-start: 2.75rem;
+    }
+
+    .about-work-with-us__cta {
+      gap: 0.75rem;
+      padding-inline: 1.1rem;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @layer components {
+    .about-work-with-us__axis,
+    .about-work-with-us__title,
+    .about-work-with-us__support,
+    .about-work-with-us__cta,
+    .about-work-with-us__cta-arrow {
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+}

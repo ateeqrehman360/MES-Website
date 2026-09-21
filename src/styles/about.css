@@ -684,6 +684,13 @@
     object-fit: cover;
   }
 
+  .journey__milestone[data-journey-milestone="first-event"]
+    .journey__media {
+    width: min(100%, 20rem);
+    aspect-ratio: 4 / 5;
+    justify-self: start;
+  }
+
   .journey__milestone[data-journey-milestone="halal-business-series"]
     .journey__media {
     aspect-ratio: 4 / 3;
@@ -809,13 +816,43 @@
     }
 
     .journey__milestone {
-      --journey-tablet-node-x: 4.5rem;
+      --journey-medium-node-drift: clamp(1rem, 2vw, 1.5rem);
+      --journey-medium-node-half-drift: clamp(0.5rem, 1vw, 0.75rem);
+      --journey-medium-node-x: 4.5rem;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       align-items: center;
       column-gap: clamp(2rem, 5vw, 4rem);
       min-height: 27rem;
       padding-block: 3.75rem;
       padding-inline-start: 9rem;
+    }
+
+    .journey__milestone[data-medium-route="outer"] {
+      --journey-medium-node-x: calc(
+        4.5rem - var(--journey-medium-node-drift)
+      );
+    }
+
+    .journey__milestone[data-medium-route="near"] {
+      --journey-medium-node-x: calc(
+        4.5rem - var(--journey-medium-node-half-drift)
+      );
+    }
+
+    .journey__milestone[data-medium-route="middle"] {
+      --journey-medium-node-x: 4.5rem;
+    }
+
+    .journey__milestone[data-medium-route="inner"] {
+      --journey-medium-node-x: calc(
+        4.5rem + var(--journey-medium-node-half-drift)
+      );
+    }
+
+    .journey__milestone[data-medium-route="lead"] {
+      --journey-medium-node-x: calc(
+        4.5rem + var(--journey-medium-node-drift)
+      );
     }
 
     .journey__milestone[data-importance="minor"] {
@@ -831,7 +868,7 @@
     .journey__node,
     .journey__milestone[data-importance="minor"] .journey__node {
       inset-block-start: 50%;
-      inset-inline-start: var(--journey-tablet-node-x);
+      inset-inline-start: var(--journey-medium-node-x);
     }
 
     .journey__node::before {
@@ -868,6 +905,12 @@
     .journey__milestone[data-journey-milestone="mmu-isoc"]
       .journey__media[data-media-kind="mark"] {
       width: clamp(5.25rem, 8.5vw, 6.25rem);
+    }
+
+    .journey__milestone[data-journey-milestone="first-event"]
+      .journey__media {
+      width: min(74%, 18rem);
+      justify-self: end;
     }
 
     .journey__milestone[data-journey-milestone="ramadhan-bazaar"]
@@ -984,6 +1027,12 @@
 
     .journey__media[data-media-kind="photo"] {
       max-width: 31rem;
+    }
+
+    .journey__milestone[data-journey-milestone="first-event"]
+      .journey__media {
+      width: min(72%, 19rem);
+      justify-self: end;
     }
 
     .journey__milestone[data-journey-milestone="ramadhan-bazaar"]
