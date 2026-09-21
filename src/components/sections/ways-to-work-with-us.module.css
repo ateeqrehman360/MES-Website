@@ -8,7 +8,8 @@
 }
 
 .inner {
-  padding-block: clamp(4.5rem, 19vw, 7rem) clamp(4.75rem, 20vw, 7rem);
+  --ways-section-end-space: clamp(4.75rem, 20vw, 7rem);
+  padding-block: clamp(4.5rem, 19vw, 7rem) var(--ways-section-end-space);
 }
 
 .intro {
@@ -17,8 +18,7 @@
   padding-block-end: clamp(4.25rem, 18vw, 6.5rem);
 }
 
-.eyebrow,
-.supportLabel {
+.eyebrow {
   margin: 0;
   color: var(--mes-deep-green);
   font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
@@ -125,52 +125,38 @@
 
 .support {
   position: relative;
-  display: grid;
-  gap: 0.9rem;
-  margin-block-start: 1rem;
-  padding: 1.75rem 0 0 1.25rem;
-  border-block-start: 1px solid var(--ways-rule);
+  isolation: isolate;
+  min-height: 0;
+  margin-block-start: clamp(1.5rem, 5vw, 3rem);
+  margin-block-end: calc(1.25rem - var(--ways-section-end-space));
+  margin-inline: calc(var(--site-gutter) * -1);
+  padding: clamp(3.5rem, 13vw, 5rem) var(--site-gutter);
+  border-block-start-color: rgb(234 226 212 / 32%);
+  background: var(--mes-deep-green);
+  color: var(--mes-cream);
 }
 
 .support::before {
-  content: "";
-  position: absolute;
-  inset-block: 1.8rem 0;
-  inset-inline-start: 0;
-  width: 2px;
-  background: var(--mes-gold);
+  width: clamp(4.5rem, 10vw, 8rem);
+  height: 2px;
 }
 
-.supportLabel {
-  color: var(--mes-muted-green-deep);
+.support .number {
+  color: rgb(97 140 93 / 92%);
 }
 
-.supportTitle {
-  margin: 0.25rem 0 0;
-  color: var(--mes-deep-green);
-  font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
-  font-size: clamp(1.25rem, 6vw, 1.5rem);
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  line-height: 1.15;
-  text-transform: uppercase;
+.support .pathwayTitle {
+  color: var(--mes-cream);
 }
 
-.supportCopy {
-  max-width: 39rem;
-  margin: 0;
-  color: var(--ways-quiet);
-  font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
-  font-size: 0.9375rem;
-  font-weight: 500;
-  letter-spacing: -0.012em;
-  line-height: 1.62;
-  text-wrap: pretty;
+.support .pathwayCopy {
+  color: rgb(234 226 212 / 84%);
 }
 
 @media (min-width: 48rem) {
   .inner {
-    padding-block: clamp(6rem, 11vw, 9rem) clamp(6rem, 10vw, 8rem);
+    --ways-section-end-space: clamp(6rem, 10vw, 8rem);
+    padding-block: clamp(6rem, 11vw, 9rem) var(--ways-section-end-space);
   }
 
   .intro {
@@ -235,31 +221,8 @@
   }
 
   .support {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    column-gap: clamp(1rem, 2vw, 1.5rem);
-    align-items: start;
-    gap: 0;
-    margin-block-start: 2.25rem;
-    padding: 2.5rem 0 0;
-  }
-
-  .support::before {
-    inset-block: -1px auto;
-    width: 4.5rem;
-    height: 2px;
-  }
-
-  .supportLabel {
-    grid-column: 1 / span 2;
-  }
-
-  .supportTitle {
-    grid-column: 3 / span 2;
-    margin: 0;
-  }
-
-  .supportCopy {
-    grid-column: 5 / -1;
+    min-height: 21rem;
+    padding-block: clamp(4rem, 8vw, 5.5rem);
   }
 }
 
@@ -328,16 +291,9 @@
     grid-column: 8 / span 4;
   }
 
-  .supportLabel {
-    grid-column: 1 / span 2;
-  }
-
-  .supportTitle {
-    grid-column: 4 / span 3;
-  }
-
-  .supportCopy {
-    grid-column: 8 / span 4;
+  .support {
+    min-height: clamp(21rem, 25vw, 24rem);
+    padding-block: clamp(4.25rem, 6.5vw, 5.75rem);
   }
 }
 
@@ -347,22 +303,17 @@
   .intro[data-revealed="true"] .introCopy,
   .pathway[data-revealed="true"] .number,
   .pathway[data-revealed="true"] .pathwayTitle,
-  .pathway[data-revealed="true"] .pathwayCopy,
-  .support[data-revealed="true"] .supportLabel,
-  .support[data-revealed="true"] .supportTitle,
-  .support[data-revealed="true"] .supportCopy {
+  .pathway[data-revealed="true"] .pathwayCopy {
     animation: ways-rise 640ms var(--ease-premium) both;
   }
 
   .intro[data-revealed="true"] .heading,
-  .pathway[data-revealed="true"] .pathwayTitle,
-  .support[data-revealed="true"] .supportTitle {
+  .pathway[data-revealed="true"] .pathwayTitle {
     animation-delay: 70ms;
   }
 
   .intro[data-revealed="true"] .introCopy,
-  .pathway[data-revealed="true"] .pathwayCopy,
-  .support[data-revealed="true"] .supportCopy {
+  .pathway[data-revealed="true"] .pathwayCopy {
     animation-delay: 140ms;
   }
 

@@ -55,16 +55,19 @@ export function WaysToWorkWithUs() {
               <p className={styles.pathwayCopy}>{pathway.copy}</p>
             </li>
           ))}
-        </ol>
+          <li className={`${styles.pathway} ${styles.support}`} data-reveal-block>
+            <span className={styles.number} aria-hidden="true">
+              04
+            </span>
 
-        <aside className={styles.support} data-reveal-block>
-          <p className={styles.supportLabel}>A supporting role</p>
-          <h3 className={styles.supportTitle}>Support an event</h3>
-          <p className={styles.supportCopy}>
-            For organisations that want to support an MES event financially or
-            through resources, sponsorship can form part of the collaboration.
-          </p>
-        </aside>
+            <h3 className={styles.pathwayTitle}>Support an event</h3>
+
+            <p className={styles.pathwayCopy}>
+              For organisations that want to support an MES event financially or
+              through resources, sponsorship can form part of the collaboration.
+            </p>
+          </li>
+        </ol>
       </div>
     </WaysToWorkWithUsMotion>
   );
