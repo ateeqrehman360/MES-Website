@@ -1,13 +1,10 @@
-@import "tailwindcss";
-@import "../styles/tokens.css";
-@import "../styles/base.css";
-@import "../styles/hero.css";
 @import "../styles/about.css";
 @import "../styles/what-we-do.css";
 @import "../styles/team.css";
 @import "../styles/built-at-mmu.css";
 @import "../styles/about-work-with-us.css";
 @import "../styles/events.css";
+@import "../styles/work-with-us.css";
 
 @theme inline {
   --color-mes-cream: var(--mes-cream);
