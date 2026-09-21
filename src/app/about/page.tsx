@@ -1,5 +1,9 @@
 import { AboutHero } from "@/components/sections/about-hero";
+import { AboutWorkWithUsCta } from "@/components/sections/about-work-with-us-cta";
+import { BuiltAtMmuSection } from "@/components/sections/built-at-mmu-section";
 import { JourneySection } from "@/components/sections/journey-section";
+import { TeamSection } from "@/components/sections/team-section";
+import { WhatWeDoSection } from "@/components/sections/what-we-do-section";
 import { createPageMetadata } from "@/lib/metadata";
 
 const description =
@@ -12,6 +16,10 @@ export default function AboutPage() {
     <>
       <AboutHero />
       <JourneySection />
+      <WhatWeDoSection />
+      <TeamSection />
+      <BuiltAtMmuSection />
+      <AboutWorkWithUsCta />
     </>
   );
 }
