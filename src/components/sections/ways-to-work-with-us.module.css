@@ -124,13 +124,19 @@
 }
 
 .support {
+  --ways-support-gold: #d4b46a;
+  --ways-support-inline: max(
+    var(--site-gutter),
+    calc((100vw - var(--site-max-width)) / 2 + var(--site-gutter))
+  );
   position: relative;
   isolation: isolate;
+  width: 100vw;
   min-height: 0;
   margin-block-start: clamp(1.5rem, 5vw, 3rem);
   margin-block-end: calc(1.25rem - var(--ways-section-end-space));
-  margin-inline: calc(var(--site-gutter) * -1);
-  padding: clamp(3.5rem, 13vw, 5rem) var(--site-gutter);
+  margin-inline: calc(50% - 50vw);
+  padding: clamp(3.5rem, 13vw, 5rem) var(--ways-support-inline);
   border-block-start-color: rgb(234 226 212 / 32%);
   background: var(--mes-deep-green);
   color: var(--mes-cream);
@@ -142,7 +148,7 @@
 }
 
 .support .number {
-  color: rgb(97 140 93 / 92%);
+  color: var(--ways-support-gold);
 }
 
 .support .pathwayTitle {
