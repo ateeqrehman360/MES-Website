@@ -1,4 +1,5 @@
 import { WhyCollaborateMotion } from "./why-collaborate-motion";
+import { CommitteeRecruitmentCta } from "./committee-recruitment-cta";
 import styles from "./why-collaborate.module.css";
 
 const evidence = [
@@ -48,6 +49,8 @@ export function WhyCollaborate() {
             ))}
           </dl>
         </div>
+
+        <CommitteeRecruitmentCta />
       </div>
     </WhyCollaborateMotion>
   );
