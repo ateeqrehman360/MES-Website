@@ -193,7 +193,7 @@
 
     .work-with-us-hero__support-area {
       z-index: 1;
-      grid-column: 9 / -1;
+      grid-column: 10 / -1;
       grid-row: 2;
       align-self: end;
       width: min(100%, 22.5rem);
@@ -206,9 +206,13 @@
       font-size: clamp(1rem, 0.91rem + 0.36vw, 1.125rem);
     }
 
+    .work-with-us-hero__cta {
+      width: 100%;
+    }
+
     .work-with-us-hero__structure {
       z-index: 0;
-      grid-column: 9 / -1;
+      grid-column: 10 / -1;
       grid-row: 3;
       align-self: end;
       margin: 0;
