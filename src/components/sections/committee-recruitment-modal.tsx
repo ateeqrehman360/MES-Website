@@ -100,7 +100,6 @@ export function CommitteeRecruitmentModal({
       <span
         className={styles.srOnly}
         tabIndex={0}
-        aria-hidden="true"
         data-focus-guard
         onFocus={() => formRef.current?.focus()}
       />
@@ -129,7 +128,6 @@ export function CommitteeRecruitmentModal({
       <span
         className={styles.srOnly}
         tabIndex={0}
-        aria-hidden="true"
         data-focus-guard
         onFocus={() => closeRef.current?.focus({ preventScroll: true })}
       />
