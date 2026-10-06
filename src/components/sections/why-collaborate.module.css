@@ -1,0 +1,304 @@
+.section {
+  background: var(--mes-cream-soft);
+  color: var(--mes-green-ink);
+}
+
+.inner {
+  padding-block: clamp(4.75rem, 13vw, 7rem) clamp(5rem, 12vw, 7rem);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.eyebrow span {
+  flex: 0 0 2rem;
+  height: 1px;
+  background: var(--mes-gold);
+}
+
+.composition {
+  margin-block-start: 2.75rem;
+}
+
+.statement {
+  max-width: 16ch;
+  margin: 0;
+  color: var(--mes-deep-green);
+  font-family: var(--font-hero-apparel), Georgia, serif;
+  font-size: clamp(2.65rem, 10.8vw, 4.5rem);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  line-height: 1.03;
+  text-wrap: balance;
+}
+
+.evidence {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.5rem;
+  margin: 3.5rem 0 0;
+}
+
+.fact {
+  --proof-delay: 180ms;
+  --proof-x: 0px;
+  --proof-y: 0.65rem;
+  position: relative;
+  min-width: 0;
+  padding-block-start: 1.25rem;
+}
+
+.fact::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 3.25rem;
+  height: 1px;
+  background: var(--mes-border);
+  transform-origin: left center;
+}
+
+.figure {
+  margin: 0;
+  color: var(--mes-deep-green);
+  font-family: var(--font-hero-apparel), Georgia, serif;
+  font-size: clamp(3.75rem, 16vw, 5.25rem);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.caption {
+  max-width: 23ch;
+  margin: 0.625rem 0 0;
+  font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.attendees,
+.raised {
+  margin-inline-start: 15%;
+}
+
+.attendees {
+  --proof-delay: 300ms;
+}
+
+.social {
+  --proof-delay: 240ms;
+}
+
+.raised {
+  --proof-delay: 390ms;
+}
+
+.since {
+  --proof-delay: 460ms;
+  margin-inline-start: 8%;
+}
+
+.since::before {
+  width: 4.5rem;
+  background: var(--mes-gold);
+}
+
+.since .figure {
+  font-size: clamp(2.75rem, 11vw, 3.5rem);
+  letter-spacing: -0.04em;
+}
+
+.since .caption {
+  max-width: 26ch;
+}
+
+/* Tablet keeps the statement first, then a staggered, open editorial sequence. */
+@media (min-width: 48rem) {
+  .composition {
+    margin-block-start: 3.5rem;
+  }
+
+  .statement {
+    max-width: 20ch;
+    margin-inline-start: 8.5%;
+    font-size: clamp(3.75rem, 6.4vw, 4.5rem);
+  }
+
+  .evidence {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 2.25rem 1.25rem;
+    margin-block-start: 4rem;
+  }
+
+  .fact {
+    margin-inline: 0;
+  }
+
+  .events {
+    grid-column: 1 / 5;
+    grid-row: 1;
+  }
+
+  .attendees {
+    grid-column: 7 / 12;
+    grid-row: 1;
+    margin-block-start: 2.5rem;
+  }
+
+  .social {
+    grid-column: 3 / 7;
+    grid-row: 2;
+  }
+
+  .raised {
+    grid-column: 8 / -1;
+    grid-row: 2;
+    margin-block-start: 2.5rem;
+  }
+
+  .since {
+    grid-column: 5 / 11;
+    grid-row: 3;
+  }
+
+  .figure {
+    font-size: clamp(4rem, 7.4vw, 5rem);
+  }
+
+  .events .figure {
+    font-size: clamp(5rem, 9vw, 6rem);
+  }
+}
+
+/* Shared subgrid tracks reserve real space for the central idea and each fact. */
+@media (min-width: 70rem) {
+  .inner {
+    padding-block: 6rem;
+  }
+
+  .composition {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: 1.5rem;
+    row-gap: 3.25rem;
+    margin-block-start: 3rem;
+  }
+
+  .statement {
+    grid-column: 4 / 11;
+    grid-row: 2;
+    align-self: center;
+    max-width: 20ch;
+    margin: 0;
+    padding-block: 0.75rem;
+    font-size: clamp(4rem, 5.5vw, 5rem);
+  }
+
+  .evidence {
+    grid-column: 1 / -1;
+    grid-row: 1 / 4;
+    grid-template-columns: subgrid;
+    grid-template-rows: subgrid;
+    margin: 0;
+    gap: inherit;
+  }
+
+  .events {
+    --proof-x: 0.45rem;
+    grid-column: 2 / 5;
+    grid-row: 1;
+  }
+
+  .attendees {
+    --proof-x: -0.45rem;
+    grid-column: 9 / 12;
+    grid-row: 1;
+    margin-block-start: 1.75rem;
+  }
+
+  .social {
+    --proof-x: 0.6rem;
+    grid-column: 1 / 4;
+    grid-row: 2;
+    align-self: center;
+  }
+
+  .raised {
+    grid-column: 5 / 8;
+    grid-row: 3;
+    margin: 0;
+  }
+
+  .since {
+    --proof-x: -0.4rem;
+    grid-column: 10 / -1;
+    grid-row: 3;
+    margin-block-start: 2rem;
+  }
+
+  .figure {
+    font-size: clamp(4rem, 5.2vw, 4.75rem);
+  }
+
+  .events .figure {
+    font-size: clamp(5rem, 6.6vw, 6rem);
+  }
+
+  .attendees .figure {
+    font-size: clamp(4.5rem, 5.7vw, 5.25rem);
+  }
+
+  .since .figure {
+    font-size: clamp(2.6rem, 3.25vw, 3rem);
+  }
+}
+
+/* No pre-reveal hiding: JS only adds a one-shot settling animation on entry. */
+@media (prefers-reduced-motion: no-preference) {
+  .statement[data-revealed="true"] {
+    animation: proof-settle 720ms var(--ease-premium) both;
+  }
+
+  .fact[data-revealed="true"] {
+    animation: proof-settle 680ms var(--ease-premium) var(--proof-delay) both;
+  }
+
+  .fact[data-revealed="true"]::before {
+    animation: proof-rule 720ms var(--ease-premium) var(--proof-delay) both;
+  }
+}
+
+@keyframes proof-settle {
+  from {
+    transform: translate3d(var(--proof-x, 0px), var(--proof-y, 0.5rem), 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes proof-rule {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
