@@ -56,9 +56,14 @@
     text-wrap: balance;
   }
 
+  .work-with-us-hero__support-area {
+    min-width: 0;
+    margin: clamp(2.25rem, 7svh, 3.75rem) 0 0;
+  }
+
   .work-with-us-hero__support {
     width: min(100%, 31rem);
-    margin: clamp(2.25rem, 7svh, 3.75rem) 0 0;
+    margin: 0;
     color: rgb(1 54 9 / 88%);
     font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
     font-size: clamp(1rem, 0.94rem + 0.3vw, 1.125rem);
@@ -66,6 +71,42 @@
     letter-spacing: -0.02em;
     line-height: 1.58;
     text-wrap: pretty;
+  }
+
+  .work-with-us-hero__cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: 100%;
+    min-height: 3rem;
+    margin-block-start: 1.5rem;
+    padding: 0.75rem 1.125rem;
+    border: 1px solid var(--mes-deep-green);
+    border-radius: 2px;
+    background: var(--mes-deep-green);
+    color: var(--mes-cream);
+    font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.018em;
+    line-height: 1.5;
+    text-decoration: none;
+  }
+
+  .work-with-us-hero__cta span {
+    flex: 0 0 auto;
+    color: #d4b46a;
+  }
+
+  .work-with-us-hero__cta:is(:hover, :focus-visible) {
+    border-color: var(--mes-gold);
+    background: var(--mes-green-ink);
+  }
+
+  .work-with-us-hero__cta:focus-visible {
+    outline: 2px solid var(--mes-deep-green);
+    outline-offset: 4px;
   }
 
   .work-with-us-hero__structure {
@@ -106,7 +147,7 @@
       white-space: nowrap;
     }
 
-    .work-with-us-hero__support {
+    .work-with-us-hero__support-area {
       grid-column: 3 / span 4;
       margin-block-start: clamp(3rem, 8svh, 5rem);
     }
@@ -150,13 +191,16 @@
       white-space: nowrap;
     }
 
-    .work-with-us-hero__support {
+    .work-with-us-hero__support-area {
       z-index: 1;
       grid-column: 9 / -1;
       grid-row: 2;
       align-self: end;
       width: min(100%, 22.5rem);
       margin: 0 0 clamp(3.25rem, 8.5svh, 6.25rem);
+    }
+
+    .work-with-us-hero__support {
       padding-block-start: 1.125rem;
       border-block-start: 1px solid var(--mes-border);
       font-size: clamp(1rem, 0.91rem + 0.36vw, 1.125rem);
@@ -197,9 +241,21 @@
       animation-delay: 250ms;
     }
 
+    .work-with-us-hero__cta span {
+      transition: transform 220ms var(--ease-premium);
+    }
+
+    .work-with-us-hero__cta:is(:hover, :focus-visible) span {
+      transform: translateX(5px);
+    }
+
+    .work-with-us-hero[data-revealed="true"] [data-reveal="cta"] {
+      animation-delay: 330ms;
+    }
+
     .work-with-us-hero[data-revealed="true"] [data-reveal="rule"] {
       animation-name: work-with-us-rule-reveal;
-      animation-delay: 285ms;
+      animation-delay: 365ms;
       transform-origin: left center;
     }
 
