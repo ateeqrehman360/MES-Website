@@ -1,5 +1,6 @@
 import { WorkWithUsHero } from "@/components/sections/work-with-us-hero";
 import { WaysToWorkWithUs } from "@/components/sections/ways-to-work-with-us";
+import { WhyCollaborate } from "@/components/sections/why-collaborate";
 import { createPageMetadata } from "@/lib/metadata";
 
 const description =
@@ -12,6 +13,7 @@ export default function WorkWithUsPage() {
     <>
       <WorkWithUsHero />
       <WaysToWorkWithUs />
+      <WhyCollaborate />
     </>
   );
 }
