@@ -35,7 +35,7 @@ export type TeamMember = Readonly<{
 
 // To replace a placeholder, add /public/about/team/{id}.webp and set only
 // `portrait` below; `objectPosition` remains available for crop tuning.
-export const teamMembers = [
+export const teamMembers: readonly TeamMember[] = [
   {
     id: "anees",
     name: "Anees",
@@ -52,7 +52,7 @@ export const teamMembers = [
     name: "Asma",
     role: "President",
     tier: "primary",
-    portrait: null,
+    portrait: "/about/team/asma.webp",
     alt: "Portrait of Asma",
     objectPosition: "50% 38%",
     layout: "centre-focus",
@@ -65,7 +65,7 @@ export const teamMembers = [
     tier: "primary",
     portrait: "/about/team/ateeq.webp",
     alt: "Portrait of Ateeq",
-    objectPosition: "50% 50%",
+    objectPosition: "50% 43%",
     layout: "right-anchor",
     placeholderTone: "gold",
   },
