@@ -71,14 +71,17 @@ export function WaysToWorkWithUs() {
               <span className={styles.contactRule} aria-hidden="true" />
               <h4 className={styles.contactTitle}>Have something in mind?</h4>
               <p className={styles.contactCopy}>
-                Whether it’s an event, opportunity, speaker or something we
-                haven’t thought of yet, we’d like to hear it.
+                Event, speaker, opportunity or sponsorship — tell us what you’re
+                thinking.
               </p>
               <a
                 className={styles.contactLink}
-                href="mailto:mmu.mes@outlook.com"
+                href="mailto:mmu.mes@outlook.com?subject=Collaboration%20enquiry%20%E2%80%94%20MES&body=Hi%20MES%2C%0A%0AI%E2%80%99d%20like%20to%20discuss%20a%20potential%20collaboration.%0A%0AName%3A%0AOrganisation%3A%0AIdea%20%2F%20opportunity%3A"
               >
-                Start a conversation <span aria-hidden="true">→</span>
+                Propose a collaboration <span aria-hidden="true">→</span>
+              </a>
+              <a className={styles.contactEmail} href="mailto:mmu.mes@outlook.com">
+                mmu.mes@outlook.com
               </a>
             </div>
           </li>

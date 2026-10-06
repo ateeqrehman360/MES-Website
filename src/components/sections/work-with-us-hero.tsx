@@ -29,9 +29,18 @@ export function WorkWithUsHero() {
           </span>
         </h1>
 
-        <p className="work-with-us-hero__support" data-reveal="support">
-          {supportCopy}
-        </p>
+        <div className="work-with-us-hero__support-area">
+          <p className="work-with-us-hero__support" data-reveal="support">
+            {supportCopy}
+          </p>
+          <a
+            className="work-with-us-hero__cta"
+            data-reveal="cta"
+            href="mailto:mmu.mes@outlook.com?subject=Collaboration%20enquiry%20%E2%80%94%20MES&body=Hi%20MES%2C%0A%0AI%E2%80%99d%20like%20to%20discuss%20a%20potential%20collaboration.%0A%0AName%3A%0AOrganisation%3A%0AIdea%20%2F%20opportunity%3A"
+          >
+            Propose a collaboration <span aria-hidden="true">→</span>
+          </a>
+        </div>
 
         <div className="work-with-us-hero__structure" aria-hidden="true">
           <span className="work-with-us-hero__structure-rule" data-reveal="rule" />
