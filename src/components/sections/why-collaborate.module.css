@@ -127,6 +127,36 @@
   max-width: 26ch;
 }
 
+/* Keep phone evidence connected without changing the larger compositions. */
+@media (width < 48rem) {
+  .inner {
+    padding-block: 4rem 3rem;
+  }
+
+  .evidence {
+    gap: 1.25rem;
+    margin-block-start: 2.25rem;
+  }
+
+  .fact {
+    padding-block-start: 0.75rem;
+  }
+
+  .caption {
+    margin-block-start: 0.375rem;
+  }
+
+  .attendees,
+  .raised {
+    margin-inline-start: 12%;
+  }
+
+  .since {
+    margin-inline-start: 6%;
+    padding-block-start: 1rem;
+  }
+}
+
 /* Tablet keeps the statement first, then a staggered, open editorial sequence. */
 @media (min-width: 48rem) {
   .composition {
