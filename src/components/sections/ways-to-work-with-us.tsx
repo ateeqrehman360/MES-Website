@@ -66,6 +66,21 @@ export function WaysToWorkWithUs() {
               For organisations that want to support an MES event financially or
               through resources, sponsorship can form part of the collaboration.
             </p>
+
+            <div className={styles.contact}>
+              <span className={styles.contactRule} aria-hidden="true" />
+              <h4 className={styles.contactTitle}>Have something in mind?</h4>
+              <p className={styles.contactCopy}>
+                Whether it’s an event, opportunity, speaker or something we
+                haven’t thought of yet, we’d like to hear it.
+              </p>
+              <a
+                className={styles.contactLink}
+                href="mailto:mmu.mes@outlook.com"
+              >
+                Start a conversation <span aria-hidden="true">→</span>
+              </a>
+            </div>
           </li>
         </ol>
       </div>
