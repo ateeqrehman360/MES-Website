@@ -159,6 +159,70 @@
   color: rgb(234 226 212 / 84%);
 }
 
+.contact {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 1rem;
+  margin-block-start: 1.25rem;
+}
+
+.contactRule {
+  grid-column: 1 / -1;
+  height: 1px;
+  margin-block-end: 0.75rem;
+  background: rgb(212 180 106 / 35%);
+  transform-origin: left center;
+}
+
+.contactTitle {
+  margin: 0;
+  color: var(--mes-cream);
+  font-family: var(--font-hero-apparel), Georgia, serif;
+  font-size: clamp(1.75rem, 6.5vw, 2.75rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+  text-wrap: balance;
+}
+
+.contactCopy {
+  max-width: 35rem;
+  margin: 0;
+  color: rgb(234 226 212 / 84%);
+  font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.018em;
+  line-height: 1.62;
+  text-wrap: pretty;
+}
+
+.contactLink {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  padding-block: 0.5rem;
+  border-block-end: 1px solid rgb(212 180 106 / 55%);
+  color: var(--ways-support-gold);
+  font-family: var(--font-manrope), Arial, Helvetica, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.018em;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.contactLink:is(:hover, :focus-visible) {
+  border-block-end-color: var(--ways-support-gold);
+}
+
+.contactLink:focus-visible {
+  outline: 2px solid var(--ways-support-gold);
+  outline-offset: 5px;
+}
+
 @media (min-width: 48rem) {
   .inner {
     --ways-section-end-space: clamp(6rem, 10vw, 8rem);
@@ -229,6 +293,24 @@
   .support {
     min-height: 21rem;
     padding-block: clamp(4rem, 8vw, 5.5rem);
+  }
+
+  .contact {
+    grid-template-columns: subgrid;
+    margin-block-start: 2.25rem;
+  }
+
+  .contactRule {
+    margin-block-end: 1rem;
+  }
+
+  .contactTitle {
+    grid-column: 3 / -1;
+  }
+
+  .contactCopy,
+  .contactLink {
+    grid-column: 4 / -1;
   }
 }
 
@@ -301,9 +383,52 @@
     min-height: clamp(21rem, 25vw, 24rem);
     padding-block: clamp(4.25rem, 6.5vw, 5.75rem);
   }
+
+  .contact {
+    margin-block-start: 3rem;
+  }
+
+  .contactTitle {
+    grid-column: 3 / span 5;
+  }
+
+  .contactCopy,
+  .contactLink {
+    grid-column: 9 / -1;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .support[data-revealed="true"] .contactRule {
+    animation: ways-rule 440ms var(--ease-premium) 780ms both;
+  }
+
+  .support[data-revealed="true"] .contactTitle,
+  .support[data-revealed="true"] .contactCopy,
+  .support[data-revealed="true"] .contactLink {
+    animation: ways-rise 480ms var(--ease-premium) both;
+  }
+
+  .support[data-revealed="true"] .contactTitle {
+    animation-delay: 920ms;
+  }
+
+  .support[data-revealed="true"] .contactCopy {
+    animation-delay: 1000ms;
+  }
+
+  .support[data-revealed="true"] .contactLink {
+    animation-delay: 1080ms;
+  }
+
+  .contactLink span {
+    transition: transform 220ms var(--ease-premium);
+  }
+
+  .contactLink:is(:hover, :focus-visible) span {
+    transform: translateX(5px);
+  }
+
   .intro[data-revealed="true"] .eyebrow,
   .intro[data-revealed="true"] .heading,
   .intro[data-revealed="true"] .introCopy,
