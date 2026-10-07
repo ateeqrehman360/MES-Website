@@ -522,8 +522,14 @@
 
     .featured-experiences[data-featured-motion="mobile"] .featured-experience__copy {
       grid-area: 1 / 1;
+      align-self: stretch;
+      height: 100%;
       width: 100%;
       max-width: none;
+      clip-path: inset(
+        var(--experience-copy-mask-top, 0%) 0
+        var(--experience-copy-mask-bottom, 0%)
+      );
       opacity: var(--experience-copy-opacity, 0);
       transform: translate3d(0, var(--experience-copy-y, 0), 0);
     }

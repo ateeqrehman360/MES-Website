@@ -11,6 +11,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CanvasTexture,
   Group,
+  LinearFilter,
   Material,
   MathUtils,
   Mesh,
@@ -31,7 +32,7 @@ import {
 } from "./hero-display-texture";
 import type { HeroProgressSignal } from "./hero-progress";
 
-const MOBILE_CANVAS_DPR = [1, 1.5] as [number, number];
+const MOBILE_CANVAS_DPR = [1, 1.35] as [number, number];
 const MOBILE_DISPLAY_BACKING_SCALE = 1.5;
 
 const MODEL_URL = "/models/MES_Laptop.glb";
@@ -54,6 +55,23 @@ const TAKEOVER_CAMERA_DISTANCE = 5.82;
 const MOBILE_FOCUS_CAMERA = { x: 0.08, y: 1.05, z: 8.65 } as const;
 const MOBILE_FOCUS_TARGET_Z_OFFSET = 0.82;
 const FRAME_SURFACE_MAP_NAME = "MES_Frame_Surface_Map";
+
+function createMobileShadow() {
+  const canvas = document.createElement("canvas");
+  canvas.width = canvas.height = 128;
+  const context = canvas.getContext("2d");
+  if (!context) return null;
+  const gradient = context.createRadialGradient(64, 64, 4, 64, 64, 64);
+  gradient.addColorStop(0, "rgba(255,255,255,0.35)");
+  gradient.addColorStop(0.45, "rgba(255,255,255,0.18)");
+  gradient.addColorStop(1, "rgba(255,255,255,0)");
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, 128, 128);
+  const texture = new CanvasTexture(canvas);
+  texture.generateMipmaps = false;
+  texture.minFilter = texture.magFilter = LinearFilter;
+  return texture;
+}
 
 type Composition = {
   camera: [number, number, number];
@@ -393,12 +411,21 @@ function LaptopModel({
     const artworkProgress = getHeroDisplayDrawProgress(
       progress.value,
       isPortrait,
+      !useDesktopProductTreatment,
     );
 
+    // Loading a future photograph needn't upload the unchanged branded screen.
+    if (
+      !useDesktopProductTreatment && artworkProgress === 0 &&
+      lastArtworkProgress.current === 0
+    ) return;
     displayTexture.draw(artworkProgress);
     lastArtworkProgress.current = artworkProgress;
     invalidate();
-  }, [displayTexture, invalidate, isPortrait, photographyRevision, progress]);
+  }, [
+    displayTexture, invalidate, isPortrait, photographyRevision, progress,
+    useDesktopProductTreatment,
+  ]);
 
   useEffect(() => {
     if (!displayTexture) {
@@ -407,7 +434,7 @@ function LaptopModel({
 
     let isActive = true;
 
-    void document.fonts.ready.then(() => {
+    void displayTexture.fontsReady.then(() => {
       if (!isActive) {
         return;
       }
@@ -415,17 +442,19 @@ function LaptopModel({
       const artworkProgress = getHeroDisplayDrawProgress(
         progress.value,
         isPortrait,
+        !useDesktopProductTreatment,
       );
 
       displayTexture.draw(artworkProgress);
       lastArtworkProgress.current = artworkProgress;
       invalidate();
+      if (!useDesktopProductTreatment) performance.mark("mes-hero:fonts-drawn");
     });
 
     return () => {
       isActive = false;
     };
-  }, [displayTexture, invalidate, isPortrait, progress]);
+  }, [displayTexture, invalidate, isPortrait, progress, useDesktopProductTreatment]);
 
   useFrame(() => {
     if (!displayTexture) {
@@ -435,6 +464,7 @@ function LaptopModel({
     const artworkProgress = getHeroDisplayDrawProgress(
       progress.value,
       isPortrait,
+      !useDesktopProductTreatment,
     );
 
     if (Math.abs(artworkProgress - lastArtworkProgress.current) < 0.001) {
@@ -479,8 +509,9 @@ function LaptopModel({
         return;
       }
 
-      object.castShadow = object.name === "Frame_ComputerFrame_0";
-      object.receiveShadow = true;
+      object.castShadow =
+        useDesktopProductTreatment && object.name === "Frame_ComputerFrame_0";
+      object.receiveShadow = useDesktopProductTreatment;
       const sourceMaterials = Array.isArray(object.material)
         ? object.material
         : [object.material];
@@ -530,8 +561,8 @@ function LaptopModel({
 
   useEffect(() => {
     if (!preparedScene || !displayTexture) return;
-    // Preserve desktop readiness. Mobile waits for decoded display assets,
-    // fonts and a rendered frame before fading the preview out.
+    // The uploaded display is already valid (logo artwork while its fonts load).
+    // Reveal the first frame without waiting for the page-wide font set.
     if (useDesktopProductTreatment) {
       onReady();
       return;
@@ -540,13 +571,12 @@ function LaptopModel({
     let frame = 0;
     const unsubscribe = displayTexture.onFirstUpload(() => {
       if (readinessReported.current) return;
-      void document.fonts.ready.then(() => {
+      performance.mark("mes-hero:display-uploaded");
+      frame = requestAnimationFrame(() => {
         if (!active || readinessReported.current) return;
-        frame = requestAnimationFrame(() => {
-          if (!active) return;
-          readinessReported.current = true;
-          onReady();
-        });
+        readinessReported.current = true;
+        performance.mark("mes-hero:ready");
+        onReady();
       });
     });
     invalidate();
@@ -608,6 +638,10 @@ function LaptopScene({
   const modelRef = useRef<Group>(null);
   const shadowRef = useRef<Group>(null);
   const cameraTarget = useMemo(() => new Vector3(), []);
+  const mobileShadow = useMemo(
+    () => isMobile ? createMobileShadow() : null, [isMobile],
+  );
+  useEffect(() => () => mobileShadow?.dispose(), [mobileShadow]);
   const aspect = size.width / Math.max(size.height, 1);
   const isPortrait = aspect < 0.64;
   const useDesktopProductTreatment = !isMobile;
@@ -801,7 +835,7 @@ function LaptopScene({
         groundColor={useDesktopProductTreatment ? "#747773" : "#30352f"}
       />
       <directionalLight
-        castShadow={!isPortrait}
+        castShadow={!isMobile && !isPortrait}
         color={useDesktopProductTreatment ? "#fffdf8" : "#fff4d9"}
         intensity={useDesktopProductTreatment ? 3.45 : 2.85}
         position={[-5.5, 8.5, 6.5]}
@@ -816,7 +850,7 @@ function LaptopScene({
         shadow-radius={30}
         shadow-blurSamples={32}
       />
-      {isPortrait ? (
+      {isPortrait && !isMobile ? (
         <directionalLight
           castShadow
           color="#000000"
@@ -882,19 +916,25 @@ function LaptopScene({
       </group>
 
       <group ref={shadowRef} position={composition.shadowPosition}>
-        <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh receiveShadow={!isMobile} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry
             args={[
               composition.shadowScale,
               composition.shadowScale * (isPortrait ? 0.76 : 0.66),
             ]}
           />
-          <shadowMaterial
-            color={isPortrait ? "#3c3c38" : "#252a26"}
-            opacity={isPortrait ? 0.76 : 0.72}
-            transparent
-            depthWrite={false}
-          />
+          {isMobile ? (
+            <meshBasicMaterial
+              map={mobileShadow} color="#3c3c38" opacity={mobileShadow ? 0.76 : 0}
+              transparent depthWrite={false} toneMapped={false}
+            />
+          ) : (
+            <shadowMaterial
+              color={isPortrait ? "#3c3c38" : "#252a26"}
+              opacity={isPortrait ? 0.76 : 0.72}
+              transparent depthWrite={false}
+            />
+          )}
         </mesh>
       </group>
     </>
@@ -933,8 +973,7 @@ export function HeroCanvas({
   return (
     <Canvas
       frameloop="demand"
-      // Mobile Retina: 1.5 is a 44% pixel increase over 1.25, rather than
-      // paying for the phone's full 3x DPR. Desktop settings stay identical.
+      // Keep the dense display raster independent from framebuffer fill cost.
       dpr={isMobile ? MOBILE_CANVAS_DPR : [1, 1.5]}
       camera={{ fov: 30, near: 0.1, far: 100 }}
       gl={{
@@ -945,7 +984,7 @@ export function HeroCanvas({
       onCreated={({ gl }) => {
         gl.toneMappingExposure = 1.12;
       }}
-      shadows="variance"
+      shadows={isMobile ? false : "variance"}
     >
       <WebGLContextLifecycle onUnavailable={onUnavailable} />
       <LaptopScene

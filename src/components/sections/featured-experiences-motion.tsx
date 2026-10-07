@@ -16,6 +16,11 @@ const EXPERIENCE_OFFSETS = [
 ] as const;
 const HANDOFF_LEAD = 0.6;
 const HISTORY_OPACITY = 0.08;
+const MOBILE_HANDOFF_WINDOWS = [
+  [0.12, 0.36],
+  [0.40, 0.64],
+  [0.68, 0.92],
+] as const;
 
 function clamp(value: number, minimum = 0, maximum = 1) {
   return Math.min(maximum, Math.max(minimum, value));
@@ -65,6 +70,8 @@ export function FeaturedExperiencesMotion({
         [
           "--experience-copy-opacity",
           "--experience-copy-y",
+          "--experience-copy-mask-top",
+          "--experience-copy-mask-bottom",
           "--experience-poster-clip",
           "--experience-poster-opacity",
           "--experience-poster-rotate",
@@ -237,39 +244,62 @@ export function FeaturedExperiencesMotion({
       if (Math.abs(progress - previousProgress) < 0.0001) return;
       previousProgress = progress;
 
-      // Holds between three brief poster replacements; every value is a pure
+      // Longer overlapping replacements; every value is a pure
       // function of scroll, so reversing or stopping needs no animation state.
-      const handoffs = [[0.18, 0.30], [0.45, 0.57], [0.72, 0.84]] as const;
-      const transitions = handoffs.map(([start, end]) =>
-        smoothSegment(progress, start, end),
+      const phases = MOBILE_HANDOFF_WINDOWS.map(([start, end]) =>
+        clamp((progress - start) / (end - start)),
       );
+      const entries = phases.map((value) => smoothSegment(value, 0, 1));
+      const ink = phases.map((value) => smoothSegment(value, 0, 0.62));
+      const retreats = phases.map((value) => smoothSegment(value, 0, 1));
+      const exits = phases.map((value) => smoothSegment(value, 0.18, 1));
       let activeIndex = 0;
-      transitions.forEach((value, index) => {
+      phases.forEach((value, index) => {
         if (value >= 0.5) activeIndex = index + 1;
       });
 
       articles.forEach((article, index) => {
-        const entry = index === 0 ? 1 : transitions[index - 1];
-        const exit = transitions[index] ?? 0;
-        const retirement = transitions[index + 1] ?? 0;
-        const opacity = entry * (1 - exit) + 0.09 * entry * exit * (1 - retirement);
+        const entry = index === 0 ? 1 : entries[index - 1];
+        const incomingOpacity = index === 0 ? 1 : ink[index - 1];
+        const exit = exits[index] ?? 0;
+        const retreat = retreats[index] ?? 0;
+        const retirement = retreats[index + 1] ?? 0;
+        const opacity = incomingOpacity * (1 - exit) +
+          0.12 * incomingOpacity * exit * (1 - retirement);
+        const copyEntry = index === 0 ? 1 : smoothSegment(phases[index - 1], 0, 0.94);
+        const copyExit = smoothSegment(phases[index] ?? 0, 0.06, 1);
+        const entryPhase = index === 0 ? 1 : phases[index - 1];
+        const exitPhase = phases[index] ?? 0;
+        // Allow for the copy's vertical drift when matching the mask edges.
+        const entryMaskInset = 26 * entryPhase * (1 - entryPhase);
+        const exitMaskInset = 26 * exitPhase * (1 - exitPhase);
         article.style.setProperty(
-          "--experience-poster-mask", `${(12 * (1 - entry)).toFixed(3)}%`,
+          "--experience-poster-mask", `${(28 * (1 - entry)).toFixed(3)}%`,
         );
         article.style.setProperty("--experience-poster-opacity", opacity.toFixed(4));
         article.style.setProperty(
-          "--experience-poster-scale", (1 - 0.045 * exit).toFixed(4),
+          "--experience-poster-scale", (0.992 + 0.008 * entry - 0.045 * retreat).toFixed(4),
         );
         article.style.setProperty(
           "--experience-poster-y",
-          `${(1.5 * (1 - entry) - 0.85 * exit).toFixed(3)}rem`,
+          `${(1.75 * (1 - entry) - 0.85 * retreat).toFixed(3)}rem`,
         );
         article.style.setProperty(
-          "--experience-copy-opacity", (entry * (1 - exit)).toFixed(4),
+          "--experience-copy-opacity", (copyEntry * (1 - copyExit)).toFixed(4),
+        );
+        // Complementary masks replace the copy from top to bottom. The small
+        // overlap avoids a hard seam without superimposing whole titles.
+        article.style.setProperty(
+          "--experience-copy-mask-top",
+          `${Math.min(100, copyExit * 100 + exitMaskInset).toFixed(3)}%`,
+        );
+        article.style.setProperty(
+          "--experience-copy-mask-bottom",
+          `${Math.min(100, (1 - copyEntry) * 100 + entryMaskInset).toFixed(3)}%`,
         );
         article.style.setProperty(
           "--experience-copy-y",
-          `${(0.65 * (1 - entry) - 0.35 * exit).toFixed(3)}rem`,
+          `${(0.65 * (1 - copyEntry) - 0.45 * retreat).toFixed(3)}rem`,
         );
       });
       root.dataset.featuredActive = String(activeIndex + 1).padStart(2, "0");

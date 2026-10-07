@@ -33,7 +33,6 @@ export function setupMobileJourney(stage: HTMLDivElement) {
   let measuredWidth = 0;
   let layoutReady = false;
   let height = 1;
-  let stageTop = 0;
   let readingHeight = 0;
   let points: Point[] = [];
   let lookup: { y: number; length: number }[] = [];
@@ -42,8 +41,11 @@ export function setupMobileJourney(stage: HTMLDivElement) {
   const update = () => {
     frame = 0;
     if (!lookup.length || disposed) return;
+    // Geometry stays in stage-local coordinates. Only this one live rectangle
+    // follows Safari's scroll coordinate system and upstream layout movement.
+    const stageTop = stage.getBoundingClientRect().top;
     const revealedY = Math.max(
-      0, Math.min(height, scrollY + readingHeight * 0.66 - stageTop),
+      0, Math.min(height, readingHeight * 0.66 - stageTop),
     );
     let lower = 0;
     let upper = lookup.length - 1;
@@ -80,9 +82,13 @@ export function setupMobileJourney(stage: HTMLDivElement) {
     if (disposed) return;
     measuredWidth = stage.clientWidth;
     height = stage.offsetHeight;
-    stageTop = stage.getBoundingClientRect().top + scrollY;
-    // Ignore chrome-driven innerHeight changes between genuine layout changes.
-    readingHeight = document.documentElement.clientHeight;
+    // A small-viewport reading anchor doesn't move as browser bars collapse.
+    // It is renewed only for real width/orientation changes, like the geometry.
+    const viewport = document.createElement("div");
+    viewport.style.cssText = "position:fixed;height:100svh;width:0;visibility:hidden;pointer-events:none";
+    document.body.append(viewport);
+    readingHeight = viewport.offsetHeight || document.documentElement.clientHeight;
+    viewport.remove();
     points = nodes.map((node) => offsetWithin(node, stage));
     const end = offsetWithin(ending, stage);
     const route = [
@@ -114,11 +120,14 @@ export function setupMobileJourney(stage: HTMLDivElement) {
   });
   const onResize = () => {
     if (layoutReady && stage.clientWidth !== measuredWidth) measure();
+    schedule();
   };
   const observer = new ResizeObserver(onResize);
   observer.observe(stage);
   window.addEventListener("scroll", schedule, { passive: true });
   window.addEventListener("resize", onResize);
+  window.visualViewport?.addEventListener("resize", schedule);
+  window.visualViewport?.addEventListener("scroll", schedule);
   reducedMotion.addEventListener("change", schedule);
   return () => {
     disposed = true;
@@ -126,6 +135,8 @@ export function setupMobileJourney(stage: HTMLDivElement) {
     observer.disconnect();
     window.removeEventListener("scroll", schedule);
     window.removeEventListener("resize", onResize);
+    window.visualViewport?.removeEventListener("resize", schedule);
+    window.visualViewport?.removeEventListener("scroll", schedule);
     reducedMotion.removeEventListener("change", schedule);
     base.removeAttribute("d");
     drawn.removeAttribute("d");
