@@ -298,6 +298,10 @@
     pointer-events: none;
   }
 
+  .hero-static__laptop-preview {
+    display: none;
+  }
+
   .hero-static__canvas {
     opacity: var(--hero-canvas-opacity, 1);
     will-change: opacity;
@@ -1174,5 +1178,84 @@ body:has(.hero-static) .site-header__cta:hover {
     inset-inline-end: auto;
     margin-block-start: var(--hero-title-stack-gap);
     margin-inline-start: calc(0.75vw + 1rem);
+  }
+}
+
+/* Lightweight, server-rendered mobile composition while the GLB initialises. */
+@media (max-width: 47.999rem) {
+  @layer components {
+    .hero-static__laptop-preview {
+      position: absolute;
+      inset-block-start: 39%;
+      inset-inline-start: 17%;
+      display: block;
+      width: 118%;
+      opacity: 1;
+      transform: rotate(3deg);
+      transition: opacity var(--duration-fast) var(--ease-premium);
+    }
+
+    .hero-static__laptop-preview-screen {
+      display: flex;
+      align-items: center;
+      aspect-ratio: 1246 / 720;
+      overflow: hidden;
+      border: 0.7rem solid #22251f;
+      border-radius: 0.9rem 0.9rem 0.3rem 0.3rem;
+      background: #013609;
+    }
+
+    .hero-static__laptop-preview-brand {
+      flex: 0 0 64%;
+      padding-inline-start: 7%;
+      color: var(--mes-cream-soft);
+      font-family: var(--font-hero-kommon), Arial, sans-serif;
+      font-size: 3.5vw;
+      line-height: 1.4;
+    }
+
+    .hero-static__laptop-preview-brand > span {
+      display: block;
+      width: 3rem;
+      height: 2px;
+      margin-block-end: 1rem;
+      background: var(--mes-gold);
+    }
+
+    .hero-static__laptop-preview-screen img {
+      width: 36%;
+      height: 100%;
+      padding: 1.2rem;
+      border-inline-start: 0.4rem solid var(--mes-gold);
+      background: var(--mes-cream-soft);
+      object-fit: contain;
+    }
+
+    .hero-static__laptop-preview-base {
+      display: block;
+      width: 118%;
+      height: 16vw;
+      margin-inline-start: -18%;
+      border-block-end: 0.4rem solid #71736a;
+      border-radius: 0 0 1rem 1rem;
+      background: linear-gradient(165deg, #c9c9bc, #9c9d90);
+      transform: skewX(-24deg);
+      box-shadow: 0 1.5rem 1.5rem rgb(34 37 31 / 15%);
+    }
+
+    .hero-static__canvas[data-webgl-state="ready"] .hero-static__laptop-preview,
+    .hero-static__canvas[data-webgl-state="unavailable"] .hero-static__laptop-preview {
+      opacity: 0;
+    }
+
+    .hero-static__canvas:not([data-webgl-state="unavailable"]) .hero-static__webgl-fallback {
+      opacity: 0;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @layer components {
+    .hero-static__laptop-preview { transition: none; }
   }
 }

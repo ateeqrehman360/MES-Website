@@ -90,6 +90,20 @@ export function HeroCanvasLoader({
       data-webgl-state={canvasState}
       aria-hidden="true"
     >
+      <div className="hero-static__laptop-preview">
+        <div className="hero-static__laptop-preview-screen">
+          <span className="hero-static__laptop-preview-brand">
+            <span />
+            MUSLIM<br />
+            ENTREPRENEURS
+          </span>
+          <Image
+            src="/brand/mes-logo.svg" alt="" width={560} height={610}
+            loading="eager"
+          />
+        </div>
+        <span className="hero-static__laptop-preview-base" />
+      </div>
       <div className="hero-static__webgl-fallback">
         <span className="hero-static__fallback-rule" />
         <Image

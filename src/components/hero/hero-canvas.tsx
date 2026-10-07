@@ -31,6 +31,9 @@ import {
 } from "./hero-display-texture";
 import type { HeroProgressSignal } from "./hero-progress";
 
+const MOBILE_CANVAS_DPR = [1, 1.5] as [number, number];
+const MOBILE_DISPLAY_BACKING_SCALE = 1.5;
+
 const MODEL_URL = "/models/MES_Laptop.glb";
 const LOGO_URL = "/brand/mes-logo.svg";
 const DISPLAY_LOCAL_CENTER = {
@@ -95,7 +98,7 @@ function smoothSegment(value: number, start: number, end: number) {
   return progress * progress * (3 - 2 * progress);
 }
 
-function loadDisplayImage(source: string) {
+function loadDisplayImage(source: string, decode = false) {
   return new Promise<HTMLImageElement>((resolve, reject) => {
     const image = new Image();
 
@@ -104,7 +107,11 @@ function loadDisplayImage(source: string) {
     image.onload = () => {
       image.onload = null;
       image.onerror = null;
-      resolve(image);
+      if (decode) {
+        void image.decode().then(() => resolve(image), () => resolve(image));
+      } else {
+        resolve(image);
+      }
     };
     image.onerror = () => {
       image.onload = null;
@@ -316,11 +323,12 @@ function LaptopModel({
     null,
   ]);
   const lastArtworkProgress = useRef(Number.NaN);
+  const readinessReported = useRef(false);
 
   useEffect(() => {
     let isActive = true;
 
-    loadDisplayImage(LOGO_URL).then(
+    loadDisplayImage(LOGO_URL, !useDesktopProductTreatment).then(
       (image) => {
         if (isActive) {
           setLogoImage(image);
@@ -334,7 +342,7 @@ function LaptopModel({
     );
 
     heroPhotography.forEach((photograph, index) => {
-      loadDisplayImage(photograph.src).then(
+      loadDisplayImage(photograph.src, !useDesktopProductTreatment).then(
         (image) => {
           if (!isActive) {
             return;
@@ -352,14 +360,18 @@ function LaptopModel({
     return () => {
       isActive = false;
     };
-  }, [onUnavailable]);
+  }, [onUnavailable, useDesktopProductTreatment]);
 
   const displayTexture = useMemo(
     () =>
       logoImage
-        ? createHeroDisplayTexture(logoImage, isPortrait)
+        ? createHeroDisplayTexture(
+            logoImage,
+            isPortrait,
+            useDesktopProductTreatment ? 1 : MOBILE_DISPLAY_BACKING_SCALE,
+          )
         : null,
-    [isPortrait, logoImage],
+    [isPortrait, logoImage, useDesktopProductTreatment],
   );
 
   useEffect(
@@ -432,12 +444,6 @@ function LaptopModel({
     displayTexture.draw(artworkProgress);
     lastArtworkProgress.current = artworkProgress;
   });
-
-  useEffect(() => {
-    if (displayTexture) {
-      onReady();
-    }
-  }, [displayTexture, onReady]);
 
   const screenMaterial = useMemo(() => {
     if (!displayTexture) {
@@ -521,6 +527,41 @@ function LaptopModel({
     },
     [preparedScene, screenMaterial],
   );
+
+  useEffect(() => {
+    if (!preparedScene || !displayTexture) return;
+    // Preserve desktop readiness. Mobile waits for decoded display assets,
+    // fonts and a rendered frame before fading the preview out.
+    if (useDesktopProductTreatment) {
+      onReady();
+      return;
+    }
+    let active = true;
+    let frame = 0;
+    const unsubscribe = displayTexture.onFirstUpload(() => {
+      if (readinessReported.current) return;
+      void document.fonts.ready.then(() => {
+        if (!active || readinessReported.current) return;
+        frame = requestAnimationFrame(() => {
+          if (!active) return;
+          readinessReported.current = true;
+          onReady();
+        });
+      });
+    });
+    invalidate();
+    return () => {
+      active = false;
+      cancelAnimationFrame(frame);
+      unsubscribe();
+    };
+  }, [
+    displayTexture,
+    invalidate,
+    onReady,
+    preparedScene,
+    useDesktopProductTreatment,
+  ]);
 
   return preparedScene ? <primitive object={preparedScene} /> : null;
 }
@@ -892,7 +933,9 @@ export function HeroCanvas({
   return (
     <Canvas
       frameloop="demand"
-      dpr={isMobile ? [1, 1.25] : [1, 1.5]}
+      // Mobile Retina: 1.5 is a 44% pixel increase over 1.25, rather than
+      // paying for the phone's full 3x DPR. Desktop settings stay identical.
+      dpr={isMobile ? MOBILE_CANVAS_DPR : [1, 1.5]}
       camera={{ fov: 30, near: 0.1, far: 100 }}
       gl={{
         alpha: true,

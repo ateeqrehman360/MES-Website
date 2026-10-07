@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+
+import { setupMobileJourney } from "./journey-mobile-motion";
 
 type Point = Readonly<{
   x: number;
@@ -72,9 +74,23 @@ function findLengthAtY(samples: readonly PathSample[], targetY: number) {
 
 export function JourneyMotion({ children }: { children: ReactNode }) {
   const stageRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const query = matchMedia("(max-width: 47.999rem)");
+    const update = () => setIsMobile(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
 
   useEffect(() => {
     const stage = stageRef.current;
+    // Check the query on first hydration too: never construct the desktop
+    // viewport-measured path for the mobile layout.
+    if (stage && matchMedia("(max-width: 47.999rem)").matches) {
+      return setupMobileJourney(stage);
+    }
     const svg = stage?.querySelector<SVGSVGElement>("[data-journey-svg]");
     const basePath = stage?.querySelector<SVGPathElement>(
       "[data-journey-path-base]",
@@ -260,7 +276,7 @@ export function JourneyMotion({ children }: { children: ReactNode }) {
         reducedMotionQuery.removeListener(handleMotionPreference);
       }
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <div ref={stageRef} className="journey__stage">

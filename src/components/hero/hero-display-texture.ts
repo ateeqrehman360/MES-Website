@@ -47,6 +47,7 @@ type HeroDisplayFontFamilies = {
 export type HeroDisplayTextureController = {
   texture: CanvasTexture;
   draw: (progress: number) => void;
+  onFirstUpload: (callback: () => void) => () => void;
   setPhotograph: (index: number, image: HTMLImageElement | null) => void;
 };
 
@@ -642,14 +643,15 @@ export function getHeroDisplayDrawProgress(
 export function createHeroDisplayTexture(
   logo: HTMLImageElement,
   isPortrait: boolean,
+  backingScale = 1,
 ): HeroDisplayTextureController {
   const assets: HeroDisplayAssets = {
     logo,
     photographs: [null, null, null],
   };
   const canvas = document.createElement("canvas");
-  canvas.width = HERO_DISPLAY_TEXTURE_SIZE.width;
-  canvas.height = HERO_DISPLAY_TEXTURE_SIZE.height;
+  canvas.width = Math.round(HERO_DISPLAY_TEXTURE_SIZE.width * backingScale);
+  canvas.height = Math.round(HERO_DISPLAY_TEXTURE_SIZE.height * backingScale);
 
   const context = canvas.getContext("2d");
 
@@ -678,6 +680,21 @@ export function createHeroDisplayTexture(
       "Georgia, serif",
   };
   const texture = new CanvasTexture(canvas);
+  let uploaded = false;
+  let uploadCallback: (() => void) | null = null;
+  texture.onUpdate = () => {
+    uploaded = true;
+    const callback = uploadCallback;
+    uploadCallback = null;
+    callback?.();
+  };
+  const onFirstUpload = (callback: () => void) => {
+    if (uploaded) callback();
+    else uploadCallback = callback;
+    return () => {
+      uploadCallback = null;
+    };
+  };
 
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = "high";
@@ -686,12 +703,20 @@ export function createHeroDisplayTexture(
   texture.generateMipmaps = false;
   texture.minFilter = LinearFilter;
   texture.magFilter = LinearFilter;
+  // Keep the artboard coordinates/composition identical. Only rasterisation
+  // gains density; no mipmap chain is rebuilt for this scroll-updated texture.
+  context.scale(
+    canvas.width / HERO_DISPLAY_TEXTURE_SIZE.width,
+    canvas.height / HERO_DISPLAY_TEXTURE_SIZE.height,
+  );
 
   const draw = (rawProgress: number) => {
     const progress = clamp(rawProgress);
 
     context.globalAlpha = 1;
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(
+      0, 0, HERO_DISPLAY_TEXTURE_SIZE.width, HERO_DISPLAY_TEXTURE_SIZE.height,
+    );
 
     if (progress < BRAND_TO_PHOTO.start) {
       drawBrandArtwork(context, assets.logo, fontFamilies, isPortrait);
@@ -801,5 +826,5 @@ export function createHeroDisplayTexture(
     }
   };
 
-  return { texture, draw, setPhotograph };
+  return { texture, draw, setPhotograph, onFirstUpload };
 }

@@ -48,6 +48,7 @@ export function FeaturedExperiencesMotion({
     if (!root || !stage || articles.length === 0) return;
 
     const desktopQuery = window.matchMedia("(min-width: 64rem)");
+    const mobileQuery = window.matchMedia("(max-width: 63.999rem)");
     const reducedMotionQuery = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     );
@@ -70,6 +71,7 @@ export function FeaturedExperiencesMotion({
           "--experience-poster-scale",
           "--experience-poster-x",
           "--experience-poster-y",
+          "--experience-poster-mask",
         ].forEach((property) => article.style.removeProperty(property));
       });
     };
@@ -94,11 +96,11 @@ export function FeaturedExperiencesMotion({
       }
 
       root.dataset.featuredMotion = mode;
-      // The desktop attribute changes the track height and sticky geometry.
+      // The motion attribute changes the track height and sticky geometry.
       // Read after applying it so the scroll range always matches the CSS.
       void root.offsetHeight;
 
-      if (mode === "desktop") {
+      if (mode === "desktop" || (mode === "mobile" && mobileQuery.matches)) {
         const stickyInset = parseFloat(getComputedStyle(stage).top) || 0;
         start =
           window.scrollY + root.getBoundingClientRect().top - stickyInset;
@@ -184,7 +186,7 @@ export function FeaturedExperiencesMotion({
       root.dataset.featuredActive = String(activeIndex + 1).padStart(2, "0");
     };
 
-    const updateMobile = () => {
+    const updateStackedFallback = () => {
       const viewportHeight = window.innerHeight;
 
       articles.forEach((article, index) => {
@@ -225,6 +227,54 @@ export function FeaturedExperiencesMotion({
       });
     };
 
+    const updateMobile = () => {
+      // Retain the existing stacked fallback on short desktop windows.
+      if (!mobileQuery.matches) {
+        updateStackedFallback();
+        return;
+      }
+      const progress = clamp((window.scrollY - start) / travel);
+      if (Math.abs(progress - previousProgress) < 0.0001) return;
+      previousProgress = progress;
+
+      // Holds between three brief poster replacements; every value is a pure
+      // function of scroll, so reversing or stopping needs no animation state.
+      const handoffs = [[0.18, 0.30], [0.45, 0.57], [0.72, 0.84]] as const;
+      const transitions = handoffs.map(([start, end]) =>
+        smoothSegment(progress, start, end),
+      );
+      let activeIndex = 0;
+      transitions.forEach((value, index) => {
+        if (value >= 0.5) activeIndex = index + 1;
+      });
+
+      articles.forEach((article, index) => {
+        const entry = index === 0 ? 1 : transitions[index - 1];
+        const exit = transitions[index] ?? 0;
+        const retirement = transitions[index + 1] ?? 0;
+        const opacity = entry * (1 - exit) + 0.09 * entry * exit * (1 - retirement);
+        article.style.setProperty(
+          "--experience-poster-mask", `${(12 * (1 - entry)).toFixed(3)}%`,
+        );
+        article.style.setProperty("--experience-poster-opacity", opacity.toFixed(4));
+        article.style.setProperty(
+          "--experience-poster-scale", (1 - 0.045 * exit).toFixed(4),
+        );
+        article.style.setProperty(
+          "--experience-poster-y",
+          `${(1.5 * (1 - entry) - 0.85 * exit).toFixed(3)}rem`,
+        );
+        article.style.setProperty(
+          "--experience-copy-opacity", (entry * (1 - exit)).toFixed(4),
+        );
+        article.style.setProperty(
+          "--experience-copy-y",
+          `${(0.65 * (1 - entry) - 0.35 * exit).toFixed(3)}rem`,
+        );
+      });
+      root.dataset.featuredActive = String(activeIndex + 1).padStart(2, "0");
+    };
+
     const update = () => {
       frame = 0;
       if (needsMeasurement) measure();
@@ -256,7 +306,13 @@ export function FeaturedExperiencesMotion({
     resizeObserver.observe(root);
     resizeObserver.observe(stage);
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", remeasure);
+    // Safari chrome changes innerHeight, but svh track/stage geometry is stable.
+    let measuredWidth = window.innerWidth;
+    const handleResize = () => {
+      if (!mobileQuery.matches || window.innerWidth !== measuredWidth) remeasure();
+      measuredWidth = window.innerWidth;
+    };
+    window.addEventListener("resize", handleResize);
     desktopQuery.addEventListener("change", remeasure);
     reducedMotionQuery.addEventListener("change", remeasure);
     remeasure();
@@ -266,7 +322,7 @@ export function FeaturedExperiencesMotion({
       visibilityObserver.disconnect();
       resizeObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", remeasure);
+      window.removeEventListener("resize", handleResize);
       desktopQuery.removeEventListener("change", remeasure);
       reducedMotionQuery.removeEventListener("change", remeasure);
       reset();
