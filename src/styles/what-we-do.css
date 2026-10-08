@@ -675,37 +675,37 @@
     .what-we-do[data-what-we-do-mobile-motion="ready"]
       .what-we-do__chapter--connect:not([data-what-we-do-mobile-entered="true"])
       .what-we-do__letter:nth-child(1) {
-      transform: translate3d(0.42em, 0, 0);
+      transform: translate3d(-0.42em, 0, 0);
     }
 
     .what-we-do[data-what-we-do-mobile-motion="ready"]
       .what-we-do__chapter--connect:not([data-what-we-do-mobile-entered="true"])
       .what-we-do__letter:nth-child(2) {
-      transform: translate3d(0.28em, 0, 0);
-    }
-
-    .what-we-do[data-what-we-do-mobile-motion="ready"]
-      .what-we-do__chapter--connect:not([data-what-we-do-mobile-entered="true"])
-      .what-we-do__letter:nth-child(3) {
-      transform: translate3d(0.14em, 0, 0);
-    }
-
-    .what-we-do[data-what-we-do-mobile-motion="ready"]
-      .what-we-do__chapter--connect:not([data-what-we-do-mobile-entered="true"])
-      .what-we-do__letter:nth-child(5) {
-      transform: translate3d(-0.14em, 0, 0);
-    }
-
-    .what-we-do[data-what-we-do-mobile-motion="ready"]
-      .what-we-do__chapter--connect:not([data-what-we-do-mobile-entered="true"])
-      .what-we-do__letter:nth-child(6) {
       transform: translate3d(-0.28em, 0, 0);
     }
 
     .what-we-do[data-what-we-do-mobile-motion="ready"]
       .what-we-do__chapter--connect:not([data-what-we-do-mobile-entered="true"])
+      .what-we-do__letter:nth-child(3) {
+      transform: translate3d(-0.14em, 0, 0);
+    }
+
+    .what-we-do[data-what-we-do-mobile-motion="ready"]
+      .what-we-do__chapter--connect:not([data-what-we-do-mobile-entered="true"])
+      .what-we-do__letter:nth-child(5) {
+      transform: translate3d(0.14em, 0, 0);
+    }
+
+    .what-we-do[data-what-we-do-mobile-motion="ready"]
+      .what-we-do__chapter--connect:not([data-what-we-do-mobile-entered="true"])
+      .what-we-do__letter:nth-child(6) {
+      transform: translate3d(0.28em, 0, 0);
+    }
+
+    .what-we-do[data-what-we-do-mobile-motion="ready"]
+      .what-we-do__chapter--connect:not([data-what-we-do-mobile-entered="true"])
       .what-we-do__letter:nth-child(7) {
-      transform: translate3d(-0.42em, 0, 0);
+      transform: translate3d(0.42em, 0, 0);
     }
 
     .what-we-do[data-what-we-do-mobile-motion="ready"]
@@ -841,6 +841,16 @@
       clip-path: none !important;
       opacity: 1 !important;
       transform: none !important;
+    }
+  }
+}
+
+@media (max-width: 47.999rem) {
+  @layer components {
+    .what-we-do__word-letters[data-what-we-do-word="connect"] {
+      display: inline-flex;
+      width: auto;
+      justify-content: flex-start;
     }
   }
 }

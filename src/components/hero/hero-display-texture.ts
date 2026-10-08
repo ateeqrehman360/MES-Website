@@ -47,6 +47,8 @@ type HeroDisplayFontFamilies = {
 export type HeroDisplayTextureController = {
   texture: CanvasTexture;
   draw: (progress: number) => void;
+  onFirstUpload: (callback: () => void) => () => void;
+  fontsReady: Promise<void>;
   setPhotograph: (index: number, image: HTMLImageElement | null) => void;
 };
 
@@ -612,10 +614,18 @@ function drawStatementTransition(
 export function getHeroDisplayDrawProgress(
   progress: number,
   isPortrait: boolean,
+  isMobile = false,
 ) {
   if (progress <= BRAND_TO_PHOTO.start) {
     return 0;
   }
+
+  // Bazaar artwork is static between reveals. Camera motion still renders,
+  // but mobile avoids repeatedly uploading an identical 1869×1080 texture.
+  if (
+    isMobile && progress >= PHOTO_TWO_TO_THREE.end &&
+    progress < PHOTO_TO_STATEMENT.start
+  ) return PHOTO_TWO_TO_THREE.end;
 
   const handoff = isPortrait
     ? HERO_PURPOSE_HANDOFF_WINDOWS.mobile
@@ -642,14 +652,15 @@ export function getHeroDisplayDrawProgress(
 export function createHeroDisplayTexture(
   logo: HTMLImageElement,
   isPortrait: boolean,
+  backingScale = 1,
 ): HeroDisplayTextureController {
   const assets: HeroDisplayAssets = {
     logo,
     photographs: [null, null, null],
   };
   const canvas = document.createElement("canvas");
-  canvas.width = HERO_DISPLAY_TEXTURE_SIZE.width;
-  canvas.height = HERO_DISPLAY_TEXTURE_SIZE.height;
+  canvas.width = Math.round(HERO_DISPLAY_TEXTURE_SIZE.width * backingScale);
+  canvas.height = Math.round(HERO_DISPLAY_TEXTURE_SIZE.height * backingScale);
 
   const context = canvas.getContext("2d");
 
@@ -677,7 +688,32 @@ export function createHeroDisplayTexture(
       displayFont ||
       "Georgia, serif",
   };
+  const fontSpecs = Object.values(fontFamilies).map((family) => `400 16px ${family}`);
+  let displayFontsReady = backingScale === 1 ||
+    fontSpecs.every((font) => document.fonts.check(font));
+  // Only the four fonts used by this artboard can delay its refinement.
+  // They never gate the laptop's first usable frame.
+  const fontsReady = backingScale === 1
+    ? document.fonts.ready.then(() => undefined)
+    : Promise.all(fontSpecs.map((font) => document.fonts.load(font)))
+        .then(() => { displayFontsReady = true; })
+        .catch(() => { displayFontsReady = true; });
   const texture = new CanvasTexture(canvas);
+  let uploaded = false;
+  let uploadCallback: (() => void) | null = null;
+  texture.onUpdate = () => {
+    uploaded = true;
+    const callback = uploadCallback;
+    uploadCallback = null;
+    callback?.();
+  };
+  const onFirstUpload = (callback: () => void) => {
+    if (uploaded) callback();
+    else uploadCallback = callback;
+    return () => {
+      uploadCallback = null;
+    };
+  };
 
   context.imageSmoothingEnabled = true;
   context.imageSmoothingQuality = "high";
@@ -686,14 +722,24 @@ export function createHeroDisplayTexture(
   texture.generateMipmaps = false;
   texture.minFilter = LinearFilter;
   texture.magFilter = LinearFilter;
+  // Keep the artboard coordinates/composition identical. Only rasterisation
+  // gains density; no mipmap chain is rebuilt for this scroll-updated texture.
+  context.scale(
+    canvas.width / HERO_DISPLAY_TEXTURE_SIZE.width,
+    canvas.height / HERO_DISPLAY_TEXTURE_SIZE.height,
+  );
 
   const draw = (rawProgress: number) => {
     const progress = clamp(rawProgress);
 
     context.globalAlpha = 1;
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(
+      0, 0, HERO_DISPLAY_TEXTURE_SIZE.width, HERO_DISPLAY_TEXTURE_SIZE.height,
+    );
 
-    if (progress < BRAND_TO_PHOTO.start) {
+    if (!displayFontsReady) {
+      drawBrandedFallback(context, assets.logo);
+    } else if (progress < BRAND_TO_PHOTO.start) {
       drawBrandArtwork(context, assets.logo, fontFamilies, isPortrait);
     } else if (progress < BRAND_TO_PHOTO.end) {
       drawBrandArtwork(context, assets.logo, fontFamilies, isPortrait);
@@ -801,5 +847,5 @@ export function createHeroDisplayTexture(
     }
   };
 
-  return { texture, draw, setPhotograph };
+  return { texture, draw, setPhotograph, onFirstUpload, fontsReady };
 }

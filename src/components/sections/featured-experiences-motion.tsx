@@ -16,6 +16,11 @@ const EXPERIENCE_OFFSETS = [
 ] as const;
 const HANDOFF_LEAD = 0.6;
 const HISTORY_OPACITY = 0.08;
+const MOBILE_HANDOFF_WINDOWS = [
+  [0.12, 0.36],
+  [0.40, 0.64],
+  [0.68, 0.92],
+] as const;
 
 function clamp(value: number, minimum = 0, maximum = 1) {
   return Math.min(maximum, Math.max(minimum, value));
@@ -48,6 +53,7 @@ export function FeaturedExperiencesMotion({
     if (!root || !stage || articles.length === 0) return;
 
     const desktopQuery = window.matchMedia("(min-width: 64rem)");
+    const mobileQuery = window.matchMedia("(max-width: 63.999rem)");
     const reducedMotionQuery = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     );
@@ -64,12 +70,15 @@ export function FeaturedExperiencesMotion({
         [
           "--experience-copy-opacity",
           "--experience-copy-y",
+          "--experience-copy-mask-top",
+          "--experience-copy-mask-bottom",
           "--experience-poster-clip",
           "--experience-poster-opacity",
           "--experience-poster-rotate",
           "--experience-poster-scale",
           "--experience-poster-x",
           "--experience-poster-y",
+          "--experience-poster-mask",
         ].forEach((property) => article.style.removeProperty(property));
       });
     };
@@ -94,11 +103,11 @@ export function FeaturedExperiencesMotion({
       }
 
       root.dataset.featuredMotion = mode;
-      // The desktop attribute changes the track height and sticky geometry.
+      // The motion attribute changes the track height and sticky geometry.
       // Read after applying it so the scroll range always matches the CSS.
       void root.offsetHeight;
 
-      if (mode === "desktop") {
+      if (mode === "desktop" || (mode === "mobile" && mobileQuery.matches)) {
         const stickyInset = parseFloat(getComputedStyle(stage).top) || 0;
         start =
           window.scrollY + root.getBoundingClientRect().top - stickyInset;
@@ -184,7 +193,7 @@ export function FeaturedExperiencesMotion({
       root.dataset.featuredActive = String(activeIndex + 1).padStart(2, "0");
     };
 
-    const updateMobile = () => {
+    const updateStackedFallback = () => {
       const viewportHeight = window.innerHeight;
 
       articles.forEach((article, index) => {
@@ -225,6 +234,77 @@ export function FeaturedExperiencesMotion({
       });
     };
 
+    const updateMobile = () => {
+      // Retain the existing stacked fallback on short desktop windows.
+      if (!mobileQuery.matches) {
+        updateStackedFallback();
+        return;
+      }
+      const progress = clamp((window.scrollY - start) / travel);
+      if (Math.abs(progress - previousProgress) < 0.0001) return;
+      previousProgress = progress;
+
+      // Longer overlapping replacements; every value is a pure
+      // function of scroll, so reversing or stopping needs no animation state.
+      const phases = MOBILE_HANDOFF_WINDOWS.map(([start, end]) =>
+        clamp((progress - start) / (end - start)),
+      );
+      const entries = phases.map((value) => smoothSegment(value, 0, 1));
+      const ink = phases.map((value) => smoothSegment(value, 0, 0.62));
+      const retreats = phases.map((value) => smoothSegment(value, 0, 1));
+      const exits = phases.map((value) => smoothSegment(value, 0.18, 1));
+      let activeIndex = 0;
+      phases.forEach((value, index) => {
+        if (value >= 0.5) activeIndex = index + 1;
+      });
+
+      articles.forEach((article, index) => {
+        const entry = index === 0 ? 1 : entries[index - 1];
+        const incomingOpacity = index === 0 ? 1 : ink[index - 1];
+        const exit = exits[index] ?? 0;
+        const retreat = retreats[index] ?? 0;
+        const retirement = retreats[index + 1] ?? 0;
+        const opacity = incomingOpacity * (1 - exit) +
+          0.12 * incomingOpacity * exit * (1 - retirement);
+        const copyEntry = index === 0 ? 1 : smoothSegment(phases[index - 1], 0, 0.94);
+        const copyExit = smoothSegment(phases[index] ?? 0, 0.06, 1);
+        const entryPhase = index === 0 ? 1 : phases[index - 1];
+        const exitPhase = phases[index] ?? 0;
+        // Allow for the copy's vertical drift when matching the mask edges.
+        const entryMaskInset = 26 * entryPhase * (1 - entryPhase);
+        const exitMaskInset = 26 * exitPhase * (1 - exitPhase);
+        article.style.setProperty(
+          "--experience-poster-mask", `${(28 * (1 - entry)).toFixed(3)}%`,
+        );
+        article.style.setProperty("--experience-poster-opacity", opacity.toFixed(4));
+        article.style.setProperty(
+          "--experience-poster-scale", (0.992 + 0.008 * entry - 0.045 * retreat).toFixed(4),
+        );
+        article.style.setProperty(
+          "--experience-poster-y",
+          `${(1.75 * (1 - entry) - 0.85 * retreat).toFixed(3)}rem`,
+        );
+        article.style.setProperty(
+          "--experience-copy-opacity", (copyEntry * (1 - copyExit)).toFixed(4),
+        );
+        // Complementary masks replace the copy from top to bottom. The small
+        // overlap avoids a hard seam without superimposing whole titles.
+        article.style.setProperty(
+          "--experience-copy-mask-top",
+          `${Math.min(100, copyExit * 100 + exitMaskInset).toFixed(3)}%`,
+        );
+        article.style.setProperty(
+          "--experience-copy-mask-bottom",
+          `${Math.min(100, (1 - copyEntry) * 100 + entryMaskInset).toFixed(3)}%`,
+        );
+        article.style.setProperty(
+          "--experience-copy-y",
+          `${(0.65 * (1 - copyEntry) - 0.45 * retreat).toFixed(3)}rem`,
+        );
+      });
+      root.dataset.featuredActive = String(activeIndex + 1).padStart(2, "0");
+    };
+
     const update = () => {
       frame = 0;
       if (needsMeasurement) measure();
@@ -256,7 +336,13 @@ export function FeaturedExperiencesMotion({
     resizeObserver.observe(root);
     resizeObserver.observe(stage);
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", remeasure);
+    // Safari chrome changes innerHeight, but svh track/stage geometry is stable.
+    let measuredWidth = window.innerWidth;
+    const handleResize = () => {
+      if (!mobileQuery.matches || window.innerWidth !== measuredWidth) remeasure();
+      measuredWidth = window.innerWidth;
+    };
+    window.addEventListener("resize", handleResize);
     desktopQuery.addEventListener("change", remeasure);
     reducedMotionQuery.addEventListener("change", remeasure);
     remeasure();
@@ -266,7 +352,7 @@ export function FeaturedExperiencesMotion({
       visibilityObserver.disconnect();
       resizeObserver.disconnect();
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", remeasure);
+      window.removeEventListener("resize", handleResize);
       desktopQuery.removeEventListener("change", remeasure);
       reducedMotionQuery.removeEventListener("change", remeasure);
       reset();
