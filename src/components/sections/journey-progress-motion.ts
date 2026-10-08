@@ -68,6 +68,10 @@ export function setupJourneyProgress(stage: HTMLDivElement) {
   let previousOffset = Number.NaN;
   let previousTop = Number.NaN;
   let idleFrames = 0;
+  let viewportHeight = window.innerHeight;
+  let previousActive = -2;
+  let previousMotion = "";
+  const milestoneStates: string[] = [];
 
   const update = () => {
     frame = 0;
@@ -76,10 +80,11 @@ export function setupJourneyProgress(stage: HTMLDivElement) {
     // Milestone states and the legacy fallback share one stage read. Native
     // progress never receives per-frame JavaScript style/attribute updates.
     const top = stage.getBoundingClientRect().top;
+    const staticMotion = reducedMotion.matches;
     const revealedY = readingLine - top;
     if (!nativeTimeline) {
       const fullHeight = height + strokePadding * 2;
-      const visible = reducedMotion.matches
+      const visible = staticMotion
         ? fullHeight
         : Math.max(0, Math.min(fullHeight, revealedY + strokePadding));
       const offset = visible - fullHeight;
@@ -90,27 +95,34 @@ export function setupJourneyProgress(stage: HTMLDivElement) {
       }
     }
 
-    const motion = reducedMotion.matches ? "static" : "enabled";
-    if (stage.dataset.journeyMotion !== motion) {
+    const motion = staticMotion ? "static" : "enabled";
+    if (previousMotion !== motion) {
       stage.dataset.journeyMotion = motion;
     }
     let active = -1;
     points.forEach((point, index) => {
       if (point.y <= revealedY) active = index;
     });
-    milestones.forEach((milestone, index) => {
-      if (!milestone) return;
-      const state = reducedMotion.matches
-        ? "visible"
-        : index < active
-          ? "complete"
-          : index === active
-            ? "active"
-            : "upcoming";
-      if (milestone.dataset.journeyState !== state) {
-        milestone.dataset.journeyState = state;
-      }
-    });
+    // This effect owns the state attributes. Avoid reading them back from the
+    // DOM on every frame; write only when crossing a node or changing motion.
+    if (previousActive !== active || previousMotion !== motion) {
+      milestones.forEach((milestone, index) => {
+        if (!milestone) return;
+        const state = staticMotion
+          ? "visible"
+          : index < active
+            ? "complete"
+            : index === active
+              ? "active"
+              : "upcoming";
+        if (milestoneStates[index] !== state) {
+          milestone.dataset.journeyState = state;
+          milestoneStates[index] = state;
+        }
+      });
+      previousActive = active;
+      previousMotion = motion;
+    }
 
     // Older Safari cannot run a native scroll timeline. Sample its latest
     // position during scrolling rather than relying only on event cadence.
@@ -119,9 +131,9 @@ export function setupJourneyProgress(stage: HTMLDivElement) {
     previousTop = top;
     if (
       !nativeTimeline &&
-      !reducedMotion.matches &&
+      !staticMotion &&
       idleFrames < 3 &&
-      top < window.innerHeight &&
+      top < viewportHeight &&
       top + height > 0
     ) {
       frame = requestAnimationFrame(update);
@@ -196,6 +208,7 @@ export function setupJourneyProgress(stage: HTMLDivElement) {
   };
 
   const onResize = () => {
+    viewportHeight = window.innerHeight;
     if (!ready) return;
     if (stage.clientWidth !== width || stage.offsetHeight !== height) {
       measure();
@@ -203,6 +216,10 @@ export function setupJourneyProgress(stage: HTMLDivElement) {
       readingLine = window.innerHeight * 0.66;
       setReadingLine();
     }
+    schedule();
+  };
+  const onViewportResize = () => {
+    viewportHeight = window.innerHeight;
     schedule();
   };
   const resizeObserver = new ResizeObserver(onResize);
@@ -215,7 +232,7 @@ export function setupJourneyProgress(stage: HTMLDivElement) {
   );
   window.addEventListener("scroll", schedule, { passive: true });
   window.addEventListener("resize", onResize);
-  window.visualViewport?.addEventListener("resize", schedule);
+  window.visualViewport?.addEventListener("resize", onViewportResize);
   window.visualViewport?.addEventListener("scroll", schedule);
   document.addEventListener("visibilitychange", schedule);
   mobileQuery.addEventListener("change", measure);
@@ -229,7 +246,7 @@ export function setupJourneyProgress(stage: HTMLDivElement) {
     images.forEach((image) => image.removeEventListener("load", onResize));
     window.removeEventListener("scroll", schedule);
     window.removeEventListener("resize", onResize);
-    window.visualViewport?.removeEventListener("resize", schedule);
+    window.visualViewport?.removeEventListener("resize", onViewportResize);
     window.visualViewport?.removeEventListener("scroll", schedule);
     document.removeEventListener("visibilitychange", schedule);
     mobileQuery.removeEventListener("change", measure);
