@@ -42,7 +42,7 @@ Interactive laptop sequence
       ↓
 MES event photography
       ↓
-"Built by Muslims. For Muslims with ambition."
+"Built by Muslims. For ambition beyond the classroom."
       ↓
 Vision
       ↓

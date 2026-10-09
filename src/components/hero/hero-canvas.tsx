@@ -30,6 +30,7 @@ import {
   HERO_DISPLAY_TEXTURE_SIZE,
   type HeroDisplayPhotographs,
 } from "./hero-display-texture";
+import { getHeroPurposeCanvasWidthScale } from "./hero-purpose-layout";
 import type { HeroProgressSignal } from "./hero-progress";
 
 const MOBILE_CANVAS_DPR = [1, 1.35] as [number, number];
@@ -333,6 +334,7 @@ function LaptopModel({
 }) {
   const { scene } = useGLTF(MODEL_URL);
   const invalidate = useThree((state) => state.invalidate);
+  const size = useThree((state) => state.size);
   const [logoImage, setLogoImage] = useState<HTMLImageElement | null>(null);
   const [photographyRevision, setPhotographyRevision] = useState(0);
   const photographs = useRef<HeroDisplayPhotographs>([
@@ -341,6 +343,12 @@ function LaptopModel({
     null,
   ]);
   const lastArtworkProgress = useRef(Number.NaN);
+
+  useEffect(() => {
+    // A tablet resize changes purpose projection even at the same scroll frame.
+    lastArtworkProgress.current = Number.NaN;
+    invalidate();
+  }, [size.width, size.height, invalidate]);
   const readinessReported = useRef(false);
 
   useEffect(() => {
@@ -380,6 +388,12 @@ function LaptopModel({
     };
   }, [onUnavailable, useDesktopProductTreatment]);
 
+  const purposeProjectionOverscan = !isPortrait &&
+    getHeroPurposeCanvasWidthScale(size.width, size.height) === 1
+    ? (DISPLAY_LOCAL_SIZE.height * desktopComposition.modelScale) /
+      (2 * Math.tan(MathUtils.degToRad(desktopComposition.fov / 2)) * TAKEOVER_CAMERA_DISTANCE)
+    : SCREEN_OVERSCAN;
+
   const displayTexture = useMemo(
     () =>
       logoImage
@@ -387,9 +401,10 @@ function LaptopModel({
             logoImage,
             isPortrait,
             useDesktopProductTreatment ? 1 : MOBILE_DISPLAY_BACKING_SCALE,
+            purposeProjectionOverscan,
           )
         : null,
-    [isPortrait, logoImage, useDesktopProductTreatment],
+    [isPortrait, logoImage, purposeProjectionOverscan, useDesktopProductTreatment],
   );
 
   useEffect(
@@ -767,6 +782,11 @@ function LaptopScene({
       DISPLAY_LOCAL_CENTER.z * composition.modelScale;
     const focusTargetX = displayCenterX + 0.08;
     const focusTargetZ = displayCenterZ + FOCUS_TARGET_Z_OFFSET;
+    const purposeWidthScale = getHeroPurposeCanvasWidthScale(size.width, size.height);
+    const takeoverDistance = purposeWidthScale < 1
+      ? (DISPLAY_LOCAL_SIZE.height * composition.modelScale) /
+        (2 * Math.tan(MathUtils.degToRad(composition.fov / 2)) * SCREEN_OVERSCAN)
+      : TAKEOVER_CAMERA_DISTANCE;
 
     model.position.set(
       MathUtils.lerp(composition.modelPosition[0], 0, orientation),
@@ -804,7 +824,7 @@ function LaptopScene({
         MathUtils.lerp(FOCUS_CAMERA.y, displayCenterY, approach),
         MathUtils.lerp(
           FOCUS_CAMERA.z,
-          displayCenterZ + TAKEOVER_CAMERA_DISTANCE,
+          displayCenterZ + takeoverDistance,
           approach,
         ),
       );

@@ -485,18 +485,13 @@
 
   .hero-screen-artboard__statement-close span {
     inset-inline-start: var(--purpose-desktop-support-x);
-    font-size: min(var(--purpose-desktop-support-size), 2.2472cqw);
-  }
-
-  .hero-screen-artboard__statement-close span:first-child {
-    inset-block-start: var(--purpose-desktop-support-y);
-  }
-
-  .hero-screen-artboard__statement-close span:last-child {
     inset-block-start: calc(
-      var(--purpose-desktop-support-y) +
-        var(--purpose-desktop-support-line-gap)
+      var(--purpose-desktop-support-y) + var(--purpose-line-index) *
+        min(var(--purpose-desktop-support-line-gap), var(--purpose-desktop-support-width-gap))
     );
+    font-size: min(var(--purpose-desktop-support-size), var(--purpose-desktop-support-width-size));
+    letter-spacing: var(--purpose-desktop-support-tracking);
+    font-kerning: normal;
   }
 
   .hero-screen-artboard__logo {
@@ -623,7 +618,7 @@ body:has(.hero-static) .site-header__cta:hover {
 }
 
 .hero-screen-artboard__statement-close.font-display {
-  font-family: var(--font-hero-hanken), Arial, Helvetica, sans-serif;
+  font-family: var(--font-hero-apparel), Didot, "Bodoni MT", serif;
   font-synthesis: none;
 }
 
@@ -959,18 +954,12 @@ body:has(.hero-static) .site-header__cta:hover {
 
     .hero-screen-artboard__statement-close span {
       inset-inline-start: var(--purpose-mobile-support-x);
-      font-size: var(--purpose-mobile-support-size);
-    }
-
-    .hero-screen-artboard__statement-close span:first-child {
-      inset-block-start: var(--purpose-mobile-support-y);
-    }
-
-    .hero-screen-artboard__statement-close span:last-child {
       inset-block-start: calc(
         var(--purpose-mobile-support-y) +
-          var(--purpose-mobile-support-line-gap)
+          var(--purpose-line-index) * var(--purpose-mobile-support-line-gap)
       );
+      font-size: var(--purpose-mobile-support-size);
+      letter-spacing: var(--purpose-mobile-support-tracking);
     }
 
     .hero-screen-artboard__logo {
@@ -1257,5 +1246,18 @@ body:has(.hero-static) .site-header__cta:hover {
 @media (prefers-reduced-motion: reduce) {
   @layer components {
     .hero-static__laptop-preview { transition: none; }
+  }
+}
+
+@media (min-width: 48rem) and (max-aspect-ratio: 1 / 1) {
+  @layer components {
+    .hero-screen-artboard__statement-close span {
+      inset-block-start: calc(
+        var(--purpose-desktop-support-y) + var(--purpose-line-index) *
+          min(var(--purpose-tablet-support-line-gap), var(--purpose-tablet-support-width-gap))
+      );
+      font-size: min(var(--purpose-tablet-support-size), var(--purpose-tablet-support-width-size));
+      letter-spacing: var(--purpose-tablet-support-tracking);
+    }
   }
 }

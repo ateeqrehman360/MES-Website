@@ -733,7 +733,7 @@ Near the front-facing stage, show the short statement.
 Conceptual text:
 
 > **Built by Muslims.**  
-> **For Muslims with ambition.**
+> **For ambition beyond the classroom.**
 
 Treat wording as editable content.
 

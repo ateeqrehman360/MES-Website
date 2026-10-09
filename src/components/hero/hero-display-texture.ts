@@ -9,7 +9,7 @@ import { heroStatement } from "@/data/hero";
 
 import {
   HERO_PURPOSE_ARTBOARD_SIZE,
-  HERO_PURPOSE_CANVAS_LAYOUTS,
+  getHeroPurposeCanvasLayout,
   HERO_PURPOSE_COLORS,
   HERO_PURPOSE_HANDOFF_WINDOWS,
   HERO_PURPOSE_LAYOUTS,
@@ -156,6 +156,30 @@ function drawTrackedText(
   for (const character of text) {
     context.fillText(character, cursor, y);
     cursor += context.measureText(character).width + tracking;
+  }
+}
+
+// Preserve word shaping and kerning; character-by-character drawing loses both.
+function drawPurposeSupportText(
+  context: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  tracking: number,
+) {
+  context.fontKerning = "normal";
+  if (typeof context.letterSpacing === "string") {
+    context.letterSpacing = `${tracking}px`;
+    context.fillText(text, x, y);
+  } else {
+    // Older Canvas implementations: position glyphs from kerned prefix widths.
+    let prefix = "";
+    Array.from(text).forEach((character, index) => {
+      const next = prefix + character;
+      const advance = context.measureText(next).width - context.measureText(character).width;
+      context.fillText(character, x + advance + tracking * index, y);
+      prefix = next;
+    });
   }
 }
 
@@ -322,11 +346,12 @@ function drawBazaarArtwork(
 function drawStatementBackground(
   context: CanvasRenderingContext2D,
   isPortrait: boolean,
+  projectionOverscan: number,
 ) {
   const { width, height } = HERO_DISPLAY_TEXTURE_SIZE;
-  const layout = isPortrait
-    ? HERO_PURPOSE_CANVAS_LAYOUTS.mobile
-    : HERO_PURPOSE_CANVAS_LAYOUTS.desktop;
+  const layout = getHeroPurposeCanvasLayout(
+    isPortrait, window.innerWidth, window.innerHeight, projectionOverscan,
+  );
 
   context.fillStyle = GREEN;
   context.fillRect(0, 0, layout.greenEnd, height);
@@ -357,10 +382,11 @@ function drawStatementContent(
   opacity = 1,
   offsetY = 0,
   artworkProgress: number | null = null,
+  projectionOverscan = 1.074,
 ) {
-  const layout = isPortrait
-    ? HERO_PURPOSE_CANVAS_LAYOUTS.mobile
-    : HERO_PURPOSE_CANVAS_LAYOUTS.desktop;
+  const layout = getHeroPurposeCanvasLayout(
+    isPortrait, window.innerWidth, window.innerHeight, projectionOverscan,
+  );
   const mobileLeadScale =
     isPortrait && artworkProgress !== null
       ? smoothSegment(artworkProgress, 0.8, 0.9)
@@ -429,18 +455,24 @@ function drawStatementContent(
     );
   }
 
+  const support = layout.support;
   context.fillStyle = GREEN;
-  context.font = `400 ${layout.support.fontSize}px ${fontFamilies.hanken}`;
-  const supportTopOffset = statementFontTopOffset(
-    context, layout.support.fontSize, 0.756,
-  );
+  context.font = `400 ${support.fontSize}px ${fontFamilies.apparel}`;
+  // Use the same one-em line box as HTML, including this browser's font metrics.
+  // Alphabetic anchors also work when WebKit ignores CSS metric overrides.
+  context.textBaseline = "alphabetic";
+  const supportMetrics = context.measureText("H");
+  const supportBaseline = Number.isFinite(supportMetrics.fontBoundingBoxAscent)
+    ? (support.fontSize - supportMetrics.fontBoundingBoxAscent -
+        supportMetrics.fontBoundingBoxDescent) / 2 + supportMetrics.fontBoundingBoxAscent
+    : support.fontSize * 0.881;
   heroStatement.closeLines.forEach((line, index) => {
-    drawTrackedText(
+    drawPurposeSupportText(
       context,
       line,
-      layout.support.x,
-      layout.support.y + layout.support.lineGap * index + offsetY + supportTopOffset,
-      layout.support.tracking,
+      support.x,
+      support.y + support.lineGap * index + offsetY + supportBaseline,
+      support.tracking,
     );
   });
   drawLogo(
@@ -460,6 +492,7 @@ function drawStatementArtwork(
   fontFamilies: HeroDisplayFontFamilies,
   isPortrait: boolean,
   progress: number,
+  projectionOverscan: number,
 ) {
   const handoff = isPortrait
     ? HERO_PURPOSE_HANDOFF_WINDOWS.mobile
@@ -472,7 +505,7 @@ function drawStatementArtwork(
       handoff.canvasContentOut.end,
     );
 
-  drawStatementBackground(context, isPortrait);
+  drawStatementBackground(context, isPortrait, projectionOverscan);
   drawStatementContent(
     context,
     logo,
@@ -481,6 +514,7 @@ function drawStatementArtwork(
     contentOpacity,
     0,
     progress,
+    projectionOverscan,
   );
 }
 
@@ -585,12 +619,13 @@ function drawStatementTransition(
   fontFamilies: HeroDisplayFontFamilies,
   isPortrait: boolean,
   progress: number,
+  projectionOverscan: number,
 ) {
   const { width, height } = HERO_DISPLAY_TEXTURE_SIZE;
   const bazaarPanelX = isPortrait ? 548 : 568;
-  const layout = isPortrait
-    ? HERO_PURPOSE_CANVAS_LAYOUTS.mobile
-    : HERO_PURPOSE_CANVAS_LAYOUTS.desktop;
+  const layout = getHeroPurposeCanvasLayout(
+    isPortrait, window.innerWidth, window.innerHeight, projectionOverscan,
+  );
   const transition = clamp(progress);
   const greenEdge = MathUtils.lerp(
     bazaarPanelX,
@@ -638,6 +673,8 @@ function drawStatementTransition(
     isPortrait,
     contentReveal,
     MathUtils.lerp(18, 0, contentReveal),
+    null,
+    projectionOverscan,
   );
 }
 
@@ -683,6 +720,7 @@ export function createHeroDisplayTexture(
   logo: HTMLImageElement,
   isPortrait: boolean,
   backingScale = 1,
+  projectionOverscan = 1.074,
 ): HeroDisplayTextureController {
   const assets: HeroDisplayAssets = {
     logo,
@@ -863,6 +901,7 @@ export function createHeroDisplayTexture(
           PHOTO_TO_STATEMENT.start,
           PHOTO_TO_STATEMENT.end,
         ),
+        projectionOverscan,
       );
     } else {
       drawStatementArtwork(
@@ -871,6 +910,7 @@ export function createHeroDisplayTexture(
         fontFamilies,
         isPortrait,
         progress,
+        projectionOverscan,
       );
     }
 
