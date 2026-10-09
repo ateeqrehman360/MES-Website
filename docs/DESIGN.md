@@ -729,7 +729,7 @@ A short statement appears.
 Current conceptual copy:
 
 > **Built by Muslims.**  
-> **For Muslims with ambition.**
+> **For ambition beyond the classroom.**
 
 This text is not permanently final.
 

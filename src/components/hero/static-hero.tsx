@@ -49,8 +49,13 @@ function HeroStatementArtboard({ continuation = false }) {
         </div>
         <span className="hero-screen-artboard__stack-rule" />
         <div className="hero-screen-artboard__statement-close font-display">
-          {heroStatement.closeLines.map((line) => (
-            <span key={line}>{line}</span>
+          {heroStatement.closeLines.map((line, index) => (
+            <span
+              key={line}
+              style={{ "--purpose-line-index": index } as CSSProperties}
+            >
+              {line}
+            </span>
           ))}
         </div>
         <Image

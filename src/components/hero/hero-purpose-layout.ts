@@ -66,7 +66,7 @@ export const HERO_PURPOSE_LAYOUTS = {
       { x: 164, y: 298, fontSize: 144, tracking: 0 },
     ],
     stackRule: null,
-    support: { x: 852, y: 192, fontSize: 28, lineGap: 36, tracking: 0 },
+    support: { x: 852, y: 192, fontSize: 50, lineGap: 50, tracking: -0.75 },
     logo: { x: 950, y: 470, height: 86 },
   },
   mobile: {
@@ -80,10 +80,18 @@ export const HERO_PURPOSE_LAYOUTS = {
       { x: 818, y: 220, fontSize: 71, tracking: 0 },
     ],
     stackRule: { x: 820, y: 304, width: 236, height: 2 },
-    support: { x: 820, y: 348, fontSize: 33, lineGap: 39, tracking: 0 },
+    support: { x: 820, y: 348, fontSize: 40, lineGap: 40, tracking: -0.6 },
     logo: { x: 907, y: 491, height: 101 },
   },
 } as const satisfies Record<"desktop" | "mobile", PurposeArtworkLayout>;
+
+// The capped HTML artboard has a narrower cream panel on portrait tablets.
+export const HERO_PURPOSE_TABLET_SUPPORT = {
+  ...HERO_PURPOSE_LAYOUTS.desktop.support,
+  fontSize: 40,
+  lineGap: 40,
+  tracking: -0.6,
+} as const;
 
 export const HERO_PURPOSE_CANVAS_LAYOUTS = {
   desktop: HERO_PURPOSE_LAYOUTS.desktop,
@@ -98,6 +106,61 @@ export const HERO_PURPOSE_CANVAS_LAYOUTS = {
     ],
   },
 } as const satisfies Record<"desktop" | "mobile", PurposeArtworkLayout>;
+
+// Mirror the HTML artboard's 132vw cap at tablet aspect ratios.
+// The final HTML layout and the mobile artwork coordinates stay unchanged.
+export function getHeroPurposeCanvasWidthScale(width: number, height: number) {
+  if (width < 768) return 1;
+  return Math.min(1, (1.32 * width) / (1.074 * height * ARTBOARD_WIDTH / ARTBOARD_HEIGHT));
+}
+
+export function getHeroPurposeCanvasLayout(
+  isPortrait: boolean,
+  width: number,
+  height: number,
+  projectionOverscan = 1.074,
+): PurposeArtworkLayout {
+  const layout = isPortrait
+    ? HERO_PURPOSE_CANVAS_LAYOUTS.mobile
+    : HERO_PURPOSE_CANVAS_LAYOUTS.desktop;
+  if (isPortrait) return layout;
+
+  const support = width >= 768 && width <= height
+    ? HERO_PURPOSE_TABLET_SUPPORT
+    : layout.support;
+  const htmlHeight = Math.max(1.074 * height, 0.62061 * width);
+  const htmlWidth = Math.min(Math.max(1.074 * width, 1.858627 * height), 1.32 * width);
+  const projectedHeight = projectionOverscan * height;
+  const scale = htmlWidth / (projectedHeight * ARTBOARD_WIDTH / ARTBOARD_HEIGHT);
+  const verticalScale = htmlHeight / projectedHeight;
+  const fontScale = Math.min(scale, verticalScale);
+  const x = (value: number) => ARTBOARD_WIDTH / 2 + (value - ARTBOARD_WIDTH / 2) * scale;
+  const y = (value: number) => ARTBOARD_HEIGHT / 2 + (value - ARTBOARD_HEIGHT / 2) * verticalScale;
+  const projectedSupport = {
+    ...support, x: x(support.x), y: y(support.y), fontSize: support.fontSize * fontScale,
+    lineGap: support.lineGap * fontScale, tracking: support.tracking * fontScale,
+  };
+  // Preserve the approved desktop left artwork. Compensate only the new right
+  // statement for the existing camera's overscan so its HTML handoff stays still.
+  if (getHeroPurposeCanvasWidthScale(width, height) === 1) {
+    return { ...layout, support: projectedSupport };
+  }
+  const lead = (line: ArtworkLine) => ({
+    ...line, x: x(line.x), fontSize: line.fontSize * fontScale,
+    tracking: line.tracking * fontScale,
+  });
+  return {
+    ...layout,
+    greenEnd: x(layout.greenEnd),
+    creamStart: x(layout.creamStart),
+    divider: { x: x(layout.divider.x), width: layout.divider.width * scale },
+    labelRule: { ...layout.labelRule, x: x(layout.labelRule.x), width: layout.labelRule.width * scale },
+    label: { ...layout.label, x: x(layout.label.x) },
+    lead: [lead(layout.lead[0]), lead(layout.lead[1])],
+    support: projectedSupport,
+    logo: { ...layout.logo, x: x(layout.logo.x) },
+  };
+}
 
 export const HERO_PURPOSE_HANDOFF_WINDOWS = {
   desktop: {
@@ -126,6 +189,28 @@ function fontPercent(value: number) {
 
 function trackingEm(tracking: number, fontSize: number) {
   return `${(tracking / fontSize).toFixed(4)}em`;
+}
+
+function createSupportVariables(
+  prefix: "desktop" | "mobile" | "tablet",
+  support: PurposeArtworkLayout["support"],
+) {
+  return {
+    [`--purpose-${prefix}-support-x`]: horizontalPercent(support.x),
+    [`--purpose-${prefix}-support-y`]: verticalPercent(support.y),
+    [`--purpose-${prefix}-support-size`]: fontPercent(
+      support.fontSize,
+    ),
+    [`--purpose-${prefix}-support-line-gap`]: fontPercent(
+      support.lineGap,
+    ),
+    [`--purpose-${prefix}-support-width-size`]: `${(support.fontSize / ARTBOARD_WIDTH * 100).toFixed(4)}cqw`,
+    [`--purpose-${prefix}-support-width-gap`]: `${(support.lineGap / ARTBOARD_WIDTH * 100).toFixed(4)}cqw`,
+    [`--purpose-${prefix}-support-tracking`]: trackingEm(
+      support.tracking,
+      support.fontSize,
+    ),
+  };
 }
 
 function createArtboardVariables(
@@ -166,18 +251,7 @@ function createArtboardVariables(
       layout.lead[1].tracking,
       layout.lead[1].fontSize,
     ),
-    [`--purpose-${prefix}-support-x`]: horizontalPercent(layout.support.x),
-    [`--purpose-${prefix}-support-y`]: verticalPercent(layout.support.y),
-    [`--purpose-${prefix}-support-size`]: fontPercent(
-      layout.support.fontSize,
-    ),
-    [`--purpose-${prefix}-support-line-gap`]: verticalPercent(
-      layout.support.lineGap,
-    ),
-    [`--purpose-${prefix}-support-tracking`]: trackingEm(
-      layout.support.tracking,
-      layout.support.fontSize,
-    ),
+    ...createSupportVariables(prefix, layout.support),
     [`--purpose-${prefix}-logo-x`]: horizontalPercent(layout.logo.x),
     [`--purpose-${prefix}-logo-y`]: verticalPercent(layout.logo.y),
     [`--purpose-${prefix}-logo-height`]: verticalPercent(layout.logo.height),
@@ -204,4 +278,5 @@ function createArtboardVariables(
 export const HERO_PURPOSE_ARTBOARD_STYLE = {
   ...createArtboardVariables("desktop", HERO_PURPOSE_LAYOUTS.desktop),
   ...createArtboardVariables("mobile", HERO_PURPOSE_LAYOUTS.mobile),
+  ...createSupportVariables("tablet", HERO_PURPOSE_TABLET_SUPPORT),
 };

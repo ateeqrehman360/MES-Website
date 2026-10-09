@@ -319,7 +319,7 @@
     }
 
     .site-footer__closing span:last-child {
-      white-space: nowrap;
+      max-width: 16ch;
     }
 
     .site-footer__meta {

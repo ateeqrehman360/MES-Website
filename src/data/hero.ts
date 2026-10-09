@@ -19,6 +19,8 @@ export const heroPhotography = [
 export const heroStatement = {
   label: "OUR PURPOSE",
   leadLines: ["Built by", "Muslims."],
-  closeLines: ["For Muslims", "with ambition."],
-  accessibleText: "Our purpose. Built by Muslims. For Muslims with ambition.",
+  closeLines: ["For ambition", "beyond the", "classroom."],
+  get accessibleText() {
+    return `${this.label}. ${this.leadLines.join(" ")} ${this.closeLines.join(" ")}`;
+  },
 } as const;

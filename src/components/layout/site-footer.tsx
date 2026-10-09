@@ -6,6 +6,7 @@ import {
   footerSocialLinks,
   type FooterSocialIcon,
 } from "@/data/footer";
+import { heroStatement } from "@/data/hero";
 import { siteConfig } from "@/data/site";
 
 function SocialIcon({ icon }: { icon: FooterSocialIcon }) {
@@ -71,7 +72,7 @@ export function SiteFooter() {
               className="site-footer__closing"
             >
               <span>Built at MMU.</span>
-              <span>For Muslims with ambition.</span>
+              <span>{heroStatement.closeLines.join(" ")}</span>
             </h2>
           </div>
 
