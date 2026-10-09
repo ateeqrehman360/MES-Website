@@ -28,3 +28,10 @@ yarn-error.log*
 
 # Vercel
 .vercel
+
+# Purchased fonts are retrieved from MES-Private-Assets; never commit binaries.
+/src/assets/fonts/private/
+*.woff2
+/src/assets/fonts/Apparel Display Regular/
+/src/assets/fonts/TAN-Headline/
+/src/assets/fonts/kommon-grotesk-regular/

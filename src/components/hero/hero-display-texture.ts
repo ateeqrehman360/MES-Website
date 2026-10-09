@@ -39,7 +39,7 @@ type HeroDisplayAssets = {
 
 type HeroDisplayFontFamilies = {
   apparel: string;
-  kommon: string;
+  hanken: string;
   montserrat: string;
   tanHeadline: string;
 };
@@ -157,6 +157,24 @@ function drawTrackedText(
     context.fillText(character, cursor, y);
     cursor += context.measureText(character).width + tracking;
   }
+}
+
+function statementFontTopOffset(
+  context: CanvasRenderingContext2D,
+  fontSize: number,
+  originalAscent: number,
+) {
+  if ("ascentOverride" in FontFace.prototype) return 0;
+
+  // WebKit does not yet apply CSS metric overrides. Preserve the old artboard
+  // top anchors using its measured ascent; TAN/Montserrat use alphabetic anchors.
+  const baseline = context.textBaseline;
+  context.textBaseline = "alphabetic";
+  const ascent = context.measureText("H").fontBoundingBoxAscent;
+  context.textBaseline = baseline;
+  return Number.isFinite(ascent)
+    ? Math.round(fontSize * originalAscent) - ascent
+    : 0;
 }
 
 function drawBrandArtwork(
@@ -367,28 +385,37 @@ function drawStatementContent(
     layout.labelRule.height,
   );
   context.fillStyle = isPortrait ? GREEN : CREAM;
-  context.font = `400 ${layout.label.fontSize}px ${fontFamilies.kommon}`;
+  context.font = `400 ${layout.label.fontSize}px ${fontFamilies.hanken}`;
+  const labelTopOffset = statementFontTopOffset(
+    context, layout.label.fontSize, 0.756,
+  );
   drawTrackedText(
     context,
     heroStatement.label,
     layout.label.x,
-    layout.label.y + offsetY,
+    layout.label.y + offsetY + labelTopOffset,
     layout.label.tracking,
   );
 
   context.fillStyle = isPortrait ? GREEN : CREAM;
   context.font = `400 ${layout.lead[0].fontSize}px ${fontFamilies.apparel}`;
+  const leadOneTopOffset = statementFontTopOffset(
+    context, layout.lead[0].fontSize, 1.037,
+  );
   context.fillText(
     heroStatement.leadLines[0],
     layout.lead[0].x,
-    layout.lead[0].y + offsetY,
+    layout.lead[0].y + offsetY + leadOneTopOffset,
   );
   context.font = `400 ${leadTwoFontSize}px ${fontFamilies.apparel}`;
+  const leadTwoTopOffset = statementFontTopOffset(
+    context, leadTwoFontSize, 1.037,
+  );
   drawTrackedText(
     context,
     heroStatement.leadLines[1],
     layout.lead[1].x,
-    layout.lead[1].y + offsetY,
+    layout.lead[1].y + offsetY + leadTwoTopOffset,
     layout.lead[1].tracking,
   );
 
@@ -403,13 +430,16 @@ function drawStatementContent(
   }
 
   context.fillStyle = GREEN;
-  context.font = `400 ${layout.support.fontSize}px ${fontFamilies.kommon}`;
+  context.font = `400 ${layout.support.fontSize}px ${fontFamilies.hanken}`;
+  const supportTopOffset = statementFontTopOffset(
+    context, layout.support.fontSize, 0.756,
+  );
   heroStatement.closeLines.forEach((line, index) => {
     drawTrackedText(
       context,
       line,
       layout.support.x,
-      layout.support.y + layout.support.lineGap * index + offsetY,
+      layout.support.y + layout.support.lineGap * index + offsetY + supportTopOffset,
       layout.support.tracking,
     );
   });
@@ -677,8 +707,8 @@ export function createHeroDisplayTexture(
       rootStyles.getPropertyValue("--font-hero-apparel").trim() ||
       displayFont ||
       "Georgia, serif",
-    kommon:
-      rootStyles.getPropertyValue("--font-hero-kommon").trim() ||
+    hanken:
+      rootStyles.getPropertyValue("--font-hero-hanken").trim() ||
       "Arial, Helvetica, sans-serif",
     montserrat:
       rootStyles.getPropertyValue("--font-laptop-montserrat").trim() ||
@@ -688,16 +718,25 @@ export function createHeroDisplayTexture(
       displayFont ||
       "Georgia, serif",
   };
-  const fontSpecs = Object.values(fontFamilies).map((family) => `400 16px ${family}`);
-  let displayFontsReady = backingScale === 1 ||
-    fontSpecs.every((font) => document.fonts.check(font));
-  // Only the four fonts used by this artboard can delay its refinement.
-  // They never gate the laptop's first usable frame.
-  const fontsReady = backingScale === 1
-    ? document.fonts.ready.then(() => undefined)
-    : Promise.all(fontSpecs.map((font) => document.fonts.load(font)))
-        .then(() => { displayFontsReady = true; })
-        .catch(() => { displayFontsReady = true; });
+  // Load each actual face, excluding next/font's metric fallback family.
+  // The same gate applies on mobile and desktop: never rasterize fallback text.
+  const fontSpecs = Object.values(fontFamilies).map(
+    (family) => `400 16px ${family.split(",")[0]}`,
+  );
+  let displayFontsReady = false;
+  const fontsReady = Promise.all(
+    fontSpecs.map((font) => document.fonts.load(font)),
+  )
+    .then((faces) => {
+      if (faces.some((loaded) => loaded.length === 0)) {
+        throw new Error("A required laptop font is unavailable.");
+      }
+      displayFontsReady = true;
+    })
+    .catch(() => {
+      // Keep the existing logo artwork visible if a face fails to load.
+      console.error("Unable to load the MES laptop fonts.");
+    });
   const texture = new CanvasTexture(canvas);
   let uploaded = false;
   let uploadCallback: (() => void) | null = null;

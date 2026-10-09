@@ -45,7 +45,7 @@
 
   .featured-experiences__title-kicker {
     margin-inline-start: 0.16em;
-    font-family: var(--font-hero-kommon), Arial, sans-serif;
+    font-family: var(--font-hero-hanken), Arial, sans-serif;
     font-size: clamp(1rem, 4vw, 1.25rem);
     font-synthesis: none;
     line-height: 1;
@@ -133,7 +133,7 @@
   .featured-experience__descriptor {
     max-width: 24rem;
     margin: 1rem 0 0;
-    font-family: var(--font-hero-kommon), Arial, sans-serif;
+    font-family: var(--font-hero-hanken), Arial, sans-serif;
     font-size: clamp(1.05rem, 4.5vw, 1.3rem);
     font-synthesis: none;
     line-height: 1.3;

@@ -294,7 +294,7 @@ body:has(.hero-static) .site-header__menu-trigger:focus-visible {
   display: none;
   border-inline-start: 1px solid rgb(194 146 49 / 72%);
   padding-inline-start: 0.75rem;
-  font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+  font-family: var(--font-hero-hanken), Arial, Helvetica, sans-serif;
   font-size: 0.5625rem;
   font-weight: 400;
   letter-spacing: 0.09em;
@@ -460,7 +460,7 @@ body:has(.hero-static) .site-header__menu-trigger:focus-visible {
   margin-block-start: clamp(2rem, 8vh, 5rem);
   padding-block-start: 1rem;
   color: rgb(244 237 226 / 74%);
-  font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+  font-family: var(--font-hero-hanken), Arial, Helvetica, sans-serif;
   font-size: 0.6875rem;
   font-weight: 400;
   letter-spacing: 0.075em;
