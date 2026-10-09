@@ -178,10 +178,11 @@ const noticeSections = [
         </dl>
         <p>
           Deletion is manual. Tally keeps submissions until someone deletes them;
-          MES’s schedule is not an automatic Tally setting. The schedule covers
-          submissions, partial answers, relevant notification emails and copies
-          shared between authorised reviewers. Our deletion procedure includes
-          clearing the relevant Tally Trash entries. Otherwise, Tally allows
+          MES’s schedule is not an automatic Tally setting. Our retention policy
+          requires MES to remove submissions, partial answers, relevant
+          notification emails and copies shared between authorised reviewers,
+          and clear the relevant Tally Trash entries within these periods.
+          Otherwise, Tally allows
           deleted entries to be recovered from Trash for up to 90 days.
         </p>
         <p>
