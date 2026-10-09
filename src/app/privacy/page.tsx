@@ -1,34 +1,28 @@
-import { FoundationPage } from "@/components/sections/foundation-page";
 import { siteConfig } from "@/data/site";
 import { createPageMetadata } from "@/lib/metadata";
+import styles from "./privacy.module.css";
 
 const description =
-  "How information is handled when you visit the MES website, apply to join the committee or contact the society.";
+  "How we handle your information when you visit mmumes.com, apply to the MES committee or contact the society.";
 
 export const metadata = createPageMetadata("Privacy", description, "/privacy");
-
-const linkClass =
-  "font-semibold text-mes-deep-green underline decoration-mes-gold decoration-1 underline-offset-4";
 
 const noticeSections = [
   {
     id: "about-this-notice",
-    title: "About this notice",
+    title: "Who we are",
     content: (
       <>
         <p>
-          Muslim Entrepreneurs Society (MES) is an independent student society at
-          Manchester Metropolitan University. This notice covers mmumes.com and
-          the contact and committee application links provided on the website.
-          For privacy questions or requests, email{" "}
-          <a href={`mailto:${siteConfig.email}`} className={linkClass}>
-            {siteConfig.email}
-          </a>.
+          Muslim Entrepreneurs Society (MES), an independent student society at
+          Manchester Metropolitan University, is the data controller for the
+          personal information we use for the purposes described in this notice.
+          This means MES decides why and how that information is used. This
+          notice covers mmumes.com, committee recruitment and email enquiries.
         </p>
         <p>
-          This is a draft for committee review. The committee must confirm who is
-          responsible for personal data, the lawful bases, retention arrangements
-          and service settings described below before public launch.
+          For privacy questions, concerns or requests, email{" "}
+          <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.
         </p>
       </>
     ),
@@ -38,15 +32,14 @@ const noticeSections = [
     title: "Visiting the website",
     content: (
       <p>
-        The website is prepared for hosting on Vercel. When hosted there, Vercel
-        processes technical request information to deliver and protect the site.
-        This may include your IP address, browser and device information, the
-        requested address and request time in technical logs. The project has no
-        visitor analytics, accounts, database or custom payment processing.
-        Vercel’s handling of technical information is described in its{" "}
-        <a href="https://vercel.com/legal/privacy-notice" className={linkClass}>
-          privacy notice
-        </a>.
+        Our website is hosted on Vercel. Vercel processes technical information
+        needed to deliver and protect the site, which may include your IP
+        address, browser and device information, requested page and request time.
+        MES has no visitor analytics, user accounts, application database,
+        advertising or tracking scripts, or custom payment processing on this
+        website. See{" "}
+        <a href="https://vercel.com/legal/privacy-notice">Vercel’s privacy notice</a>{" "}
+        for its handling of technical information.
       </p>
     ),
   },
@@ -55,91 +48,193 @@ const noticeSections = [
     title: "Committee applications",
     content: (
       <>
-        <p>
-          Committee applications use a form hosted by Tally, available through an
-          embedded form on the Work With Us page or a direct link. Information you enter
-          is submitted to Tally rather than a MES website backend. It may include
-          your full name, course, year of study, email address, preferred team,
-          motivations, skills, ideas, weekly availability and any additional
-          information you choose to provide. Application
-          information is intended for reviewing applications and contacting
-          applicants about recruitment.
+        <p className={styles.important}>
+          <strong>Your application:</strong> application answers are available
+          to MES after you submit the completed form. Tally’s partial-submission
+          feature is disabled, so MES does not receive or review unfinished
+          answers through that feature.
         </p>
         <p>
-          The embedded form loads only when you open the application dialog.
-          Tally may process technical information when you open the embedded
-          application form or visit its direct link. Read{" "}
-          <a href="https://tally.so/help/privacy-policy" className={linkClass}>
-            Tally’s privacy policy
-          </a>{" "}
-          and any information accompanying the form before submitting. The
-          committee still needs to confirm access to submissions, integrations
-          and any exports or email notifications. The live form also has a
-          save-for-later setting; its browser storage behaviour needs verification.
+          Applications use <a href="https://tally.so/r/ob4kAb">our Tally form</a>,
+          available directly or through the Work With Us page. Tally processes
+          answers on our behalf; they are not stored in a MES website database.
+          The embedded form loads when you open the application dialog. Tally may
+          also process technical information when you open the form.
+        </p>
+        <p>
+          The form asks for your full name, email address, course, year of study,
+          preferred committee team, skills and experience, motivation, ideas and
+          availability. We also receive any other answers you voluntarily provide.
+          We use application information to review applications, assess suitability
+          for available roles, contact applicants, organise interviews and manage
+          successful recruitment. Providing information is your choice, but we
+          may be unable to assess your application without the relevant answers.
+        </p>
+        <p>
+          The form does not explicitly ask for religion, ethnicity, health
+          information or disabilities. Free-text answers can still reveal
+          sensitive personal information. Please keep answers relevant to the
+          role and avoid including unnecessary sensitive details or information
+          about other people.
+        </p>
+        <p>
+          Tally’s “Save answers for later” feature is enabled. Unfinished answers
+          are saved locally in your browser so you can return to complete the
+          form using the same browser. This saved progress is not available in
+          another browser or incognito mode, and is not shared with MES by the
+          save-for-later feature. Read{" "}
+          <a href="https://tally.so/help/privacy-policy">Tally’s privacy notice</a>{" "}
+          for more about its service.
         </p>
       </>
     ),
   },
   {
-    id: "email-correspondence",
-    title: "Email correspondence",
+    id: "application-access",
+    title: "Who sees applications",
+    content: (
+      <>
+        <p>
+          Only the Operations Lead and the President (Asma) review applications
+          for MES. The Tally account is currently registered using the Operations
+          Lead’s personal email. Notifications of submitted applications go to
+          that personal mailbox, and the Operations Lead manually shares relevant
+          applications with the President. They do not currently go to our
+          official Outlook mailbox. These reviewers receive application answers
+          after a completed submission, not progress saved in your browser.
+        </p>
+        <p>
+          Tally and the email services used by the authorised reviewers process
+          information to provide their services. There are no Google Sheets
+          integrations or other automated application integrations.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "email-enquiries",
+    title: "Email enquiries",
     content: (
       <p>
-        Email links open your email application. If you email MES, your email
-        provider and the society’s Outlook email service process the message.
-        Your address, message and any attachments are available in the receiving
-        mailbox so that your enquiry can be handled. Send only information
-        relevant to your enquiry. The committee needs to confirm mailbox access,
-        any sharing of correspondence and how messages are retained.
+        When you email <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>,
+        we receive your name, email address, message and any attachments you
+        choose to send. We use these to respond to and resolve your enquiry.
+        Your email provider and Microsoft’s Outlook service process the
+        correspondence, and MES members handling the enquiry can access it.
+        Please send only information relevant to your enquiry. See{" "}
+        <a href="https://www.microsoft.com/en-gb/privacy/privacystatement">Microsoft’s privacy statement</a>.
       </p>
     ),
   },
   {
-    id: "external-services",
-    title: "WhatsApp, social media and other links",
+    id: "lawful-basis",
+    title: "Why we use information",
+    content: (
+      <>
+        <p>
+          We rely on legitimate interests under Article 6(1)(f) of the UK GDPR
+          for committee recruitment and handling enquiries. Our interests are
+          recruiting suitable committee members, managing recruitment and
+          responding to people who contact MES. We use information relevant to
+          these purposes, taking account of your interests and privacy rights.
+          You have a right to object to this use.
+        </p>
+        <p>
+          Delivering and protecting the website also serves our legitimate
+          interest in maintaining a working, secure website. Service providers
+          may process information for their own purposes as described in their
+          privacy notices. Legitimate interests alone does not authorise the use
+          of special category information, such as religious beliefs or health
+          details.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "retention",
+    title: "How long we keep it",
+    content: (
+      <>
+        <p>MES has adopted the following retention periods:</p>
+        <dl className={styles.retention}>
+          <div>
+            <dt>Unsuccessful applications</dt>
+            <dd>Delete within 3 months after recruitment closes.</dd>
+          </div>
+          <div>
+            <dt>Successful applications</dt>
+            <dd>
+              Keep information needed during committee membership, then delete
+              within 3 months after membership ends.
+            </dd>
+          </div>
+          <div>
+            <dt>Email enquiries</dt>
+            <dd>
+              Keep only as needed, normally no longer than 12 months after the
+              enquiry is resolved.
+            </dd>
+          </div>
+        </dl>
+        <p>
+          Deletion is manual. Tally keeps submissions until someone deletes them;
+          MES’s schedule is not an automatic Tally setting. Our retention policy
+          requires MES to remove submitted applications, relevant notification
+          emails, copies shared with the President and relevant attachments or
+          exports, and clear the relevant Tally Trash entries within these periods.
+          Otherwise, Tally allows
+          deleted entries to be recovered from Trash for up to 90 days.
+        </p>
+        <p>
+          Removing our copies does not mean information is immediately erased
+          from every service-provider backup. Providers manage technical logs
+          and backup retention under their own arrangements. See{" "}
+          <a href="https://tally.so/help/how-to-delete-and-recover-form-data">Tally’s deletion guidance</a>.
+        </p>
+      </>
+    ),
+  },
+  {
+    id: "international-processing",
+    title: "Processing outside the UK",
     content: (
       <p>
-        The website links to WhatsApp communities, Instagram, TikTok, LinkedIn
-        and Facebook, as well as asset attribution pages. Following a link takes
-        you to another service, whose privacy terms and account settings apply.
-        These social services are linked rather than embedded. Joining a
-        WhatsApp community can make profile or contact information visible to
-        others depending on the service and group settings; check those settings
-        before joining. This website does not receive your social media login
-        details through these links.
+        Our providers may process information outside the UK. Tally states that
+        form responses are stored in Europe; its email notification service
+        uses SendGrid in the United States, as listed in{" "}
+        <a href="https://tally.so/help/gdpr">Tally’s provider information</a>.
+        Vercel and Microsoft also describe
+        international processing, including in the United States. Information
+        sent to reviewers’ email accounts is also handled by their email
+        providers. The provider notices linked above explain their arrangements.
+        You can contact MES for further information about where your information
+        is processed and the protections relevant to it.
       </p>
     ),
   },
   {
-    id: "cookies-and-resources",
-    title: "Cookies and website resources",
+    id: "cookies-and-links",
+    title: "Cookies and external links",
     content: (
-      <p>
-        The website code does not set first-party cookies or use local storage or
-        session storage. It contains no analytics or advertising scripts. Images,
-        fonts and the 3D laptop are served as website assets; Google Fonts are
-        downloaded during the build and served with the site. The embedded Tally
-        form is a separate third-party resource. Its cookies, storage and other
-        requests depend on Tally and the live form configuration, which need to
-        be checked before launch. This notice does not claim that third-party
-        services or hosting are cookie-free.
-      </p>
-    ),
-  },
-  {
-    id: "committee-confirmation",
-    title: "Details awaiting committee confirmation",
-    content: (
-      <p>
-        The committee must confirm the identity and contact details of the data
-        controller; the lawful basis for each use of personal data; who can
-        access, receive or export it; and how long it is kept, or the criteria for
-        deciding that. It must also confirm any international transfers and
-        applicable safeguards, provider arrangements and whether application
-        answers reveal sensitive information such as religious beliefs. Any such
-        processing needs an appropriate additional condition. No legal basis,
-        retention period or contractual safeguard is asserted in this draft.
-      </p>
+      <>
+        <p>
+          The MES website code does not set first-party cookies or use local or
+          session storage. Images, fonts and the 3D laptop are served as website
+          assets. Google Fonts are downloaded during the build and served with
+          the site. The Tally form is a separate third-party resource, subject to
+          Tally’s own cookies and storage arrangements, including the enabled
+          save-for-later feature that saves unfinished answers in your browser.
+          This is separate from the MES website’s own code. We do not
+          claim that hosting or linked services are cookie-free.
+        </p>
+        <p>
+          Links to WhatsApp, Instagram, TikTok, LinkedIn and Facebook take you to
+          external services with their own privacy terms and settings. These are
+          links, not embedded social-media login systems; MES does not receive
+          your login details through them. Check the service’s settings before
+          joining a group or sharing information.
+        </p>
+      </>
     ),
   },
   {
@@ -148,87 +243,71 @@ const noticeSections = [
     content: (
       <>
         <p>
-          Depending on the circumstances and lawful basis, UK data protection law
-          gives you rights to request access to, correction or deletion of your
-          personal data, restriction of its use and data portability. You may
-          also have a right to object to its use. Where processing relies on
-          consent, you can withdraw that consent. Contact MES using the email
-          above to raise a concern or make a request.
+          Under UK data protection law, you can ask for access to your personal
+          information, correction of inaccurate information, deletion or
+          restriction of its use. You can object to processing based on
+          legitimate interests, including committee recruitment and enquiries.
+          These rights apply subject to the circumstances and legal exceptions.
         </p>
         <p>
-          You can also complain to the UK Information Commissioner’s Office.
-          Visit the{" "}
-          <a href="https://ico.org.uk/make-a-complaint/" className={linkClass}>
-            ICO complaints page
-          </a>{" "}
-          for information about raising a data protection complaint.
+          The right to data portability generally applies to automated processing
+          based on consent or a contract, rather than the legitimate interests
+          processing described here. If we rely on consent for any separate use,
+          you can withdraw it at any time without affecting earlier lawful use.
+          Committee applications are reviewed by people, not decided solely by
+          automated processing.
+        </p>
+        <p>
+          To exercise a right or raise a concern, email{" "}
+          <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>.
+          You also have the right to complain to the UK Information
+          Commissioner’s Office (ICO). Visit the{" "}
+          <a href="https://ico.org.uk/make-a-complaint/">ICO complaints page</a>.
         </p>
       </>
+    ),
+  },
+  {
+    id: "asset-credits",
+    title: "Asset Credits",
+    content: (
+      <p>
+        <a href="https://skfb.ly/6RVFt" target="_blank" rel="noopener noreferrer">
+          &quot;Laptop&quot;<span className="sr-only"> (opens in a new tab)</span>
+        </a>{" "}
+        by Aullwen is licensed under{" "}
+        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">
+          Creative Commons Attribution 4.0.
+          <span className="sr-only"> (opens in a new tab)</span>
+        </a>
+      </p>
     ),
   },
 ];
 
 export default function PrivacyPage() {
   return (
-    <>
-      <FoundationPage
-        title="Privacy"
-        description={description}
-        status="Draft for committee review"
-      />
+    <article className={`${styles.notice} site-container`}>
+      <header className={styles.hero}>
+        <p className={styles.label}>MES · Privacy notice</p>
+        <h1 className={styles.title}>Privacy</h1>
+        <p className={styles.intro}>{description}</p>
+        <p className={styles.updated}>
+          Last updated <time dateTime="2026-10-09">9 October 2026</time>
+        </p>
+      </header>
+      <nav className={styles.contents} aria-label="Privacy notice sections">
+        <a href="#committee-applications">Applications</a>
+        <a href="#retention">Retention</a>
+        <a href="#your-rights">Your rights</a>
+        <a href="#about-this-notice">Contact MES</a>
+      </nav>
       {noticeSections.map(({ id, title, content }) => (
-        <section
-          key={id}
-          className="site-container border-t border-mes-border py-14 md:py-20"
-          aria-labelledby={id}
-        >
-          <div className="max-w-[var(--measure-copy)]">
-            <h2
-              id={id}
-              className="font-[family-name:var(--font-hero-apparel)] text-4xl font-normal leading-none tracking-[-0.035em] text-mes-green-ink md:text-5xl"
-            >
-              {title}
-            </h2>
-            <div className="mt-6 space-y-4 text-base leading-relaxed text-mes-green-ink/85">
-              {content}
-            </div>
-          </div>
+        <section key={id} className={styles.section} aria-labelledby={id}>
+          <h2 id={id} className={styles.heading}>{title}</h2>
+          <div className={styles.copy}>{content}</div>
         </section>
       ))}
-      <section
-        className="site-container border-t border-mes-border py-14 md:py-20"
-        aria-labelledby="asset-credits-title"
-      >
-        <div className="max-w-[var(--measure-copy)]">
-          <h2
-            id="asset-credits-title"
-            className="font-[family-name:var(--font-hero-apparel)] text-4xl font-normal leading-none tracking-[-0.035em] text-mes-green-ink md:text-5xl"
-          >
-            Asset Credits
-          </h2>
-          <p className="mt-6 text-base leading-relaxed text-mes-green-ink/85">
-            <a
-              href="https://skfb.ly/6RVFt"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-mes-deep-green underline decoration-mes-gold decoration-1 underline-offset-4"
-            >
-              &quot;Laptop&quot;
-              <span className="sr-only"> (opens in a new tab)</span>
-            </a>{" "}
-            by Aullwen is licensed under{" "}
-            <a
-              href="http://creativecommons.org/licenses/by/4.0/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-mes-deep-green underline decoration-mes-gold decoration-1 underline-offset-4"
-            >
-              Creative Commons Attribution 4.0.
-              <span className="sr-only"> (opens in a new tab)</span>
-            </a>
-          </p>
-        </div>
-      </section>
-    </>
+    </article>
   );
 }

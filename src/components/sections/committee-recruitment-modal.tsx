@@ -74,6 +74,7 @@ export function CommitteeRecruitmentModal({
       className={styles.dialog}
       aria-modal="true"
       aria-labelledby="committee-application-title"
+      aria-describedby="committee-application-privacy"
       onCancel={(event) => {
         event.preventDefault();
         onClose();
@@ -117,6 +118,14 @@ export function CommitteeRecruitmentModal({
           </svg>
         </button>
       </div>
+      <p id="committee-application-privacy" className={styles.privacyNotice}>
+        Your application information is shared with MES when you submit the
+        form. You can save your progress and return later using the same browser.
+        Read our{" "}
+        <a href="https://mmumes.com/privacy" target="_blank" rel="noopener noreferrer">
+          privacy notice<span className={styles.srOnly}> (opens in a new tab)</span>
+        </a>{" "}for details about how we handle your information.
+      </p>
       {isOpen && (
         <iframe
           ref={formRef}

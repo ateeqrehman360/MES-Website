@@ -181,6 +181,23 @@
   white-space: nowrap;
 }
 
+.privacyNotice {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0.875rem 1.25rem;
+  border-block-end: 1px solid var(--mes-border);
+  color: var(--mes-green-ink);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.privacyNotice a {
+  color: var(--mes-deep-green);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
 @media (min-width: 48rem) {
   .composition {
     grid-template-columns: repeat(12, minmax(0, 1fr));
