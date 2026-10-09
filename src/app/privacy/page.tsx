@@ -57,7 +57,7 @@ const noticeSections = [
       <>
         <p>
           Committee applications use a form hosted by Tally, available through an
-          embedded form on the About page or a direct link. Information you enter
+          embedded form on the Work With Us page or a direct link. Information you enter
           is submitted to Tally rather than a MES website backend. It may include
           your full name, course, year of study, email address, preferred team,
           motivations, skills, ideas, weekly availability and any additional
@@ -66,9 +66,9 @@ const noticeSections = [
           applicants about recruitment.
         </p>
         <p>
-          The embedded form can contact Tally when the About page loads, even
-          before you open the application dialog or submit an answer. Tally may
-          receive technical information about those requests. Read{" "}
+          The embedded form loads only when you open the application dialog.
+          Tally may process technical information when you open the embedded
+          application form or visit its direct link. Read{" "}
           <a href="https://tally.so/help/privacy-policy" className={linkClass}>
             Tally’s privacy policy
           </a>{" "}
