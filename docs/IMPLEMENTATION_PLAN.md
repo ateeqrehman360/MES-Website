@@ -1483,7 +1483,7 @@ Do not make production hosting a blocker during development.
 
 Later:
 
-- confirm `mesmcr.com`;
+- confirm `mmumes.com`;
 - configure DNS;
 - redirect `www` appropriately;
 - evaluate final hosting setup.

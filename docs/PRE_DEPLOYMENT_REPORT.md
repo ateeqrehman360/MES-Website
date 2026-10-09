@@ -4,6 +4,8 @@ Review date: 9 October 2026 (Europe/London). Branch: `pre-deployment-essentials`
 Started from latest remote `main` at `cdd9106038f038e18dde7dad6430fd283ceac7f7`.
 The implementation commit SHA is supplied in the final handoff; this report is part of that commit.
 
+> Domain correction (9 October 2026): the intended production domain is now `https://mmumes.com`, purchased through GoDaddy. The existing Vercel deployment remains `https://mes-website-kappa.vercel.app` (project `mes-website`); custom-domain connection and GoDaddy DNS configuration are pending. The owner must merge `fix-production-domain` before proceeding with custom-domain setup. The SEO results and domain DNS check below record the earlier audit of the incorrect `mesmcr.com` configuration; they do not verify `mmumes.com` or claim it is live.
+
 ## Completed
 
 Replaced the placeholder privacy page with a British English draft describing the actual website, hosting request information, Tally applications, email, external communities/social services and website resources. Kept the existing visual language, laptop credit, author and both source/licence links. Unconfirmed operational and legal details are visibly identified; this is not an approved final notice.
@@ -25,7 +27,7 @@ Implemented standard Next.js App Router metadata, canonical URLs, Open Graph, X 
 - `src/components/sections/foundation-page.tsx` — optional status text so Privacy can show its review status, using the existing layout.
 - `docs/PRE_DEPLOYMENT_REPORT.md` — this handoff.
 
-### SEO and indexing
+### SEO and indexing (historical audit before domain correction)
 
 `metadataBase` is `https://mesmcr.com`. All five public routes have unique titles/descriptions, their own canonical and Open Graph URL, `website` type, `en_GB` locale, MES site name and the existing PNG logo. X uses a square `summary` card with page-specific title, description and image alt text. No unverified social account handle or structured data was added.
 
@@ -47,7 +49,7 @@ Implementation follows the [Next.js metadata documentation](https://nextjs.org/d
 
 Visually inspected the existing `public/brand/mes-logo.png`: 1254 × 1254, PNG, 923,253 bytes (about 902 KiB), MES green/gold emblem on cream. It is a suitable existing square identity image, so it is referenced unchanged in OG and X metadata with explicit OG dimensions and alt text. Other existing photographs/posters are event-specific or portrait compositions rather than general website sharing graphics. SVG is retained for the favicon, while the PNG supplies a raster sharing image.
 
-A dedicated landscape graphic would improve large previews: owner-approved **1200 × 630 px** PNG/JPEG, existing cream/green/gold palette and logo, “Muslim Entrepreneurs Society”, “Manchester Metropolitan University” and optionally `mesmcr.com`. Keep the logo and essential text within a central safe area to tolerate cropping; use the approved brand typography with appropriate licences. Avoid small text and unreviewed new artwork. Save the approved asset under `public/brand/`, update `socialImage` dimensions/path/alt text and change X to `summary_large_image`. Validate real platform previews once the domain is live. This is optional and no new graphic was created.
+A dedicated landscape graphic would improve large previews: owner-approved **1200 × 630 px** PNG/JPEG, existing cream/green/gold palette and logo, “Muslim Entrepreneurs Society”, “Manchester Metropolitan University” and optionally `mmumes.com`. Keep the logo and essential text within a central safe area to tolerate cropping; use the approved brand typography with appropriate licences. Avoid small text and unreviewed new artwork. Save the approved asset under `public/brand/`, update `socialImage` dimensions/path/alt text and change X to `summary_large_image`. Validate real platform previews once the domain is live. This is optional and no new graphic was created.
 
 ### Link audit
 
@@ -69,7 +71,7 @@ Read-only HTTP GET requests followed redirects and checked public response title
 | [Vercel privacy notice](https://vercel.com/legal/privacy-notice) | Working | HTTP 200; newly cited by the privacy draft. |
 | [Tally privacy policy](https://tally.so/help/privacy-policy) | Working | HTTP 200; newly cited by the privacy draft. |
 | [ICO complaints](https://ico.org.uk/make-a-complaint/) | Working | HTTP 200; newly cited by the privacy draft. |
-| `https://mesmcr.com` | Unable to verify | DNS did not resolve during the check; production/domain setup is intentionally owner work after merge. |
+| `https://mesmcr.com` (historical incorrect domain) | Unable to verify | DNS did not resolve during the earlier check; production/domain setup is intentionally owner work after merge. |
 | All five internal routes and internal anchors | Working locally | HTTP 200 on the branch's production server; navigation and anchor targets resolve. |
 
 No confirmed broken existing link was found. **Recruitment availability is time-sensitive**: the form was open at the audit time; confirm again immediately before launch. Existing “Applications are open” wording was not changed.
@@ -84,7 +86,7 @@ All public pages and metadata routes are statically prerendered. Page metadata s
 
 After review/merge and resolution of the launch items below, the owner should import the repository into Vercel with Next.js preset, repository root, `main` as production branch, locked dependency installation (`npm ci`), automatic output directory and build override **`npx next build --webpack`** to use the path validated here. The existing `npm run build` uses Next.js's default builder; a Turbopack build was not tested in this task. Select a supported Node version (local validation used Node 20.19.4; match a supported Vercel runtime), keep Web Analytics/Speed Insights disabled and verify preview access/indexing controls separately. Production metadata deliberately points to the eventual production domain, not preview hosts.
 
-The owner must subsequently add the apex domain `mesmcr.com`, decide the `www` redirect, apply only the DNS values supplied by Vercel in GoDaddy and confirm HTTPS/redirects. No DNS values are guessed here and no platform settings were changed. Confirm Vercel plan eligibility first: [Hobby is limited to personal, non-commercial use](https://vercel.com/docs/plans/hobby); MES's eligibility has not been established.
+The owner must subsequently add the apex domain `mmumes.com`, decide the `www` redirect, apply only the DNS values supplied by Vercel in GoDaddy and confirm HTTPS/redirects. No DNS values are guessed here and no platform settings were changed. Confirm Vercel plan eligibility first: [Hobby is limited to personal, non-commercial use](https://vercel.com/docs/plans/hobby); MES's eligibility has not been established.
 
 ### Validation
 
