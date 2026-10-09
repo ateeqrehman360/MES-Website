@@ -75,11 +75,11 @@ MES is based at **Manchester Metropolitan University** and operates primarily wi
 
 The site does not need to present MES as a national organisation or be designed around hypothetical expansion across the UK.
 
-Preferred domain:
+Intended production domain:
 
-**`mesmcr.com`**
+**`mmumes.com`**
 
-subject to final team approval.
+Purchased through GoDaddy; custom-domain connection and DNS configuration remain pending.
 
 The domain may use the broader Manchester identity while the website itself clearly explains MES's MMU basis.
 
@@ -1056,17 +1056,17 @@ With the removal of the admin dashboard, **a persistent application database is 
 
 # 44. Domain and deployment
 
-Preferred domain:
+Intended production domain:
 
-**`mesmcr.com`**
+**`mmumes.com`**
 
-Likely registrar:
+Registrar (domain purchased):
 
 **GoDaddy**
 
 Configure:
 
-**`www.mesmcr.com` → `mesmcr.com`**
+**`www.mmumes.com` → `mmumes.com`**
 
 Domain registration and application hosting should be treated separately.
 

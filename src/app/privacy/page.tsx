@@ -18,7 +18,7 @@ const noticeSections = [
       <>
         <p>
           Muslim Entrepreneurs Society (MES) is an independent student society at
-          Manchester Metropolitan University. This notice covers mesmcr.com and
+          Manchester Metropolitan University. This notice covers mmumes.com and
           the contact and committee application links provided on the website.
           For privacy questions or requests, email{" "}
           <a href={`mailto:${siteConfig.email}`} className={linkClass}>
