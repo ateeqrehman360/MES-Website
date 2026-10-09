@@ -74,6 +74,7 @@ export function CommitteeRecruitmentModal({
       className={styles.dialog}
       aria-modal="true"
       aria-labelledby="committee-application-title"
+      aria-describedby="committee-application-privacy"
       onCancel={(event) => {
         event.preventDefault();
         onClose();
@@ -117,6 +118,14 @@ export function CommitteeRecruitmentModal({
           </svg>
         </button>
       </div>
+      <p id="committee-application-privacy" className={styles.privacyNotice}>
+        <strong>Before you start:</strong> Tally may store answers you enter and
+        share them with MES even if you do not press Submit. MES uses application
+        information for committee recruitment. Read our{" "}
+        <a href="https://mmumes.com/privacy" target="_blank" rel="noopener noreferrer">
+          privacy notice<span className={styles.srOnly}> (opens in a new tab)</span>
+        </a>.
+      </p>
       {isOpen && (
         <iframe
           ref={formRef}
