@@ -49,9 +49,10 @@ const noticeSections = [
     content: (
       <>
         <p className={styles.important}>
-          <strong>Before you start:</strong> our Tally form has partial submissions
-          enabled. Answers you enter may be collected and stored by Tally and
-          made available to MES even if you do not press Submit or finish the form.
+          <strong>Your application:</strong> application answers are available
+          to MES after you submit the completed form. Tally’s partial-submission
+          feature is disabled, so MES does not receive or review unfinished
+          answers through that feature.
         </p>
         <p>
           Applications use <a href="https://tally.so/r/ob4kAb">our Tally form</a>,
@@ -77,8 +78,11 @@ const noticeSections = [
           about other people.
         </p>
         <p>
-          Tally’s separate “Save answers for later” feature is disabled. This
-          does not prevent partial answers from being collected. Read{" "}
+          Tally’s “Save answers for later” feature is enabled. Unfinished answers
+          are saved locally in your browser so you can return to complete the
+          form using the same browser. This saved progress is not available in
+          another browser or incognito mode, and is not shared with MES by the
+          save-for-later feature. Read{" "}
           <a href="https://tally.so/help/privacy-policy">Tally’s privacy notice</a>{" "}
           for more about its service.
         </p>
@@ -96,8 +100,8 @@ const noticeSections = [
           Lead’s personal email. Notifications of submitted applications go to
           that personal mailbox, and the Operations Lead manually shares relevant
           applications with the President. They do not currently go to our
-          official Outlook mailbox. Tally does not send notifications for partial
-          submissions, but those answers remain available in Tally.
+          official Outlook mailbox. These reviewers receive application answers
+          after a completed submission, not progress saved in your browser.
         </p>
         <p>
           Tally and the email services used by the authorised reviewers process
@@ -165,10 +169,6 @@ const noticeSections = [
             </dd>
           </div>
           <div>
-            <dt>Incomplete or partial applications</dt>
-            <dd>Delete within 30 days after recruitment closes.</dd>
-          </div>
-          <div>
             <dt>Email enquiries</dt>
             <dd>
               Keep only as needed, normally no longer than 12 months after the
@@ -179,9 +179,9 @@ const noticeSections = [
         <p>
           Deletion is manual. Tally keeps submissions until someone deletes them;
           MES’s schedule is not an automatic Tally setting. Our retention policy
-          requires MES to remove submissions, partial answers, relevant
-          notification emails and copies shared between authorised reviewers,
-          and clear the relevant Tally Trash entries within these periods.
+          requires MES to remove submitted applications, relevant notification
+          emails, copies shared with the President and relevant attachments or
+          exports, and clear the relevant Tally Trash entries within these periods.
           Otherwise, Tally allows
           deleted entries to be recovered from Trash for up to 90 days.
         </p>
@@ -222,8 +222,9 @@ const noticeSections = [
           session storage. Images, fonts and the 3D laptop are served as website
           assets. Google Fonts are downloaded during the build and served with
           the site. The Tally form is a separate third-party resource, subject to
-          Tally’s own cookies and storage arrangements. Disabling its
-          save-for-later feature does not disable partial submissions. We do not
+          Tally’s own cookies and storage arrangements, including the enabled
+          save-for-later feature that saves unfinished answers in your browser.
+          This is separate from the MES website’s own code. We do not
           claim that hosting or linked services are cookie-free.
         </p>
         <p>

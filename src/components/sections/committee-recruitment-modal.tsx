@@ -119,12 +119,12 @@ export function CommitteeRecruitmentModal({
         </button>
       </div>
       <p id="committee-application-privacy" className={styles.privacyNotice}>
-        <strong>Before you start:</strong> Tally may store answers you enter and
-        share them with MES even if you do not press Submit. MES uses application
-        information for committee recruitment. Read our{" "}
+        Your application information is shared with MES when you submit the
+        form. You can save your progress and return later using the same browser.
+        Read our{" "}
         <a href="https://mmumes.com/privacy" target="_blank" rel="noopener noreferrer">
           privacy notice<span className={styles.srOnly}> (opens in a new tab)</span>
-        </a>.
+        </a>{" "}for details about how we handle your information.
       </p>
       {isOpen && (
         <iframe

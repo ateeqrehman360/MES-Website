@@ -17,10 +17,15 @@ changed. A passing website build does not establish legal compliance.
   registered to the Operations Lead's personal email; submitted application
   notifications arrive there. Relevant applications are manually shared with the
   President. Do not record the private email address in this repository.
-- Partial submissions enabled; save answers for later disabled; email
+- Save answers for later enabled; partial submissions disabled; email
   notifications enabled; no external integrations, including Google Sheets.
   Moving future forms to the official Outlook mailbox is an intention, not the
   present arrangement. Website edits do not change the standalone Tally form.
+- Tally's save-for-later feature saves unfinished answers locally in the
+  applicant's browser so they can resume there. Saved progress is unavailable
+  in another browser or incognito mode. MES receives application answers after
+  completed submission; the disabled partial-submission feature does not make
+  unfinished answers available to the Operations Lead or President.
 - Outlook enquiries can include names, addresses, messages and voluntary
   attachments. Social services are external links, not embedded login systems.
 
@@ -33,12 +38,11 @@ interest basis without grounds.
 | Processing | Purpose | Necessity to assess | Balance and provisional view |
 | --- | --- | --- | --- |
 | Submitted committee applications | Recruit suitable members, assess roles, contact applicants, arrange interviews and manage recruitment | Contact details and relevant role information help assessment; check each question is proportionate and whether less data would suffice | Applicants ordinarily expect recruitment review. Two reviewers and short retention reduce exposure. Article 6(1)(f) appears suitable for ordinary information, subject to documented assessment of actual safeguards and sensitive information. |
-| Partial answers before Submit | Currently captured within recruitment | **Not established:** show why capturing abandoned answers is necessary when submitted applications are a less intrusive alternative | Unexpected capture, unintended sensitive disclosures and lack of a completed application weigh against it. A disclosure alone does not establish necessity or fairness. Do not treat an abandoned form as permission for follow-up. Determine actual use and justify this separately; if it fails the test, obtain owner approval to change the setting. |
 | Enquiries | Respond to and resolve messages | Names, contact details and relevant message content enable replies; minimise attachments and circulation | Correspondents expect a reply. Article 6(1)(f) appears suitable for ordinary enquiries subject to access and retention controls. |
 | Necessary website technical information | Deliver and protect a functioning site | Confirm the technical data retained by Vercel and any MES access to logs; avoid optional tracking | Limited delivery/security processing appears suitable for legitimate interests. Check provider purposes and retention separately. |
 
-Assumptions to verify: no reuse for marketing, no recruitment scoring automation,
-and no contact with abandoned applicants unless separately justified. Consider
+Assumptions to verify: no reuse for marketing and no recruitment scoring
+automation. Consider
 under-18 applicants if possible; do not assume every university student is an
 adult. For successful applicants, identify precisely which information remains
 necessary during membership; this notice is not a basis for unrelated new uses.
@@ -46,7 +50,8 @@ necessary during membership; this notice is not a basis for unrelated new uses.
 - [ ] Operations Lead and President complete and record purpose, necessity and
   balancing decisions, actual safeguards, approver and date. Review when purposes
   or arrangements change. Assess high-risk processing and whether a DPIA is needed.
-- [ ] Assess free text, attachments and the religious-society context. Ordinary
+- [ ] Assess free text and attachments voluntarily included in completed
+  applications, and the religious-society context. Ordinary
   fields can reveal special category information; do not infer beliefs or
   discriminate from names or an application. If information reveals beliefs or
   health, identify a valid Article 9 condition in addition to Article 6 before
@@ -100,15 +105,14 @@ The owner has adopted these deadlines:
 | --- | --- |
 | Unsuccessful application | Within 3 months after recruitment closes |
 | Successful application | Keep only information needed during membership; delete within 3 months after it ends |
-| Incomplete/partial application | Within 30 days after recruitment closes |
 | Email enquiry | Only as needed, normally no longer than 12 months after resolution |
 
 - [ ] Assign responsibility and record recruitment closing dates, membership end
   dates and enquiry resolution dates. Schedule manual reviews sufficiently often
-  to meet deadlines, including a review at closure and before the 30-day deadline.
+  to meet deadlines, including a review at recruitment closure.
   Delete redundant successful-application information earlier when no longer needed.
-- [ ] In Tally, review both submitted and **Partial** entries, select due records
-  in Submissions and delete them. Entries remain until manually removed; this
+- [ ] In Tally, review submitted applications, select due records in Submissions
+  and delete them. Entries remain until manually removed; this
   implementation does not enable automated retention.
 - [ ] Check Trash and permanently remove the due records by the deadline.
   Current Tally guidance says all deleted entries first go to Trash and remain
@@ -126,29 +130,31 @@ The owner has adopted these deadlines:
   Check older records now, not only applications received after publication.
 
 [Tally's current deletion guide](https://tally.so/help/how-to-delete-and-recover-form-data)
-documents the Trash window and manual emptying. Its
-[partial-submission guidance](https://tally.so/help/partial-submissions) confirms
-capture without Submit and that partial answers do not trigger notification
-emails or integrations. The separate save-for-later feature being disabled
-does not switch this capture off.
+documents the Trash window and manual emptying.
+[Tally's form settings](https://tally.so/help/form-settings) explain local
+browser saving and its limitations. Its
+[partial-submission guidance](https://tally.so/help/partial-submissions) describes
+the separate collection feature, which MES has disabled. Browser-saved progress
+is not a MES submission to delete under this retention schedule.
 
 ## Transparency, rights and operational checks
 
 - [ ] Add the text below at the **top of the standalone Tally form, before its
   first answer field**, and publish the form change. Check both direct and
   embedded routes. Do not add a mandatory consent checkbox for legitimate
-  interests. Do not change questions or partial-submission settings as part of
+  interests. Do not change questions or Tally settings as part of
   this website update.
 - [ ] Audit live embedded/direct-form cookies, storage, requests, custom scripts
   and bot protection without entering applicants' data. Save-for-later is
-  disabled, but that does not establish that every third-party resource is free
-  of storage. Determine any PECR consent requirements from actual behaviour and
+  enabled and saves progress in the applicant's browser; do not infer the exact
+  storage API, expiry period or wider technical processing from this setting.
+  Determine any PECR consent requirements from actual behaviour and
   current rules. Website code has no first-party storage or tracking scripts.
   [Tally form settings](https://tally.so/help/form-settings) and
   [website cookie notice](https://tally.so/help/cookie-policy) are provider
   references, not an audit of this specific form.
 - [ ] Establish a privacy-request and complaint process, proportionate identity
-  checks and lawful response deadlines. Search Tally, partial entries and all
+  checks and lawful response deadlines. Search submitted Tally applications and all
   relevant mailboxes/copies. Explain applicable exceptions and objection
   decisions. Portability does not ordinarily attach to Article 6(1)(f).
   Preserve the public [ICO complaint link](https://ico.org.uk/make-a-complaint/).
@@ -166,18 +172,15 @@ does not switch this capture off.
 Add this text before any answer fields. Make “Privacy notice” a visible link to
 https://mmumes.com/privacy.
 
-> Before you start: this form has partial submissions enabled. Tally may collect
-> and store answers as you enter them and make them available to Muslim
-> Entrepreneurs Society (MES), even if you do not press Submit or finish the form.
-> MES uses application information to review committee applications, assess
-> suitability, contact applicants, organise interviews and manage recruitment,
-> relying on legitimate interests. Only the Operations Lead and President review
-> applications; submitted application notifications currently go to the Operations
-> Lead’s personal mailbox. Please avoid unnecessary sensitive information.
-> Incomplete answers are deleted manually within 30 days after recruitment closes.
-> For all retention periods, how information is handled and your rights, read our
-> Privacy notice: https://mmumes.com/privacy. Privacy questions or requests:
-> mmu.mes@outlook.com.
+> Muslim Entrepreneurs Society (MES) uses submitted application information to
+> review applications, assess suitability, contact applicants, organise interviews
+> and manage recruitment, relying on legitimate interests. Save answers for later
+> is enabled: unfinished answers are saved in your browser so you can return using
+> the same browser; saved progress is unavailable in another browser or incognito
+> mode. MES receives your application answers when you submit the completed form,
+> not through browser-saved progress. Please avoid unnecessary sensitive details.
+> Read our Privacy notice: https://mmumes.com/privacy. Privacy questions or
+> requests: mmu.mes@outlook.com.
 
 Approval record: decision maker __________; date __________; LIA outcome
 __________; remaining actions and owners __________.
