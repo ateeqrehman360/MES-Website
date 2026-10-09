@@ -3,7 +3,7 @@ import { createPageMetadata } from "@/lib/metadata";
 const description =
   "Our 2026/27 events programme is taking shape. Check back soon for upcoming events, speakers and experiences from MES.";
 
-export const metadata = createPageMetadata("Events", description);
+export const metadata = createPageMetadata("Events", description, "/events");
 
 export default function EventsPage() {
   return (

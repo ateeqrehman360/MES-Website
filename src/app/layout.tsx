@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { siteConfig } from "@/data/site";
+import { socialImage } from "@/lib/metadata";
 
 import "./globals.css";
 import "@/styles/navigation.css";
@@ -64,12 +65,14 @@ const brandFont = Montserrat({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteConfig.url),
   applicationName: siteConfig.name,
   title: {
     default: siteConfig.name,
     template: `%s | ${siteConfig.shortName}`,
   },
   description: siteConfig.description,
+  robots: { index: true, follow: true },
   icons: {
     icon: "/brand/mes-logo.svg",
   },
@@ -78,6 +81,14 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     siteName: siteConfig.name,
     type: "website",
+    locale: "en_GB",
+    images: [socialImage],
+  },
+  twitter: {
+    card: "summary",
+    title: siteConfig.name,
+    description: siteConfig.description,
+    images: [{ url: socialImage.url, alt: socialImage.alt }],
   },
 };
 

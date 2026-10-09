@@ -1,6 +1,7 @@
 import type { Route } from "next";
 
 export const siteConfig = {
+  url: "https://mesmcr.com",
   name: "Muslim Entrepreneurs",
   shortName: "MES",
   description:
