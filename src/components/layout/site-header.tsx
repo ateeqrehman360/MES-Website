@@ -34,7 +34,7 @@ export function SiteHeader() {
 
             <span className="site-header__brand-rule ml-5 mr-4 hidden h-10 w-px bg-mes-gold/70 xl:block" />
 
-            <span className="site-header__brand-name hidden font-[family-name:var(--font-hero-kommon)] text-[0.7rem] font-normal uppercase leading-[1.15] tracking-[0.08em] text-mes-deep-green xl:block">
+            <span className="site-header__brand-name hidden font-[family-name:var(--font-hero-hanken)] text-[0.7rem] font-normal uppercase leading-[1.15] tracking-[0.08em] text-mes-deep-green xl:block">
               Muslim
               <br />
               Entrepreneurs

@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "fonts:prepare": "node scripts/prepare-private-fonts.mjs",
+    "test:fonts": "node --test scripts/prepare-private-fonts.test.mjs",
+    "predev": "npm run fonts:prepare",
+    "prebuild": "npm run fonts:prepare",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",

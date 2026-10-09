@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope, Montserrat, Newsreader } from "next/font/google";
+import { Hanken_Grotesk, Manrope, Montserrat, Newsreader } from "next/font/google";
 import localFont from "next/font/local";
 import type { ReactNode } from "react";
 
@@ -19,27 +19,38 @@ const displayFont = Newsreader({
 });
 
 const heroApparelFont = localFont({
-  src: "../assets/fonts/Apparel Display Regular/Apparel Display Regular.ttf",
+  src: "../assets/fonts/private/appareldisplay-regular-webfont.woff2",
   weight: "400",
   style: "normal",
   variable: "--font-hero-apparel",
   display: "swap",
+  // Retain the original TTF's vertical metrics without changing purchased bytes.
+  declarations: [
+    { prop: "ascent-override", value: "103.7%" },
+    { prop: "descent-override", value: "27.5%" },
+    { prop: "line-gap-override", value: "0%" },
+  ],
 });
 
-const heroKommonFont = localFont({
-  src: "../assets/fonts/kommon-grotesk-regular/kommon-grotesk-regular.ttf",
+const heroHankenFont = Hanken_Grotesk({
+  subsets: ["latin"],
   weight: "400",
   style: "normal",
-  variable: "--font-hero-kommon",
+  variable: "--font-hero-hanken",
   display: "swap",
 });
 
 const laptopTanHeadlineFont = localFont({
-  src: "../assets/fonts/TAN-Headline/TANHEADLINE-Regular.ttf",
+  src: "../assets/fonts/private/tan_-_headline-webfont.woff2",
   weight: "400",
   style: "normal",
   variable: "--font-laptop-tan-headline",
   display: "swap",
+  declarations: [
+    { prop: "ascent-override", value: "103%" },
+    { prop: "descent-override", value: "30.5%" },
+    { prop: "line-gap-override", value: "0%" },
+  ],
 });
 
 const laptopMontserratFont = localFont({
@@ -108,7 +119,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html
       lang="en-GB"
       data-scroll-behavior="smooth"
-      className={`${displayFont.variable} ${heroApparelFont.variable} ${heroKommonFont.variable} ${laptopTanHeadlineFont.variable} ${laptopMontserratFont.variable} ${bodyFont.variable} ${brandFont.variable} antialiased`}
+      className={`${displayFont.variable} ${heroApparelFont.variable} ${heroHankenFont.variable} ${laptopTanHeadlineFont.variable} ${laptopMontserratFont.variable} ${bodyFont.variable} ${brandFont.variable} antialiased`}
     >
       <body>
         <a className="skip-link" href="#main-content">

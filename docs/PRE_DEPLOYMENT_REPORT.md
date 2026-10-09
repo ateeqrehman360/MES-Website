@@ -114,6 +114,8 @@ The iframe is mounted on About even when its dialog is closed. Check live Tally 
 
 ### Fonts and licences
 
+> Font inventory below is historical (pre-migration). See the README’s Private Webfonts and Builds section for the purchased WOFF2 retrieval system and Hanken Grotesk replacement. Historical TTF exposure and purchase-specific licence/canvas confirmation remain owner actions.
+
 | Font | Loading / use | Licence findings |
 | --- | --- | --- |
 | Newsreader | `next/font/google`, Latin subset, variable; display/canvas text | Upstream [SIL OFL](https://raw.githubusercontent.com/google/fonts/main/ofl/newsreader/OFL.txt); no commercial purchase requirement identified. |

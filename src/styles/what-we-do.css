@@ -17,7 +17,7 @@
   .what-we-do__label,
   .what-we-do__counter {
     margin: 0;
-    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+    font-family: var(--font-hero-hanken), Arial, Helvetica, sans-serif;
     font-size: 0.75rem;
     font-variant-numeric: lining-nums tabular-nums;
     letter-spacing: 0.17em;
@@ -147,7 +147,7 @@
   .what-we-do__statement {
     max-width: 18ch;
     margin: 0;
-    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+    font-family: var(--font-hero-hanken), Arial, Helvetica, sans-serif;
     font-size: clamp(1.8rem, 7.8vw, 2.6rem);
     font-weight: 400;
     font-synthesis: none;
@@ -489,6 +489,11 @@
 
 @media (max-width: 47.999rem) {
   @layer components {
+    .what-we-do__statement {
+      /* Hanken's narrower zero changes ch; retain the existing two-line copy. */
+      max-width: 18.65ch;
+    }
+
     .what-we-do__chapter-grid {
       min-height: auto;
       grid-template-rows: repeat(5, auto);

@@ -29,7 +29,7 @@
     gap: 0.8rem;
     margin: 0;
     color: var(--mes-cream);
-    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+    font-family: var(--font-hero-hanken), Arial, Helvetica, sans-serif;
     font-size: 0.75rem;
     letter-spacing: 0.17em;
     line-height: 1.2;
@@ -224,7 +224,7 @@
   .team__placeholder-status {
     position: absolute;
     z-index: 1;
-    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+    font-family: var(--font-hero-hanken), Arial, Helvetica, sans-serif;
     font-size: 0.625rem;
     letter-spacing: 0.16em;
     line-height: 1.2;
@@ -290,7 +290,7 @@
   .team__role {
     margin: 0.85rem 0 0;
     color: rgb(234 226 212 / 82%);
-    font-family: var(--font-hero-kommon), Arial, Helvetica, sans-serif;
+    font-family: var(--font-hero-hanken), Arial, Helvetica, sans-serif;
     font-size: 0.75rem;
     letter-spacing: 0.14em;
     line-height: 1.3;

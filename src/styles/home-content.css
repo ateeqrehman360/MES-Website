@@ -10,7 +10,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    font-family: var(--font-hero-kommon), Arial, sans-serif;
+    font-family: var(--font-hero-hanken), Arial, sans-serif;
     font-size: 1.125rem;
     font-weight: 400;
     font-synthesis: none;
@@ -77,7 +77,7 @@
   .vision__word--lead,
   .vision__word--turn,
   .vision__word--into {
-    font-family: var(--font-hero-kommon), Arial, sans-serif;
+    font-family: var(--font-hero-hanken), Arial, sans-serif;
     font-size: calc(var(--vision-size) * 0.24);
     line-height: 1.15;
     letter-spacing: -0.02em;
@@ -226,7 +226,7 @@
   .impact__label {
     order: 2;
     max-width: 17rem;
-    font-family: var(--font-hero-kommon), Arial, sans-serif;
+    font-family: var(--font-hero-hanken), Arial, sans-serif;
     font-size: 1.125rem;
     font-weight: 400;
     font-synthesis: none;
