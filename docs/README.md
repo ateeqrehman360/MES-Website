@@ -1,9 +1,12 @@
 # Documentation
 
-The [project README](../README.md) describes the implemented, live website.
+The [project README](../README.md) describes the implemented, live website,
+its architecture and local development workflow.
 
 ## Current reference documents
 
+- [MES Design System](DESIGN.md): current palette, typography, layouts,
+  3D hero, motion, responsive compositions and accessibility principles.
 - [Private Webfonts and Builds](PRIVATE_FONTS_AND_BUILDS.md): private asset setup,
   authentication, Vercel build requirements and unresolved font obligations.
 - [Asset Licensing](ASSET_LICENSING.md): verified laptop source, attribution and
@@ -13,17 +16,11 @@ The [project README](../README.md) describes the implemented, live website.
   entries and current public privacy notice when reviewing its status.
 - [Preview capture details](images/README.md): production screenshot provenance.
 
-## Historical planning and audit records
+## Pre-deployment audit records
 
-These documents preserve the decisions and observations made at their recorded
-dates. They can contain superseded features, font inventories, deployment states
-and milestones; they are not a description of the current release.
-
-- [Product requirements](PRD.md)
-- [Design direction](DESIGN.md)
-- [Implementation plan](IMPLEMENTATION_PLAN.md)
-- [Pre-deployment report](PRE_DEPLOYMENT_REPORT.md)
+- [Pre-deployment report](PRE_DEPLOYMENT_REPORT.md): observations and checks at
+  its recorded date. Font inventories, build commands and deployment status
+  should be read in that context.
 
 For the current font inventory and npm build lifecycle, use
-[Private Webfonts and Builds](PRIVATE_FONTS_AND_BUILDS.md), rather than the older
-pre-deployment report's build commands.
+[Private Webfonts and Builds](PRIVATE_FONTS_AND_BUILDS.md).
