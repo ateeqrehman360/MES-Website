@@ -17,7 +17,7 @@ export const impactStatistics: readonly ImpactStatistic[] = [
   },
   {
     id: "attendees",
-    displayValue: "TBC",
+    displayValue: "1,000+",
     label: "Attendees",
   },
   {
@@ -45,4 +45,4 @@ export const impactStatistics: readonly ImpactStatistic[] = [
 // Internal provenance, not additional public copy:
 // 17 events = 14 hosted by MES + 3 collaborations.
 // Approved 422K+ display = 422,792 views (169,972 Reel + 252,820 post views).
-// Attendance remains TBC; no estimate is substituted.
+// Approved attendance display is 1,000+, matching the Work With Us page.
