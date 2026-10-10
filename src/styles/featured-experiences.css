@@ -10,6 +10,18 @@
     scroll-margin-block-start: var(--nav-height);
   }
 
+  .featured-experiences__next {
+    padding-block: 1rem 2rem;
+    background: #f1e9dc;
+  }
+
+  .featured-experiences__next p {
+    margin: 0.25rem 0 0;
+    color: var(--mes-green-ink);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
   .featured-experiences__stage,
   .featured-experiences__reveal {
     position: relative;

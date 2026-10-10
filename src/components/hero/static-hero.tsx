@@ -166,6 +166,11 @@ export function StaticHero() {
         isDesktop ? 0.76 : 0.66,
         isDesktop ? 0.88 : 0.8,
       );
+      const scrollCueExit = smoothSegment(
+        rawProgress,
+        isDesktop ? 0.88 : 0.84,
+        isDesktop ? 0.94 : 0.9,
+      );
       const viewportAspect = window.innerWidth / Math.max(window.innerHeight, 1);
       const visibleScreenHalf =
         viewportAspect / (2 * DISPLAY_ASPECT * SCREEN_OVERSCAN);
@@ -184,6 +189,21 @@ export function StaticHero() {
       stage.toggleAttribute(
         "data-hero-navigation-hidden",
         navigationExit > 0.999,
+      );
+      stage.toggleAttribute(
+        "data-hero-navigation-surface",
+        rawProgress > 0.06 ||
+          ((reducedMotionQuery.matches || !!webglUnavailable) && rootTop < 0),
+      );
+      stage.toggleAttribute(
+        "data-hero-navigation-over-purpose",
+        rawProgress >= 0.9 ||
+          ((reducedMotionQuery.matches || !!webglUnavailable) &&
+            rootTop <= -stageHeight * 0.9),
+      );
+      stage.style.setProperty(
+        "--hero-scroll-cue-opacity",
+        (1 - scrollCueExit).toFixed(4),
       );
       stage.style.setProperty("--hero-title-progress", titleExit.toFixed(4));
       stage.style.setProperty("--hero-title-opacity", (1 - titleExit).toFixed(4));
@@ -315,20 +335,19 @@ export function StaticHero() {
                   <strong>2024</strong>
                 </p>
               </div>
-
-              <p className="hero-static__scroll-cue">
-                <svg
-                  aria-hidden="true"
-                  className="hero-static__scroll-arrow"
-                  fill="none"
-                  viewBox="0 0 24 28"
-                >
-                  <path d="M12 1.5V25.5M5.5 19L12 25.5L18.5 19" />
-                </svg>
-                <span>Scroll to discover</span>
-              </p>
             </div>
           </div>
+
+          <p className="hero-static__scroll-cue" aria-hidden="true">
+            <svg
+              className="hero-static__scroll-arrow"
+              fill="none"
+              viewBox="0 0 24 28"
+            >
+              <path d="M12 1.5V25.5M5.5 19L12 25.5L18.5 19" />
+            </svg>
+            <span>Scroll to explore</span>
+          </p>
 
           <span className="hero-static__ground-shadow" aria-hidden="true" />
 

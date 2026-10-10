@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import {
@@ -131,6 +132,12 @@ export function OurNetworkSection() {
       <div className="our-network__header site-container">
         <h2 id="our-network-title">Our Network</h2>
         <p>Businesses, organisations and speakers who have worked with MES.</p>
+        <Link
+          href="/work-with-us"
+          className="home-editorial-link our-network__link"
+        >
+          Work with us <span aria-hidden="true">→</span>
+        </Link>
       </div>
 
       <div className="our-network__marquees">

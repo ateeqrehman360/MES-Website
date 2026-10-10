@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import { featuredExperiences } from "@/data/featured-experiences";
 
@@ -28,55 +29,65 @@ function FeaturedExperiencesHeading({ semantic = false }) {
 
 export function FeaturedExperiencesSection() {
   return (
-    <FeaturedExperiencesMotion>
-      <div className="featured-experiences__stage">
-        <div
-          className="featured-experiences__heading featured-experiences__heading--base"
-          aria-hidden="true"
-        >
-          <FeaturedExperiencesHeading />
+    <>
+      <FeaturedExperiencesMotion>
+        <div className="featured-experiences__stage">
+          <div
+            className="featured-experiences__heading featured-experiences__heading--base"
+            aria-hidden="true"
+          >
+            <FeaturedExperiencesHeading />
+          </div>
+
+          <div className="featured-experiences__reveal">
+            <div className="featured-experiences__heading featured-experiences__heading--revealed">
+              <FeaturedExperiencesHeading semantic />
+            </div>
+
+            <span className="featured-experiences__rule" aria-hidden="true" />
+
+            <div className="featured-experiences__collection site-container">
+              {featuredExperiences.map((experience, index) => (
+                <article
+                  key={experience.id}
+                  className="featured-experience"
+                  data-featured-experience={experience.id}
+                >
+                  <div className="featured-experience__copy">
+                    <p className="featured-experience__position">
+                      <span>{String(index + 1).padStart(2, "0")}</span>
+                      <span aria-hidden="true">/</span>
+                      <span>04</span>
+                    </p>
+                    <h3>{experience.title}</h3>
+                    <p className="featured-experience__descriptor">
+                      {experience.descriptor}
+                    </p>
+                  </div>
+
+                  <div className="featured-experience__poster">
+                    <Image
+                      src={experience.poster.src}
+                      alt={experience.poster.alt}
+                      width={experience.poster.width}
+                      height={experience.poster.height}
+                      sizes="(min-width: 1280px) 34rem, (min-width: 1024px) 38vw, (min-width: 768px) 48vw, 84vw"
+                    />
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
         </div>
-
-        <div className="featured-experiences__reveal">
-          <div className="featured-experiences__heading featured-experiences__heading--revealed">
-            <FeaturedExperiencesHeading semantic />
-          </div>
-
-          <span className="featured-experiences__rule" aria-hidden="true" />
-
-          <div className="featured-experiences__collection site-container">
-            {featuredExperiences.map((experience, index) => (
-              <article
-                key={experience.id}
-                className="featured-experience"
-                data-featured-experience={experience.id}
-              >
-                <div className="featured-experience__copy">
-                  <p className="featured-experience__position">
-                    <span>{String(index + 1).padStart(2, "0")}</span>
-                    <span aria-hidden="true">/</span>
-                    <span>04</span>
-                  </p>
-                  <h3>{experience.title}</h3>
-                  <p className="featured-experience__descriptor">
-                    {experience.descriptor}
-                  </p>
-                </div>
-
-                <div className="featured-experience__poster">
-                  <Image
-                    src={experience.poster.src}
-                    alt={experience.poster.alt}
-                    width={experience.poster.width}
-                    height={experience.poster.height}
-                    sizes="(min-width: 1280px) 34rem, (min-width: 1024px) 38vw, (min-width: 768px) 48vw, 84vw"
-                  />
-                </div>
-              </article>
-            ))}
-          </div>
+      </FeaturedExperiencesMotion>
+      <div className="featured-experiences__next">
+        <div className="site-container">
+          <Link href="/events" className="home-editorial-link">
+            Explore events <span aria-hidden="true">→</span>
+          </Link>
+          <p>Our 2026/27 programme announcement.</p>
         </div>
       </div>
-    </FeaturedExperiencesMotion>
+    </>
   );
 }
