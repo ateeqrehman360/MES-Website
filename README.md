@@ -66,7 +66,7 @@ The website currently presents the following verified MES figures:
 | | |
 | --- | --- |
 | **17** | Events hosted & collaborated on |
-| **TBC** | Attendees |
+| **1,000+** | Attendees |
 | **422K+** | Social views |
 | **£1,400+** | Raised |
 | **Since 2024** | Building Muslim entrepreneurship at MMU |

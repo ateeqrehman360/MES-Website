@@ -274,7 +274,7 @@
   }
 
   .impact__statistic[data-statistic="attendees"] .impact__value {
-    font-size: 34vw;
+    font-size: 21vw;
     color: var(--impact-sage);
   }
 
@@ -490,7 +490,7 @@ body:has(.home-content[data-content-navigation="visible"])
     }
 
     .impact__statistic[data-statistic="attendees"] .impact__value {
-      font-size: min(14vw, 14rem);
+      font-size: min(13vw, 13rem);
     }
 
     .impact__statistic[data-statistic="social-views"] {
