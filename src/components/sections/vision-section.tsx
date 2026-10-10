@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Fragment } from "react";
 
 import { VisionMotion } from "./vision-motion";
@@ -46,11 +47,16 @@ export function VisionSection() {
           </p>
         </div>
 
-        <p className="vision__support">
-          MES brings together aspiring founders, professionals and businesses
-          to learn, connect and build — starting at Manchester Metropolitan
-          University.
-        </p>
+        <div className="vision__support">
+          <p>
+            MES brings together aspiring founders, professionals and businesses
+            to learn, connect and build — starting at Manchester Metropolitan
+            University.
+          </p>
+          <Link href="/about" className="home-editorial-link">
+            Discover our story <span aria-hidden="true">→</span>
+          </Link>
+        </div>
       </div>
     </VisionMotion>
   );

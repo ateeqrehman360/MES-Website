@@ -207,6 +207,10 @@
       grid-column: 9 / -1;
       padding-block-end: 0.45rem;
     }
+
+    .our-network__link {
+      grid-column: 9 / -1;
+    }
   }
 }
 

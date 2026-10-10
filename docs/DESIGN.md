@@ -151,6 +151,16 @@ over. Shared layout coordinates keep the canvas and HTML statements aligned.
 The transition includes dedicated tablet adjustments and a portrait display
 anchor. The continuation then leads into the homepage's vision section.
 
+A small “SCROLL TO EXPLORE” label and static downward arrow remain at the stage's
+bottom edge after the opening title fades. Existing hero progress fades the cue
+out before the HTML takeover; reversing the scroll restores it. The cue is
+decorative, adds no focus target and also appears in the static WebGL and
+reduced-motion alternatives, where it leaves with the opening stage.
+
+Homepage next steps use uppercase Hanken text links, a fine gold underline and a
+small arrow: the society story beside Vision, the 2026/27 programme announcement
+after Featured Experiences, and collaboration beside Our Network.
+
 Design sources: [hero.css](../src/styles/hero.css),
 [hero data](../src/data/hero.ts),
 [purpose layout](../src/components/hero/hero-purpose-layout.ts) and
@@ -180,6 +190,10 @@ Below `64rem`, navigation opens a full-height green dialog with numbered Apparel
 links. Its surface uses a clipped reveal, and closing reverses the direction.
 The implementation locks background scrolling, supports Escape and Tab cycling,
 focuses the close control and restores focus when the menu is dismissed.
+The existing “Menu” label and icon remain visible through the homepage sequence;
+a cream header surface maintains contrast once the opening scene starts moving.
+On narrow screens, the purpose handoff restores the transparent header while
+retaining a cream menu trigger, leaving the purpose label unobstructed.
 See [mobile-navigation.tsx](../src/components/layout/mobile-navigation.tsx) and
 [navigation.css](../src/styles/navigation.css).
 
@@ -203,8 +217,9 @@ Us introduces its wide composition at `70rem`; journey layouts expand at
 | `48rem` to below `64rem` | Intermediate grids and larger type; menu navigation remains; tablet height and aspect-ratio adjustments apply |
 | From `64rem` | Desktop navigation, wider editorial arrangements and larger multi-column sections, subject to local height conditions |
 
-Mobile omits the opening hero's supporting statement, vertical “Since 2024”
-marker and scroll cue. Its laptop framing and purpose artwork have separate
+Mobile omits the opening hero's supporting statement and vertical “Since 2024”
+marker. Its scroll cue sits below the opening facts. Laptop framing and purpose
+artwork have separate
 coordinates. The 3D scene selects portrait composition at aspect ratio below
 `0.64`; mobile rendering quality is selected separately below `48rem`.
 
