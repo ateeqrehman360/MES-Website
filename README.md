@@ -1,501 +1,185 @@
 # MES Website
 
-A premium, interactive website for the **Muslim Entrepreneurs Society (MES)** at Manchester Metropolitan University.
+A live website for the **Muslim Entrepreneurs Society (MES)** at Manchester Metropolitan University, designed and developed by Ateeq Rehman. It combines editorial layouts, society content and real event photography with a scroll-driven, real-time 3D laptop that transitions into the page itself.
 
-I am designing and developing the website to give MES a stronger digital presence and showcase its events, community, partnerships and impact through a more ambitious experience than a conventional university society website.
+**[Visit the live website → mmumes.com](https://mmumes.com)** · Hosted on Vercel
 
-The project combines editorial web design, responsive layouts, real event photography and an interactive 3D hero built with Three.js and React Three Fiber.
+## Preview
 
----
+Actual production homepage, captured on 10 October 2026 with the interactive WebGL scene active.
 
-## Project Status
+![Desktop MES homepage with editorial typography and the real-time 3D laptop](docs/images/homepage-desktop.jpg)
 
-**In active development.**
+<details>
+<summary>Mobile homepage — 390 × 844 CSS pixels</summary>
 
-The main homepage experience currently includes:
+<img src="docs/images/homepage-mobile.jpg" alt="Mobile MES homepage with responsive typography, menu and a cropped 3D laptop composition" width="390" />
 
-- responsive navigation;
-- interactive 3D laptop hero;
-- scroll-controlled 3D animation;
-- MES branding integrated into the 3D model;
-- event photography displayed through the laptop screen;
-- seamless transition from WebGL into normal page content;
-- responsive desktop and mobile hero compositions;
-- reduced-motion behaviour;
-- Vision section;
-- animated `LEARN. CONNECT. BUILD.` sequence;
-- Impact section using verified MES statistics;
-- responsive editorial layouts across desktop and mobile.
+</details>
 
-Further homepage sections and supporting pages are currently being developed.
+The mobile preview uses an emulated viewport in desktop Chrome. See [capture details](docs/images/README.md).
 
----
+## Overview
 
-## Current Homepage Experience
+MES is an independent MMU student society established in 2024. It brings Muslim students together around entrepreneurship, professional development and community, connecting aspiring founders with businesses, speakers and organisations.
 
-The homepage currently progresses through:
+The website gives students and potential collaborators a central place to understand the society, explore its activities and get involved. The interactive homepage connects MES branding to photographs from its events, followed by its purpose, impact, featured experiences and network. Supporting pages present the society's history, team, collaboration opportunities and committee recruitment.
 
-```text
-3D opening hero
-      ↓
-Interactive laptop sequence
-      ↓
-MES event photography
-      ↓
-"Built by Muslims. For ambition beyond the classroom."
-      ↓
-Vision
-      ↓
-LEARN. CONNECT. BUILD.
-      ↓
-Impact
-```
+## Key Features
 
-The opening experience centres around a 3D laptop whose position, rotation and camera relationship respond directly to scroll progress.
+- **Interactive 3D hero:** a GLB laptop rendered in real time, with reversible scroll-driven camera movement and model rotation.
+- **Dynamic screen content:** canvas-rendered branding, three event photographs and a purpose statement, with animated reveals and responsive crops.
+- **WebGL-to-HTML transition:** the laptop display fills the viewport before matching HTML content takes over.
+- **Responsive presentation:** separate desktop and portrait scene compositions, adaptive typography, editorial layouts and mobile navigation.
+- **Motion and rendering alternatives:** reduced-motion behaviour keeps the opening scene static; a branded fallback preserves the page when WebGL is unavailable or fails.
+- **Society content:** history, team profiles, impact statistics, featured event posters and a network of businesses, organisations and speakers.
+- **Partnership and recruitment:** collaboration information, email contact, community links and a committee application dialog with an embedded Tally form and a direct-link alternative.
 
-As the user moves through the page, the laptop display changes between MES branding and real event photography before eventually filling the viewport and transitioning into normal HTML content.
+The `/events` route currently presents the 2026/27 programme announcement. Featured past experiences appear on the homepage; there is no event booking system or populated upcoming-events catalogue.
 
-Reverse scrolling also reverses the animation rather than relying on a one-way autoplay sequence.
+## Engineering Highlights
 
----
+### Scene and asset integration
 
-## Impact
+[HeroCanvas](src/components/hero/hero-canvas.tsx) separates scene composition, model preparation and WebGL lifecycle handling. Drei's `useGLTF` loads the prepared laptop asset; the scene is cloned and its named `MES_Display` mesh receives a `MeshBasicMaterial` backed by a generated `CanvasTexture`. The unlit display material keeps the artwork independent of scene lighting, while the chassis uses physical materials and environment lighting. Created materials and canvas textures are disposed of during cleanup.
 
-The website currently presents the following verified MES figures:
+### One scroll signal, two rendering systems
 
-| | |
-| --- | --- |
-| **17** | Events hosted & collaborated on |
-| **1,000+** | Attendees |
-| **422K+** | Social views |
-| **£1,400+** | Raised |
-| **Since 2024** | Building Muslim entrepreneurship at MMU |
+[StaticHero](src/components/hero/static-hero.tsx) measures progress through a sticky hero stage. Passive scroll events are coalesced with `requestAnimationFrame`, then written to a small [subscription-based signal](src/components/hero/hero-progress.ts). React Three Fiber reads that signal in `useFrame` to interpolate camera position, look-at targets and model transforms across defined progress segments. Scrolling backwards retraces the sequence without a separate animation timeline.
 
-Statistics are stored separately from the presentation components so they can be updated without changing the section layout.
+The same progress updates DOM styles for title, navigation and takeover opacity. [Shared artboard coordinates and handoff windows](src/components/hero/hero-purpose-layout.ts) align the canvas statement with its HTML counterpart, including projection adjustments for tablet proportions. The rest of the site remains semantic HTML.
 
----
+### Canvas artwork and loading
+
+[The display renderer](src/components/hero/hero-display-texture.ts) draws a 1246 × 720 logical artboard containing type, SVG branding and cropped photography. It uses the Font Loading API before rasterising text, retaining logo artwork while fonts load. Photographs load independently, and failed photographs retain branded artwork. The texture uses sRGB colour space, linear filtering and no mipmaps; progress thresholds avoid redrawing unchanged artwork.
+
+The homepage preloads the approximately **480 KiB GLB**. The Three.js scene is dynamically imported with server-side rendering disabled, after a WebGL capability probe. A preview remains visible during loading; the loader handles scene errors and WebGL context loss through a static fallback.
+
+### Responsive rendering and demand-driven frames
+
+Portrait framing uses its own camera path and display anchor, rather than scaling the desktop composition. Mobile quality settings cap framebuffer pixel ratio at **1.35**, disable real-time shadow maps and use a generated radial shadow texture. Display texture backing resolution is controlled separately from framebuffer resolution to retain readable screen artwork.
+
+The R3F canvas uses `frameloop="demand"`: progress subscriptions, asset readiness and resizing invalidate the scene when another frame is needed. The environment is captured once with `frames={1}`. These are implementation strategies; they do not establish a measured frame-rate or battery-life improvement.
 
 ## Tech Stack
 
-### Frontend
+Versions below are resolved in the committed [package lockfile](package-lock.json).
 
-- **Next.js 16**
-- **React 19**
-- **TypeScript**
-- **Tailwind CSS 4**
+| Technology | Version | Role |
+| --- | --- | --- |
+| Next.js | 16.3.8 | App Router, prerendered pages, metadata, images and fonts |
+| React / React DOM | 19.2.8 | Component composition and browser interactions |
+| TypeScript | 5.9.3 | Strict typing, typed content and route links |
+| Tailwind CSS | 4.3.3 | Utilities and CSS layers alongside custom styles |
+| Three.js | 0.182.0 | WebGL rendering, materials and textures |
+| React Three Fiber | 9.7.0 | React scene composition and render lifecycle |
+| React Three Drei | 10.7.8 | GLB loading, camera and environment helpers |
+| Vercel | Managed platform | Production hosting and Next.js image optimisation |
 
-### 3D
+Typography uses Apparel Display, TAN Headline, Hanken Grotesk, Newsreader, Manrope and Montserrat. The first two require authorised private webfont assets.
 
-- **Three.js**
-- **React Three Fiber**
-- **React Three Drei**
+## Architecture
 
-The site currently does not require a backend, database or CMS. Most content is maintained through typed data and component files within the repository.
+The **Next.js App Router** organises the five public routes. Route components and the root layout provide server-rendered content, page metadata and the shared header/footer. Client Components handle scroll effects, navigation dialogs, recruitment and the isolated 3D hero. All five pages are statically prerendered by the production build.
 
----
+Components are grouped into `hero/`, `layout/` and `sections/`. Typed repository data in `src/data/` holds photographs, statistics, team members, journey milestones, featured experiences and network entries separately from presentation. `src/lib/metadata.ts` provides common metadata, with dedicated sitemap and robots routes.
 
-## 3D Hero
+Runtime images, logos and the GLB live in `public/`; source photography and Blender assets live in `assets-source/`. CSS tokens and section styles live in `src/styles/`, with CSS Modules for selected components. Fonts are self-hosted through `next/font`, with licensed files prepared privately before compilation.
 
-One of the main technical challenges in the project is the homepage hero.
+There is no application backend, database or CMS. Committee applications are handled by Tally; its iframe mounts only when the dialog opens. Enquiries use email links.
 
-Rather than using a prerecorded animation, the laptop is rendered in real time using WebGL.
+## Pages
 
-The interaction includes:
+| Route | Purpose |
+| --- | --- |
+| [`/`](https://mmumes.com) | 3D homepage, purpose, impact, featured experiences and network |
+| [`/about`](https://mmumes.com/about) | Society history, activities, team and MMU context |
+| [`/events`](https://mmumes.com/events) | Published announcement for the forthcoming 2026/27 programme |
+| [`/work-with-us`](https://mmumes.com/work-with-us) | Collaboration opportunities and committee applications |
+| [`/privacy`](https://mmumes.com/privacy) | Privacy notice covering hosting, enquiries and recruitment; laptop asset credit |
 
-- loading and rendering a GLB laptop model;
-- targeting the laptop display as a separate mesh;
-- applying MES branding and photography to the display;
-- coordinating model and camera movement;
-- mapping scroll position to animation progress;
-- supporting reverse scrolling;
-- transitioning from the 3D screen into normal DOM content;
-- adapting the composition for different aspect ratios;
-- reducing unnecessary rendering once the scene has settled.
+## Performance and Accessibility
 
-The laptop also contains MES branding on the rear of the display.
+The **October 2026 initial-load Lighthouse results** were:
 
----
+| Test profile | Performance | Accessibility | Best Practices | SEO |
+| --- | --- | --- | --- | --- |
+| Mobile | 92 | 96 | 100 | 100 |
+| Desktop | 98 | 100 | 100 | 100 |
 
-## Responsive Design
+**Testing condition:** these runs displayed the static WebGL fallback, not the active 3D scene. They assess initial loading under that condition and do not demonstrate the performance of the complete interactive experience. The 3D animation has separately been investigated on desktop and under emulated mobile conditions; verified real-phone performance is not established here.
 
-Desktop and mobile use deliberately different compositions rather than simply scaling the same layout.
+The site targets **WCAG 2.2 AA**, without claiming certification. Implemented provisions include a skip link, semantic landmarks and headings, visible focus styles, image alternatives, keyboard navigation and native dialogs with focus management. Decorative WebGL content is hidden from assistive technology, with society information and photograph descriptions available in HTML. `prefers-reduced-motion` removes the long hero scroll sequence and adjusts section and navigation motion. WebGL failure shortens the hero and keeps the purpose statement and page content accessible.
 
-The project has been tested across viewport sizes including:
+Local WebP assets and Next.js image optimisation support the content pages. Lighthouse accessibility scores are automated checks, not a substitute for a full accessibility assessment.
 
-```text
-1440 × 1000
-1280 × 800
-430 × 932
-390 × 844
-375 × 667
-320 × 568
+## Local Development
+
+Use **Node.js 22.x**, npm and GitHub CLI for the normal local authentication path.
+
+**Private assets are required:** a clean public clone cannot run or build the complete site without authorised access to the purchased Apparel Display and TAN Headline WOFF2 files. Do not substitute or redistribute them.
+
+```bash
+git clone https://github.com/ateeqrehman360/MES-Website.git
+cd MES-Website
+npm ci
+
+# Authenticate with an account authorised to read MES-Private-Assets.
+gh auth login
+npm run fonts:prepare
+
+npm run dev
 ```
 
-The responsive work includes:
+Open [localhost:3000](http://localhost:3000). Validate with:
 
-- mobile-specific hero positioning;
-- responsive typography;
-- mobile navigation;
-- different photographic crops;
-- adapted editorial compositions;
-- overflow prevention;
-- reduced vertical dead space;
-- touch-friendly interaction.
+```bash
+npm run lint
+npm run typecheck
+npm run test:fonts
+npm run build
+```
 
----
+`predev` and `prebuild` validate or retrieve fonts into a gitignored directory. Use the npm scripts so those hooks run. Google font families are downloaded at build time and self-hosted in the output, so a fresh build also needs access to Google's font endpoints.
 
-## Design Direction
-
-The visual direction combines:
-
-- editorial typography;
-- large-scale type;
-- asymmetric composition;
-- controlled motion;
-- real MES photography;
-- 3D interaction;
-- strong use of negative space;
-- premium brand presentation.
-
-The aim is to make the site feel polished and distinctive while still representing MES accurately as a university society.
-
-### Brand colours
-
-| Colour | Hex |
-| --- | --- |
-| Cream | `#EAE2D4` |
-| Deep Green | `#01500B` |
-| Gold | `#C29231` |
-| Muted Green | `#618C5D` |
-
-Additional shades derived from these colours are used throughout the interface.
-
-### Typography
-
-The current typography system uses:
-
-- **Apparel Display Regular** — large editorial statements (purchased WOFF2)
-- **TAN Headline Regular** — the laptop canvas word “MUSLIM”
-- **Hanken Grotesk Regular (400)** — selected labels and display elements
-- **Newsreader** — supporting editorial typography
-- **Manrope** — body copy and interface text
-- **Montserrat** — MES header branding
-
----
+See [Private Webfonts and Builds](docs/PRIVATE_FONTS_AND_BUILDS.md) for `MES_PRIVATE_ASSETS_TOKEN`, read-only authentication, cache recovery, Vercel configuration, token rotation and outstanding licensing obligations. Never commit credentials or purchased font binaries.
 
 ## Project Structure
 
 ```text
 MES-Website/
-│
-├── assets-source/
-│   └── source photography and working assets
-│
-├── docs/
-│   ├── PRD.md
-│   ├── DESIGN.md
-│   └── IMPLEMENTATION_PLAN.md
-│
-├── public/
-│   ├── brand/
-│   ├── hero/
-│   ├── models/
-│   └── ...
-│
+├── assets-source/          # Source photography, branding and 3D working assets
+├── docs/                   # Operations, licensing and project documentation
+├── public/                 # Runtime brand, hero, events, network and model assets
+├── scripts/                # Private-font preparation and regression checks
 ├── src/
-│   ├── app/
+│   ├── app/                # Public routes, root layout, sitemap and robots
+│   ├── assets/fonts/       # Montserrat notice/file and ignored private-font cache
 │   ├── components/
-│   │   ├── hero/
-│   │   ├── layout/
-│   │   ├── sections/
-│   │   └── ui/
-│   ├── data/
-│   ├── lib/
-│   └── styles/
-│
-└── ...
+│   │   ├── hero/           # Scroll signal, scene, textures and HTML handoff
+│   │   ├── layout/         # Header, mobile navigation and footer
+│   │   └── sections/       # Page sections and their motion components
+│   ├── data/               # Typed content and site configuration
+│   ├── lib/                # Metadata helpers
+│   └── styles/             # Tokens, base and section styles
+└── package.json
 ```
 
----
+## Documentation
 
-## Routes
+- [Documentation index](docs/README.md) — current guidance and historical planning records.
+- [Private Webfonts and Builds](docs/PRIVATE_FONTS_AND_BUILDS.md) — authorised setup and build operations.
+- [Asset Licensing](docs/ASSET_LICENSING.md) — laptop attribution, asset boundaries and unresolved obligations.
+- [Privacy Compliance Checklist](docs/PRIVACY_COMPLIANCE_CHECKLIST.md) — privacy operations and owner review items.
 
-The website is structured around the following routes:
+## Credits and Licensing
 
-```text
-/
-/about
-/events
-/work-with-us
-/privacy
-```
+The laptop originates from **[“Laptop” by Aullwen](https://skfb.ly/6RVFt)** on Sketchfab, licensed under **[Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/)**. The MES implementation uses a prepared GLB with custom screen artwork, photography and material treatment. A source and licence credit also appears on the live privacy page.
 
-The homepage is currently receiving the majority of development work before the supporting pages receive their final content and design.
+Third-party models, licensed fonts, MES photography, branding and partner logos have separate rights. No repository-wide software licence is currently declared. Font purchase-specific terms, TAN canvas use and removal of earlier font files from public Git history remain owner review items. See [Asset Licensing](docs/ASSET_LICENSING.md); this README does not certify that all licensing obligations have been completed.
 
----
+## Author
 
-## Local Development
-
-Clone the repository and install dependencies:
-
-```bash
-npm ci
-```
-
-Authenticate with GitHub CLI (`gh auth login`) using an account that can read
-[`ateeqrehman360/MES-Private-Assets`](https://github.com/ateeqrehman360/MES-Private-Assets),
-then retrieve the fonts once:
-
-```bash
-npm run fonts:prepare
-```
-
-Start the development server:
-
-```bash
-npm run dev
-```
-
-Then open:
-
-```text
-http://localhost:3000
-```
-
-### Lint
-
-```bash
-npm run lint
-```
-
-### Type checking
-
-```bash
-npm run typecheck
-```
-
-### Production build
-
-```bash
-npm run build
-```
-
----
-
-## Private Webfonts and Builds
-
-The purchased Apparel Display Regular and TAN Headline Regular WOFF2 files live
-only in the private repository
-[`ateeqrehman360/MES-Private-Assets`](https://github.com/ateeqrehman360/MES-Private-Assets),
-on its `main` branch, at the repository root:
-
-- `appareldisplay-regular-webfont.woff2`
-- `tan_-_headline-webfont.woff2`
-
-`scripts/prepare-private-fonts.mjs` uses Node's built-in APIs and the authenticated
-GitHub Contents API. It writes byte-identical fonts to the gitignored
-`src/assets/fonts/private/` directory. WOFF2 header, length and SHA-256 checks pin
-the exact verified purchased files. Downloads are written atomically. Invalid
-or unavailable fonts stop the command before Next.js compiles; there is no
-replacement-font build. To replace a purchased file in future, verify its identity,
-format and licence before updating the script's size/hash pins.
-
-`npm run dev` runs `predev`; `npm run build` runs `prebuild`. Both prepare the fonts
-before Next.js reads `next/font/local` paths. Valid local cached files are reused
-without network access. `npm run fonts:prepare` can also be run separately.
-If a cached file is corrupt, delete only the named file from
-`src/assets/fonts/private/` and run `npm run fonts:prepare` again.
-Do not use `next dev`, `next build`, or `npx next build` directly on a clean clone,
-as these bypass npm's preparation lifecycle.
-
-### Authentication and token permissions
-
-Local development normally uses the owner's existing GitHub CLI authentication.
-No token file is needed. Alternatively, provide `MES_PRIVATE_ASSETS_TOKEN` as a
-process environment variable (for example through your shell's secret manager).
-The standalone Node script does not load Next.js `.env.local` files.
-An explicitly supplied token takes precedence over GitHub CLI authentication.
-
-For automated builds, create a **fine-grained personal access token**:
-
-1. Resource owner: `ateeqrehman360`.
-2. Repository access: **Only select repositories** → **MES-Private-Assets**.
-3. Repository permissions: **Contents: Read-only**. GitHub may include its
-   required Metadata read permission automatically; no write permission is needed.
-4. Choose an expiry and retain a renewal reminder privately.
-
-Use the exact variable name **`MES_PRIVATE_ASSETS_TOKEN`**, without `NEXT_PUBLIC_`.
-The script sends the credential only in an HTTPS Authorization header to
-`api.github.com`; never in a URL. It does not echo subprocess errors, response
-bodies or credentials. It is build tooling and is never imported into the app.
-Never commit tokens, receipts, purchased licence documents or paid font binaries.
-
-### Vercel configuration — owner setup required
-
-No Vercel project or deployment is configured by this change. When the owner sets
-up the existing GitHub-connected workflow:
-
-- Framework preset: **Next.js**; root directory: the MES repository root.
-- Build Command: **`npm run build`** (set this explicitly to ensure `prebuild`
-  runs; an override of `next build` bypasses the retrieval step).
-- Install Command: standard npm installation with the committed lockfile;
-  `npm ci` is suitable. Keep the normal Next.js output directory.
-- Use a Node version supported by this Next.js version (Node **22.x** is suitable).
-- Add **`MES_PRIVATE_ASSETS_TOKEN`** as a sensitive environment variable for
-  **Production** and, if desired and covered by the licences, **Preview** builds.
-  Do not enable licensed-font preview builds from untrusted code/contributors.
-- The private assets repository does not need a separate Vercel project or Git
-  integration. The Node script retrieves the two files during `prebuild`.
-
-The GitHub-connected build installs dependencies, runs `npm run build`, retrieves
-and validates missing fonts, then compiles Next.js. Cached fonts are always
-validated before reuse. Google font families continue to be downloaded at build
-time and self-hosted by `next/font/google`; no browser Google Fonts request is added.
-
-To rotate an expired/revoked token, create a replacement with the same single
-repository and read-only Contents access, replace its value in the relevant Vercel
-environments and any local secret manager, and revoke the old token. The new value
-is used on the next owner-authorized build; changing it does not alter existing
-build artifacts. Verify retrieval on a fresh cache when rotating, because a valid
-cached font does not require authentication.
-
-For retrieval regression checks after preparing the fonts:
-
-```bash
-npm run test:fonts
-npm run lint
-npm run typecheck
-npm run build
-git diff --check
-```
-
-### Licence review and source history
-
-Licensed fonts remain outside the public source repository. The
-[Creative Market webfont terms](https://creativemarket.com/licenses/terms/fonts)
-permit CSS `@font-face` embedding of supplied WOFF/WOFF2 files and prohibit
-redistributing fonts with website source code. `next/font/local` generates
-`@font-face` CSS and serves the unchanged purchased files as web assets. Webfonts
-necessarily remain downloadable by browsers from the deployed site's font URLs;
-private source storage does not make those deployed assets secret.
-
-The owner reports purchasing both webfont licences for £39.72 total. Receipts and
-purchase-specific terms are not in this public repository and were not reviewed.
-Before deployment, the owner must confirm the applicable licence versions,
-licensee/site ownership, domains/preview use and purchased combined pageview limit,
-and retain any required accompanying copyright/legal notices through an approved
-private-asset workflow. No purchased licence documents are committed here.
-
-TAN is loaded via generated CSS `@font-face` and the browser Font Loading API,
-then used only to draw fixed, read-only MES branding in a canvas texture. There is
-no end-user typesetting editor or font export. The current public terms do not
-explicitly address canvas/WebGL textures under the **@Font-Face Only** restriction;
-confirm this use with Creative Market/the licensor before launch. Apparel's exact
-purchase-specific terms and any additional foundry requirements also need owner
-confirmation. This implementation is not a legal-compliance certification.
-
-Hanken Grotesk uses the [SIL Open Font License](https://github.com/google/fonts/blob/main/ofl/hankengrotesk/OFL.txt);
-its notice is retained in `public/fonts/licenses/hanken-grotesk/OFL.txt`.
-The existing Montserrat file and `src/assets/fonts/montserrat/OFL.txt` remain intact.
-
-**Outstanding history cleanup:** the old Apparel Display, TAN Headline and Kommon
-Grotesk TTFs have been removed from the current branch tree, but remain in the public
-repository's historical commits. No history was rewritten and no force push was
-performed. The owner must approve a separate remediation plan covering affected
-refs, forks/clones, coordination with collaborators and GitHub support if required.
-Deleting current files does not remove past public copies. The older
-`docs/PRE_DEPLOYMENT_REPORT.md` font inventory records the pre-migration state.
-
----
-
-## Accessibility
-
-The project targets **WCAG 2.2 AA**.
-
-Current accessibility considerations include:
-
-- keyboard-accessible navigation;
-- visible focus states;
-- responsive text sizing;
-- colour contrast;
-- reduced-motion support;
-- meaningful content outside WebGL;
-- mobile-friendly interaction.
-
-The 3D hero is intentionally isolated from the rest of the site so the main website content remains normal semantic HTML.
-
----
-
-## Performance
-
-Performance is particularly important because of the real-time 3D hero.
-
-The project therefore focuses on:
-
-- limiting 3D rendering when the scene is idle;
-- keeping the GLB model relatively small;
-- optimising image assets;
-- avoiding unnecessary animation libraries;
-- limiting heavy 3D effects to the hero;
-- using normal DOM content for the rest of the site;
-- testing across smaller mobile viewports.
-
----
-
-## Roadmap
-
-### Completed
-
-- Project foundation
-- Responsive site shell
-- Static 3D hero
-- Scroll-controlled 3D interaction
-- Mobile hero
-- Production hero
-- Vision section
-- Impact section
-- Hero-to-content transition refinement
-
-### In Progress / Planned
-
-- Story and community section
-- Featured experiences
-- Network and partnerships
-- University context
-- Work With Us
-- Community section
-- Supporting pages
-- Final motion refinement
-- Responsive refinement
-- Accessibility review
-- Performance optimisation
-- Production deployment
-
----
-
-## About MES
-
-Muslim Entrepreneurs Society is a student society at **Manchester Metropolitan University**.
-
-The society brings Muslim students together around entrepreneurship, professional development, networking and opportunities to learn from people with real business experience.
-
-MES was founded in **2024**.
-
----
-
-## Asset Attribution
-
-Some third-party assets used by the project have separate licensing requirements.
-
-The 3D laptop model originated from a Creative Commons Attribution asset. The exact original attribution will be retained and included appropriately before the website is released publicly.
-
-MES photography, branding and project-specific visual assets remain separate from third-party asset licensing.
-
----
-
-## Developer
-
-**Designed and developed by Ateeq Rehman**
-
-BSc Software Engineering  
+**[Ateeq Rehman](https://github.com/ateeqrehman360)**<br>
+BSc Software Engineering<br>
 Manchester Metropolitan University
