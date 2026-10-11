@@ -23,7 +23,12 @@ export function ImpactSection() {
               data-statistic={statistic.id}
             >
               <dt className="impact__label">{statistic.label}</dt>
-              <dd className="impact__value">
+              <dd
+                className="impact__value"
+                data-count-reserve={
+                  statistic.value === undefined ? undefined : statistic.displayValue
+                }
+              >
                 {statistic.id === "since" ? (
                   <>
                     <span className="sr-only">{statistic.displayValue}</span>

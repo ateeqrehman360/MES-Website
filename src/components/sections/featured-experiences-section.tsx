@@ -20,9 +20,6 @@ function FeaturedExperiencesHeading({ semantic = false }) {
       ) : (
         <div aria-hidden="true">{content}</div>
       )}
-      <span className="featured-experiences__count" aria-hidden="true">
-        01—04
-      </span>
     </div>
   );
 }
@@ -47,18 +44,13 @@ export function FeaturedExperiencesSection() {
             <span className="featured-experiences__rule" aria-hidden="true" />
 
             <div className="featured-experiences__collection site-container">
-              {featuredExperiences.map((experience, index) => (
+              {featuredExperiences.map((experience) => (
                 <article
                   key={experience.id}
                   className="featured-experience"
                   data-featured-experience={experience.id}
                 >
                   <div className="featured-experience__copy">
-                    <p className="featured-experience__position">
-                      <span>{String(index + 1).padStart(2, "0")}</span>
-                      <span aria-hidden="true">/</span>
-                      <span>04</span>
-                    </p>
                     <h3>{experience.title}</h3>
                     <p className="featured-experience__descriptor">
                       {experience.descriptor}

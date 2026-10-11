@@ -19,7 +19,7 @@ export function JourneySection() {
 
         <JourneyMotion>
           <ol className="journey__milestones">
-            {journeyMilestones.map((milestone, index) => (
+            {journeyMilestones.map((milestone) => (
               <li
                 key={milestone.id}
                 className="journey__milestone"
@@ -42,15 +42,7 @@ export function JourneySection() {
 
                 <article className="journey__copy">
                   <div className="journey__meta">
-                    <span className="journey__position" aria-hidden="true">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
                     <time dateTime={milestone.dateTime}>{milestone.date}</time>
-                    {milestone.importance === "current" ? (
-                      <span className="journey__current-label">
-                        Current chapter
-                      </span>
-                    ) : null}
                   </div>
 
                   <h3>{milestone.title}</h3>

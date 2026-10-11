@@ -18,6 +18,8 @@ export const impactStatistics: readonly ImpactStatistic[] = [
   {
     id: "attendees",
     displayValue: "1,000+",
+    value: 1000,
+    suffix: "+",
     label: "Attendees",
   },
   {

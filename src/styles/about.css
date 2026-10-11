@@ -567,29 +567,6 @@
     text-transform: uppercase;
   }
 
-  .journey__position {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .journey__position::after {
-    content: "";
-    width: 1.6rem;
-    height: 1px;
-    background: var(--mes-gold);
-    transform: scaleX(0.45);
-    transform-origin: left;
-    transition: transform 440ms var(--ease-premium);
-  }
-
-  .journey__current-label {
-    width: 100%;
-    color: var(--mes-deep-green);
-    font-size: 0.6875rem;
-    font-weight: 700;
-  }
-
   .journey__copy h3 {
     max-width: 11ch;
     margin: 0;
@@ -803,12 +780,6 @@
     > span {
     background: var(--mes-gold);
     transform: scale(1);
-  }
-
-  .journey__stage[data-journey-motion="enabled"]
-    .journey__milestone[data-journey-state="active"]
-    .journey__position::after {
-    transform: scaleX(1);
   }
 
   .journey__continuation {
@@ -1174,8 +1145,7 @@
 
     .journey__copy,
     .journey__media,
-    .journey__node > span,
-    .journey__position::after {
+    .journey__node > span {
       filter: none !important;
       opacity: 1 !important;
       transform: none !important;

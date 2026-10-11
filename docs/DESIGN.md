@@ -121,8 +121,9 @@ should become a rounded panel.
 
 The opening composition places oversized “MUSLIM” typography above the tracked
 “ENTREPRENEURS” line. A laptop overlaps the right-hand area on desktop, balanced
-by the society's statement, MMU affiliation, establishment date and scroll cue
-on the left. Fine gold rules connect these elements visually.
+by the society's statement, MMU affiliation and establishment date on the left,
+with a centred scroll cue at the bottom of the viewport. Fine gold rules connect
+these elements visually.
 
 The runtime model is `public/models/MES_Laptop.glb`. Its light metallic chassis,
 dark screen surround and keyboard receive custom physical materials. Broad
@@ -152,8 +153,9 @@ The transition includes dedicated tablet adjustments and a portrait display
 anchor. The continuation then leads into the homepage's vision section.
 
 A small “SCROLL TO EXPLORE” label and static downward arrow remain at the stage's
-bottom edge after the opening title fades. Existing hero progress fades the cue
-out before the HTML takeover; reversing the scroll restores it. The cue is
+bottom edge, horizontally centred as one unit, after the opening title fades.
+Existing hero progress fades the cue out before the HTML takeover; reversing
+the scroll restores it. The cue is
 decorative, adds no focus target and also appears in the static WebGL and
 reduced-motion alternatives, where it leaves with the opening stage.
 
