@@ -6,7 +6,7 @@ A live website for the **Muslim Entrepreneurs Society (MES)** at Manchester Metr
 
 ## Preview
 
-Actual production homepage, captured on 10 October 2026 with the interactive WebGL scene active.
+Actual production homepage, captured on 11 October 2026 with the interactive WebGL scene active.
 
 ![Desktop MES homepage with editorial typography and the real-time 3D laptop](docs/images/homepage-desktop.jpg)
 
@@ -30,9 +30,11 @@ The website gives students and potential collaborators a central place to unders
 - **Interactive 3D hero:** a GLB laptop rendered in real time, with reversible scroll-driven camera movement and model rotation.
 - **Dynamic screen content:** canvas-rendered branding, three event photographs and a purpose statement, with animated reveals and responsive crops.
 - **WebGL-to-HTML transition:** the laptop display fills the viewport before matching HTML content takes over.
-- **Responsive presentation:** separate desktop and portrait scene compositions, adaptive typography, editorial layouts and mobile navigation.
+- **Responsive presentation:** separate desktop and portrait scene compositions, adaptive typography and editorial layouts, with mobile navigation accessible throughout the hero sequence.
+- **Homepage guidance:** a scroll indicator guides exploration, while contextual links lead to About, Events and Work With Us.
+- **Featured Experiences:** responsive, scroll-driven event poster transitions, with shorter mobile scroll distances refined after physical-device feedback.
 - **Motion and rendering alternatives:** reduced-motion behaviour keeps the opening scene static; a branded fallback preserves the page when WebGL is unavailable or fails.
-- **Society content:** history, team profiles, impact statistics, featured event posters and a network of businesses, organisations and speakers.
+- **Society content:** history, team profiles, impact statistics and a network of businesses, organisations and speakers.
 - **Partnership and recruitment:** collaboration information, email contact, community links and a committee application dialog with an embedded Tally form and a direct-link alternative.
 
 The `/events` route currently presents the 2026/27 programme announcement. Featured past experiences appear on the homepage; there is no event booking system or populated upcoming-events catalogue.
@@ -107,7 +109,9 @@ The **October 2026 initial-load Lighthouse results** were:
 | Mobile | 92 | 96 | 100 | 100 |
 | Desktop | 98 | 100 | 100 | 100 |
 
-**Testing condition:** these runs displayed the static WebGL fallback, not the active 3D scene. They assess initial loading under that condition and do not demonstrate the performance of the complete interactive experience. The 3D animation has separately been investigated on desktop and under emulated mobile conditions; verified real-phone performance is not established here.
+**Testing condition:** these runs displayed the static WebGL fallback, not the active 3D scene. They assess initial loading under that condition and do not demonstrate the performance of the complete interactive experience. The 3D animation has separately been investigated on desktop and under emulated mobile conditions.
+
+The owner also manually reviewed the homepage on an **iPhone 13 in iOS Safari**, covering the 3D laptop, scroll responsiveness, Featured Experiences poster transitions, mobile navigation and general visual presentation. Mobile scroll distances were adjusted after this physical-device feedback. The owner reported improved responsiveness through the 3D hero, significantly improved pacing through Featured Experiences and smooth behaviour through the remaining sections examined. These are qualitative observations, not measured frame rates, GPU performance or battery-life results, and do not establish comprehensive device compatibility or perfect Safari performance.
 
 The site targets **WCAG 2.2 AA**, without claiming certification. Implemented provisions include a skip link, semantic landmarks and headings, visible focus styles, image alternatives, keyboard navigation and native dialogs with focus management. Decorative WebGL content is hidden from assistive technology, with society information and photograph descriptions available in HTML. `prefers-reduced-motion` removes the long hero scroll sequence and adjusts section and navigation motion. WebGL failure shortens the hero and keeps the purpose statement and page content accessible.
 
