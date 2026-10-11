@@ -733,7 +733,7 @@ body:has(.hero-static) .site-header__cta:hover {
 @media (max-width: 47.999rem) {
   @layer components {
     .hero-motion {
-      height: 300svh;
+      height: 250svh;
     }
 
     .hero-screen-artboard {
