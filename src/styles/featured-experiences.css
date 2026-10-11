@@ -540,6 +540,12 @@
   }
 }
 
+@media (max-width: 47.999rem) and (prefers-reduced-motion: no-preference) {
+  @layer components {
+    .featured-experiences[data-featured-motion="mobile"] { height: 220svh; }
+  }
+}
+
 @media (max-width: 63.999rem) and (max-height: 40rem) and (prefers-reduced-motion: no-preference) {
   @layer components {
     .featured-experiences[data-featured-motion="mobile"] .featured-experience {
