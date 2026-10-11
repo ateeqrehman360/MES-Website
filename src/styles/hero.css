@@ -223,7 +223,7 @@
 
   .hero-static__scroll-cue {
     position: absolute;
-    inset-inline-start: max(1.5rem, 5vw);
+    inset-inline-start: 50%;
     inset-block-end: max(1.25rem, env(safe-area-inset-bottom, 0px));
     z-index: 5;
     display: flex;
@@ -242,6 +242,7 @@
     line-height: 1;
     text-transform: uppercase;
     opacity: var(--hero-scroll-cue-opacity, 1);
+    transform: translateX(-50%);
     white-space: nowrap;
     pointer-events: none;
   }
@@ -805,9 +806,7 @@ body:has(.hero-static) .site-header__cta:hover {
     }
 
     .hero-static__scroll-cue {
-      inset-inline-start: 50%;
       inset-block-end: max(0.375rem, env(safe-area-inset-bottom, 0px));
-      transform: translateX(-50%);
       font-size: 0.625rem;
       letter-spacing: 0.15em;
     }

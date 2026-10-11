@@ -3,7 +3,6 @@ import { WhatWeDoMotion } from "./what-we-do-motion";
 const pillars = [
   {
     id: "learn",
-    number: "01",
     word: "LEARN",
     statement: "Learn from people building in the real world.",
     description:
@@ -11,7 +10,6 @@ const pillars = [
   },
   {
     id: "connect",
-    number: "02",
     word: "CONNECT",
     statement: "Meet people worth building with.",
     description:
@@ -19,7 +17,6 @@ const pillars = [
   },
   {
     id: "build",
-    number: "03",
     word: "BUILD",
     statement: "Turn ambition into something tangible.",
     description:
@@ -84,12 +81,6 @@ export function WhatWeDoSection() {
               aria-labelledby={`what-we-do-${pillar.id}-title`}
             >
               <div className="what-we-do__chapter-grid site-container">
-                <p className="what-we-do__counter" aria-hidden="true">
-                  <span>{pillar.number}</span>
-                  <span className="what-we-do__counter-rule" />
-                  <span>03</span>
-                </p>
-
                 <div id={`what-we-do-${pillar.id}-title`}>
                   <PillarWord word={pillar.word} />
                 </div>
