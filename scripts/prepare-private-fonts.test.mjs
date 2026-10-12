@@ -20,6 +20,15 @@ async function inTemporaryDirectory(callback) {
   finally { await rm(directory, { recursive: true, force: true }); }
 }
 
+test("runtime preparation requires only Apparel Display, without a TAN cache or request", async () => {
+  assert.deepEqual(fonts.map((font) => font.name), ["appareldisplay-regular-webfont.woff2"]);
+  await inTemporaryDirectory(async (directory) => {
+    await writeFile(join(directory, fonts[0].name), bytes[0]);
+    await prepareFonts({ directory, request: offline, cli: offline, log: () => {} });
+    await assert.rejects(readFile(join(directory, "tan_-_headline-webfont.woff2")), { code: "ENOENT" });
+  });
+});
+
 test("verified WOFF2 bytes survive JSON decoding unchanged", () => {
   fonts.forEach((font, i) => {
     validateFont(bytes[i], font);
@@ -32,7 +41,7 @@ test("rejects truncated, corrupt and wrong-family files", () => {
   assert.throws(() => validateFont(bytes[0].subarray(0, -1), fonts[0]), /invalid WOFF2/);
   const changed = Buffer.from(bytes[0]); changed[changed.length - 1] ^= 1;
   assert.throws(() => validateFont(changed, fonts[0]), /invalid WOFF2/);
-  assert.throws(() => validateFont(bytes[1], fonts[0]), /invalid WOFF2/);
+  assert.throws(() => validateFont(bytes[0], { ...fonts[0], sha256: "0".repeat(64) }), /invalid WOFF2/);
   assert.throws(() => decodeFont({ ...payload(fonts[0], bytes[0]), encoding: "utf8" }, fonts[0]), /required font/);
 });
 
@@ -50,7 +59,7 @@ test("token path authenticates in headers and atomically saves exact bytes", asy
         return { ok: true, json: async () => payload(fonts[i], bytes[i]) };
       },
     });
-    assert.equal(calls.length, 2);
+    assert.equal(calls.length, 1);
     assert.ok(!logs.join("\n").includes(token));
     for (const [i, font] of fonts.entries()) assert.deepEqual(await readFile(join(directory, font.name)), bytes[i]);
     await prepareFonts({ directory, token, request: offline, cli: offline, log: () => {} });
@@ -67,7 +76,7 @@ test("local GitHub CLI path uses authenticated JSON contents requests", async ()
         return { stdout: JSON.stringify(payload(fonts[calls], bytes[calls++])) };
       },
     });
-    assert.equal(calls, 2);
+    assert.equal(calls, 1);
   });
 });
 

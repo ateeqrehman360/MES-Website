@@ -22,7 +22,7 @@ import {
   Vector3,
 } from "three";
 
-import { heroPhotography } from "@/data/hero";
+import { heroOpeningArtwork, heroPhotography } from "@/data/hero";
 
 import {
   createHeroDisplayTexture,
@@ -336,6 +336,10 @@ function LaptopModel({
   const invalidate = useThree((state) => state.invalidate);
   const size = useThree((state) => state.size);
   const [logoImage, setLogoImage] = useState<HTMLImageElement | null>(null);
+  const [openingImages, setOpeningImages] = useState<{
+    desktop: HTMLImageElement;
+    portrait: HTMLImageElement;
+  } | null>(null);
   const [photographyRevision, setPhotographyRevision] = useState(0);
   const photographs = useRef<HeroDisplayPhotographs>([
     null,
@@ -354,10 +358,15 @@ function LaptopModel({
   useEffect(() => {
     let isActive = true;
 
-    loadDisplayImage(LOGO_URL, !useDesktopProductTreatment).then(
-      (image) => {
+    Promise.all([
+      loadDisplayImage(LOGO_URL, !useDesktopProductTreatment),
+      loadDisplayImage(heroOpeningArtwork.desktop, true),
+      loadDisplayImage(heroOpeningArtwork.portrait, true),
+    ]).then(
+      ([image, desktop, portrait]) => {
         if (isActive) {
           setLogoImage(image);
+          setOpeningImages({ desktop, portrait });
         }
       },
       () => {
@@ -396,15 +405,16 @@ function LaptopModel({
 
   const displayTexture = useMemo(
     () =>
-      logoImage
+      logoImage && openingImages
         ? createHeroDisplayTexture(
             logoImage,
+            isPortrait ? openingImages.portrait : openingImages.desktop,
             isPortrait,
             useDesktopProductTreatment ? 1 : MOBILE_DISPLAY_BACKING_SCALE,
             purposeProjectionOverscan,
           )
         : null,
-    [isPortrait, logoImage, purposeProjectionOverscan, useDesktopProductTreatment],
+    [isPortrait, logoImage, openingImages, purposeProjectionOverscan, useDesktopProductTreatment],
   );
 
   useEffect(
@@ -441,35 +451,6 @@ function LaptopModel({
     displayTexture, invalidate, isPortrait, photographyRevision, progress,
     useDesktopProductTreatment,
   ]);
-
-  useEffect(() => {
-    if (!displayTexture) {
-      return;
-    }
-
-    let isActive = true;
-
-    void displayTexture.fontsReady.then(() => {
-      if (!isActive) {
-        return;
-      }
-
-      const artworkProgress = getHeroDisplayDrawProgress(
-        progress.value,
-        isPortrait,
-        !useDesktopProductTreatment,
-      );
-
-      displayTexture.draw(artworkProgress);
-      lastArtworkProgress.current = artworkProgress;
-      invalidate();
-      if (!useDesktopProductTreatment) performance.mark("mes-hero:fonts-drawn");
-    });
-
-    return () => {
-      isActive = false;
-    };
-  }, [displayTexture, invalidate, isPortrait, progress, useDesktopProductTreatment]);
 
   useFrame(() => {
     if (!displayTexture) {
@@ -576,25 +557,35 @@ function LaptopModel({
 
   useEffect(() => {
     if (!preparedScene || !displayTexture) return;
-    // The uploaded display is already valid (logo artwork while its fonts load).
-    // Reveal the first frame without waiting for the page-wide font set.
-    if (useDesktopProductTreatment) {
-      onReady();
-      return;
-    }
     let active = true;
     let frame = 0;
-    const unsubscribe = displayTexture.onFirstUpload(() => {
-      if (readinessReported.current) return;
-      performance.mark("mes-hero:display-uploaded");
-      frame = requestAnimationFrame(() => {
-        if (!active || readinessReported.current) return;
-        readinessReported.current = true;
-        performance.mark("mes-hero:ready");
-        onReady();
+    let unsubscribe = () => {};
+
+    // Arm readiness for the final artwork upload, rather than an earlier logo
+    // fallback. Read progress now: the visitor may have scrolled during loading.
+    void displayTexture.fontsReady.then(() => {
+      if (!active) return;
+      const artworkProgress = getHeroDisplayDrawProgress(
+        progress.value, isPortrait, !useDesktopProductTreatment,
+      );
+      unsubscribe = displayTexture.onNextUpload(() => {
+        if (readinessReported.current) return;
+        performance.mark("mes-hero:display-uploaded");
+        // Texture upload occurs inside the render. Report after it completes.
+        frame = requestAnimationFrame(() => {
+          if (!active || readinessReported.current) return;
+          readinessReported.current = true;
+          performance.mark("mes-hero:ready");
+          onReady();
+        });
       });
+      displayTexture.draw(artworkProgress);
+      lastArtworkProgress.current = artworkProgress;
+      performance.mark("mes-hero:artwork-drawn");
+      invalidate();
+    }).catch(() => {
+      if (active) onUnavailable();
     });
-    invalidate();
     return () => {
       active = false;
       cancelAnimationFrame(frame);
@@ -603,8 +594,11 @@ function LaptopModel({
   }, [
     displayTexture,
     invalidate,
+    isPortrait,
     onReady,
+    onUnavailable,
     preparedScene,
+    progress,
     useDesktopProductTreatment,
   ]);
 

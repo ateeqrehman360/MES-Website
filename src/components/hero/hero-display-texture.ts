@@ -34,20 +34,19 @@ export type HeroDisplayPhotographs = [
 
 type HeroDisplayAssets = {
   logo: HTMLImageElement;
+  openingArtwork: HTMLImageElement;
   photographs: HeroDisplayPhotographs;
 };
 
 type HeroDisplayFontFamilies = {
   apparel: string;
   hanken: string;
-  montserrat: string;
-  tanHeadline: string;
 };
 
 export type HeroDisplayTextureController = {
   texture: CanvasTexture;
   draw: (progress: number) => void;
-  onFirstUpload: (callback: () => void) => () => void;
+  onNextUpload: (callback: () => void) => () => void;
   fontsReady: Promise<void>;
   setPhotograph: (index: number, image: HTMLImageElement | null) => void;
 };
@@ -191,7 +190,7 @@ function statementFontTopOffset(
   if ("ascentOverride" in FontFace.prototype) return 0;
 
   // WebKit does not yet apply CSS metric overrides. Preserve the old artboard
-  // top anchors using its measured ascent; TAN/Montserrat use alphabetic anchors.
+  // top anchors using its measured ascent.
   const baseline = context.textBaseline;
   context.textBaseline = "alphabetic";
   const ascent = context.measureText("H").fontBoundingBoxAscent;
@@ -203,48 +202,11 @@ function statementFontTopOffset(
 
 function drawBrandArtwork(
   context: CanvasRenderingContext2D,
-  logo: HTMLImageElement,
-  fontFamilies: HeroDisplayFontFamilies,
-  isPortrait: boolean,
+  artwork: HTMLImageElement,
 ) {
   const { width, height } = HERO_DISPLAY_TEXTURE_SIZE;
-  const lockupOffsetY = isPortrait ? 56 : 72;
-  const muslimFontSize = isPortrait ? 118 : 132;
-  const entrepreneursFontSize = isPortrait ? 43 : 56;
-  const entrepreneursTracking = isPortrait ? 4.5 : 6;
-
   context.globalAlpha = 1;
-  context.fillStyle = BRAND_GREEN;
-  context.fillRect(0, 0, 790, height);
-  context.fillStyle = GOLD;
-  context.fillRect(790, 0, 20, height);
-  context.fillStyle = CREAM;
-  context.fillRect(810, 0, width - 810, height);
-
-  context.fillStyle = GOLD;
-  context.fillRect(76, 108 + lockupOffsetY, 116, 8);
-  context.fillStyle = CREAM;
-  context.textBaseline = "alphabetic";
-  context.font = `400 ${muslimFontSize}px ${fontFamilies.tanHeadline}`;
-  context.fillText("MUSLIM", 72, 303 + lockupOffsetY);
-  context.font = `400 ${entrepreneursFontSize}px ${fontFamilies.montserrat}`;
-  drawTrackedText(
-    context,
-    "ENTREPRENEURS",
-    72,
-    405 + lockupOffsetY,
-    entrepreneursTracking,
-  );
-
-  const logoHeight = 400;
-  const logoWidth = logoHeight * (560 / 610);
-  drawLogo(
-    context,
-    logo,
-    810 + (width - 810 - logoWidth) / 2,
-    (height - logoHeight) / 2,
-    logoHeight,
-  );
+  context.drawImage(artwork, 0, 0, width, height);
 }
 
 function drawBrandedFallback(
@@ -718,12 +680,14 @@ export function getHeroDisplayDrawProgress(
 
 export function createHeroDisplayTexture(
   logo: HTMLImageElement,
+  openingArtwork: HTMLImageElement,
   isPortrait: boolean,
   backingScale = 1,
   projectionOverscan = 1.074,
 ): HeroDisplayTextureController {
   const assets: HeroDisplayAssets = {
     logo,
+    openingArtwork,
     photographs: [null, null, null],
   };
   const canvas = document.createElement("canvas");
@@ -748,13 +712,6 @@ export function createHeroDisplayTexture(
     hanken:
       rootStyles.getPropertyValue("--font-hero-hanken").trim() ||
       "Arial, Helvetica, sans-serif",
-    montserrat:
-      rootStyles.getPropertyValue("--font-laptop-montserrat").trim() ||
-      "Arial, Helvetica, sans-serif",
-    tanHeadline:
-      rootStyles.getPropertyValue("--font-laptop-tan-headline").trim() ||
-      displayFont ||
-      "Georgia, serif",
   };
   // Load each actual face, excluding next/font's metric fallback family.
   // The same gate applies on mobile and desktop: never rasterize fallback text.
@@ -770,23 +727,16 @@ export function createHeroDisplayTexture(
         throw new Error("A required laptop font is unavailable.");
       }
       displayFontsReady = true;
-    })
-    .catch(() => {
-      // Keep the existing logo artwork visible if a face fails to load.
-      console.error("Unable to load the MES laptop fonts.");
     });
   const texture = new CanvasTexture(canvas);
-  let uploaded = false;
   let uploadCallback: (() => void) | null = null;
   texture.onUpdate = () => {
-    uploaded = true;
     const callback = uploadCallback;
     uploadCallback = null;
     callback?.();
   };
-  const onFirstUpload = (callback: () => void) => {
-    if (uploaded) callback();
-    else uploadCallback = callback;
+  const onNextUpload = (callback: () => void) => {
+    uploadCallback = callback;
     return () => {
       uploadCallback = null;
     };
@@ -814,12 +764,12 @@ export function createHeroDisplayTexture(
       0, 0, HERO_DISPLAY_TEXTURE_SIZE.width, HERO_DISPLAY_TEXTURE_SIZE.height,
     );
 
-    if (!displayFontsReady) {
+    if (!displayFontsReady && progress >= PHOTO_TO_STATEMENT.start) {
       drawBrandedFallback(context, assets.logo);
     } else if (progress < BRAND_TO_PHOTO.start) {
-      drawBrandArtwork(context, assets.logo, fontFamilies, isPortrait);
+      drawBrandArtwork(context, assets.openingArtwork);
     } else if (progress < BRAND_TO_PHOTO.end) {
-      drawBrandArtwork(context, assets.logo, fontFamilies, isPortrait);
+      drawBrandArtwork(context, assets.openingArtwork);
       drawDiagonalReveal(
         context,
         smoothSegment(progress, BRAND_TO_PHOTO.start, BRAND_TO_PHOTO.end),
@@ -926,5 +876,5 @@ export function createHeroDisplayTexture(
     }
   };
 
-  return { texture, draw, setPhotograph, onFirstUpload, fontsReady };
+  return { texture, draw, setPhotograph, onNextUpload, fontsReady };
 }

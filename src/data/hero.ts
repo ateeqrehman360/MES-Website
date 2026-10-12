@@ -1,3 +1,15 @@
+export const heroOpeningArtwork = {
+  desktop: "/hero/opening-brand-desktop.webp",
+  portrait: "/hero/opening-brand-portrait.webp",
+} as const;
+
+export const heroLoadingPreviews = {
+  mobilePortrait: "/hero/loading-laptop-mobile-portrait.webp",
+  mobileWide: "/hero/loading-laptop-mobile-wide.webp",
+  desktopPortrait: "/hero/loading-laptop-desktop-portrait.webp",
+  desktopWide: "/hero/loading-laptop-desktop-wide.webp",
+} as const;
+
 export const heroPhotography = [
   {
     id: "halal-business-series-audience",

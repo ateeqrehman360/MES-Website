@@ -217,6 +217,9 @@ export function StaticHero() {
         takeoverDivider.toFixed(4),
       );
       stage.style.setProperty("--hero-canvas-opacity", (1 - canvasExit).toFixed(4));
+      // An opening capture cannot represent a later camera or screen frame.
+      // Hide immediately when scrolling begins; reverse scrolling restores it.
+      stage.style.setProperty("--hero-loading-preview-opacity", rawProgress === 0 ? "1" : "0");
       document.documentElement.style.setProperty(
         "--hero-artboard-translate-x",
         isDesktop ? "-50%" : `${(-mobileAnchor * 100).toFixed(3)}%`,

@@ -34,16 +34,18 @@ redistributed copies remains an owner review item.
 
 ## Fonts
 
-Apparel Display Regular and TAN Headline Regular are purchased webfonts retrieved
-from a private repository. Their binaries, receipts and purchase-specific terms
-must not be committed to this public repository. See
+Apparel Display Regular remains a purchased runtime webfont retrieved from a
+private repository. TAN Headline is used only in pre-rendered screen artwork and
+transparent laptop loading captures under the owner-confirmed active Desktop
+licence; TAN is not embedded or required by the production build. Their binaries,
+receipts and purchase-specific terms must not be committed to this public repository. See
 [Private Webfonts and Builds](PRIVATE_FONTS_AND_BUILDS.md) for the retained
 operational guidance and licensing caveats, including:
 
 - confirmation of licence versions, ownership/control, domains, preview use and
   combined pageview limits;
-- confirmation of TAN's fixed canvas/WebGL branding use under the public
-  webfont terms;
+- retention of the active TAN Desktop licence and authorisation before
+  regenerating or distributing new static artwork;
 - retention of any required copyright/legal notices;
 - separate remediation of older Apparel Display, TAN Headline and Kommon Grotesk
   TTF files still present in public Git history.

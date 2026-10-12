@@ -40,27 +40,6 @@ const heroHankenFont = Hanken_Grotesk({
   display: "swap",
 });
 
-const laptopTanHeadlineFont = localFont({
-  src: "../assets/fonts/private/tan_-_headline-webfont.woff2",
-  weight: "400",
-  style: "normal",
-  variable: "--font-laptop-tan-headline",
-  display: "swap",
-  declarations: [
-    { prop: "ascent-override", value: "103%" },
-    { prop: "descent-override", value: "30.5%" },
-    { prop: "line-gap-override", value: "0%" },
-  ],
-});
-
-const laptopMontserratFont = localFont({
-  src: "../assets/fonts/montserrat/Montserrat-Regular.ttf",
-  weight: "400",
-  style: "normal",
-  variable: "--font-laptop-montserrat",
-  display: "swap",
-});
-
 const bodyFont = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
@@ -119,7 +98,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
     <html
       lang="en-GB"
       data-scroll-behavior="smooth"
-      className={`${displayFont.variable} ${heroApparelFont.variable} ${heroHankenFont.variable} ${laptopTanHeadlineFont.variable} ${laptopMontserratFont.variable} ${bodyFont.variable} ${brandFont.variable} antialiased`}
+      className={`${displayFont.variable} ${heroApparelFont.variable} ${heroHankenFont.variable} ${bodyFont.variable} ${brandFont.variable} antialiased`}
     >
       <body>
         <a className="skip-link" href="#main-content">
