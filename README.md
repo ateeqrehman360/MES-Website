@@ -28,7 +28,7 @@ The website gives students and potential collaborators a central place to unders
 ## Key Features
 
 - **Interactive 3D hero:** a GLB laptop rendered in real time, with reversible scroll-driven camera movement and model rotation.
-- **Dynamic screen content:** canvas-rendered branding, three event photographs and a purpose statement, with animated reveals and responsive crops.
+- **Dynamic screen content:** static opening branding drawn into a canvas texture, three event photographs and a purpose statement, with animated reveals and responsive crops.
 - **WebGL-to-HTML transition:** the laptop display fills the viewport before matching HTML content takes over.
 - **Responsive presentation:** separate desktop and portrait scene compositions, adaptive typography and editorial layouts, with mobile navigation accessible throughout the hero sequence.
 - **Homepage guidance:** a scroll indicator guides exploration, while contextual links lead to About, Events and Work With Us.
@@ -53,9 +53,9 @@ The same progress updates DOM styles for title, navigation and takeover opacity.
 
 ### Canvas artwork and loading
 
-[The display renderer](src/components/hero/hero-display-texture.ts) draws a 1246 × 720 logical artboard containing type, SVG branding and cropped photography. It uses the Font Loading API before rasterising text, retaining logo artwork while fonts load. Photographs load independently, and failed photographs retain branded artwork. The texture uses sRGB colour space, linear filtering and no mipmaps; progress thresholds avoid redrawing unchanged artwork.
+[The display renderer](src/components/hero/hero-display-texture.ts) draws a 1246 × 720 logical artboard. Its opening branding uses separate desktop and portrait lossless images at 2492 × 1440; photograph reveals and the purpose statement remain dynamically drawn. The Font Loading API waits for Apparel Display and Hanken before drawing the purpose text. Photographs load independently, and failed photographs retain branded artwork. The texture uses sRGB colour space, linear filtering and no mipmaps; progress thresholds avoid redrawing unchanged artwork.
 
-The homepage preloads the approximately **480 KiB GLB**. The Three.js scene is dynamically imported with server-side rendering disabled, after a WebGL capability probe. A preview remains visible during loading; the loader handles scene errors and WebGL context loss through a static fallback.
+The homepage preloads the approximately **480 KiB GLB**. The Three.js scene is dynamically imported with server-side rendering disabled, after a WebGL capability probe. An authentic transparent capture of the laptop at scroll progress zero remains visible during checking and loading. The selected image matches the scene’s camera aspect and material breakpoint, then crossfades after the final display texture has uploaded and its frame has rendered. Scrolling during loading hides the opening capture and the real scene joins at current progress. Scene errors and WebGL context loss retain the separate branded fallback.
 
 ### Responsive rendering and demand-driven frames
 
@@ -78,7 +78,7 @@ Versions below are resolved in the committed [package lockfile](package-lock.jso
 | React Three Drei | 10.7.8 | GLB loading, camera and environment helpers |
 | Vercel | Managed platform | Production hosting and Next.js image optimisation |
 
-Typography uses Apparel Display, TAN Headline, Hanken Grotesk, Newsreader, Manrope and Montserrat. The first two require authorised private webfont assets.
+Runtime typography uses Apparel Display, Hanken Grotesk, Newsreader, Manrope and Montserrat. Apparel Display requires an authorised private webfont asset. TAN Headline and regular Montserrat appear only in pre-rendered laptop branding; TAN is not embedded, loaded or drawn as a runtime font.
 
 ## Architecture
 
@@ -121,7 +121,7 @@ Local WebP assets and Next.js image optimisation support the content pages. Ligh
 
 Use **Node.js 22.x**, npm and GitHub CLI for the normal local authentication path.
 
-**Private assets are required:** a clean public clone cannot run or build the complete site without authorised access to the purchased Apparel Display and TAN Headline WOFF2 files. Do not substitute or redistribute them.
+**Private assets are required:** a clean public clone cannot run or build the complete site without authorised access to the purchased Apparel Display WOFF2 file. Do not substitute or redistribute them.
 
 ```bash
 git clone https://github.com/ateeqrehman360/MES-Website.git
@@ -141,6 +141,7 @@ Open [localhost:3000](http://localhost:3000). Validate with:
 npm run lint
 npm run typecheck
 npm run test:fonts
+npm run test:hero
 npm run build
 ```
 
@@ -180,7 +181,7 @@ MES-Website/
 
 The laptop originates from **[“Laptop” by Aullwen](https://skfb.ly/6RVFt)** on Sketchfab, licensed under **[Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/)**. The MES implementation uses a prepared GLB with custom screen artwork, photography and material treatment. A source and licence credit also appears on the live privacy page.
 
-Third-party models, licensed fonts, MES photography, branding and partner logos have separate rights. No repository-wide software licence is currently declared. Font purchase-specific terms, TAN canvas use and removal of earlier font files from public Git history remain owner review items. See [Asset Licensing](docs/ASSET_LICENSING.md); this README does not certify that all licensing obligations have been completed.
+Third-party models, licensed fonts, MES photography, branding and partner logos have separate rights. No repository-wide software licence is currently declared. Apparel’s purchase-specific webfont terms, retention of the active TAN Desktop licence and removal of earlier font files from public Git history remain owner review items. See [Asset Licensing](docs/ASSET_LICENSING.md); this README does not certify that all licensing obligations have been completed.
 
 ## Author
 

@@ -5,6 +5,8 @@ import dynamic from "next/dynamic";
 import { Component, useCallback, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 
+import { heroLoadingPreviews } from "@/data/hero";
+
 import type { HeroProgressSignal } from "./hero-progress";
 
 const HeroCanvas = dynamic(
@@ -90,20 +92,25 @@ export function HeroCanvasLoader({
       data-webgl-state={canvasState}
       aria-hidden="true"
     >
-      <div className="hero-static__laptop-preview">
-        <div className="hero-static__laptop-preview-screen">
-          <span className="hero-static__laptop-preview-brand">
-            <span />
-            MUSLIM<br />
-            ENTREPRENEURS
-          </span>
-          <Image
-            src="/brand/mes-logo.svg" alt="" width={560} height={610}
-            loading="eager"
-          />
-        </div>
-        <span className="hero-static__laptop-preview-base" />
-      </div>
+      <picture className="hero-static__laptop-preview">
+        {/* Match the scene's independent camera aspect and material breakpoint. */}
+        <source
+          media="(max-width: 47.999rem) and (min-aspect-ratio: 16/25)"
+          srcSet={heroLoadingPreviews.mobileWide}
+        />
+        <source media="(max-width: 47.999rem)" srcSet={heroLoadingPreviews.mobilePortrait} />
+        <source media="(min-aspect-ratio: 16/25)" srcSet={heroLoadingPreviews.desktopWide} />
+        {/* Already optimised transparent plates; preserve their projection and alpha. */}
+        <img
+          src={heroLoadingPreviews.desktopPortrait}
+          alt=""
+          width={2560}
+          height={1280}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
+      </picture>
       <div className="hero-static__webgl-fallback">
         <span className="hero-static__fallback-rule" />
         <Image

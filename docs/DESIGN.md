@@ -53,11 +53,11 @@ Font loading and CSS variables are configured in
 | Family | CSS variable | Role |
 | --- | --- | --- |
 | Apparel Display Regular | `--font-hero-apparel` | Main editorial headings, homepage title, purpose statement, team names and footer closing |
-| TAN Headline Regular | `--font-laptop-tan-headline` | Fixed “MUSLIM” branding inside the laptop display |
+| TAN Headline Regular | None; static artwork | Fixed “MUSLIM” branding inside the laptop display |
 | Hanken Grotesk Regular | `--font-hero-hanken` | “ENTREPRENEURS” in the page hero, uppercase section labels and utility copy |
 | Newsreader | `--font-newsreader` | Configured generic `font-display` family; used by the retained FoundationPage component |
 | Manrope | `--font-manrope` | Body copy, navigation, controls and impact figures |
-| Montserrat | `--font-montserrat`, `--font-laptop-montserrat` | Bold MES navigation lockup; separate regular face for laptop “ENTREPRENEURS” artwork |
+| Montserrat | `--font-montserrat` | Bold MES navigation lockup; regular lettering is baked into the laptop artwork |
 
 Newsreader's generic display mapping does not determine the published editorial
 heading appearance. The hero and purpose classes explicitly override it with
@@ -65,9 +65,11 @@ Apparel Display, and most section headings declare Apparel directly.
 [FoundationPage](../src/components/sections/foundation-page.tsx) is not mounted by
 the current public routes.
 
-Apparel and TAN are local WOFF2 faces at weight 400. Hanken is configured at 400;
+Apparel is a local WOFF2 face at weight 400. TAN is used only in static images.
+Hanken is configured at 400;
 Manrope at 400, 500, 600, 700 and 800; the navigation Montserrat at 700 and 800.
-The laptop's regular Montserrat is loaded separately from the bundled TTF.
+The laptop's regular Montserrat is rasterised into the opening images; its bundled
+TTF is retained for offline authoring and is not a runtime font.
 See [Private Webfonts and Builds](PRIVATE_FONTS_AND_BUILDS.md) and
 [Asset Licensing](ASSET_LICENSING.md) for setup and licensing requirements.
 
@@ -132,8 +134,35 @@ form. Ground shadows anchor it to the cream surface. Mobile uses a generated
 radial shadow instead of real-time shadow maps.
 
 The display opens with a green branding panel, cream logo panel and gold divider.
-TAN Headline and regular Montserrat form the screen lockup. The display artwork
-is unlit, so its colours and typography remain independent of chassis lighting.
+TAN Headline and regular Montserrat form the screen lockup, baked into
+`public/hero/opening-brand-{desktop,portrait}.webp`. Both lossless images are
+2492 × 1440, preserving the original 1246 × 720 artboard at twice its resolution.
+The original green panel ends at x=790, the 20-unit gold divider ends at x=810,
+and the remaining panel is cream. The logo remains 400 units high with its
+560:610 ratio. Desktop uses 132-unit TAN, 56-unit Montserrat and 6-unit tracking;
+portrait uses 118, 43 and 4.5 respectively, with the original positions intact.
+The display remains unlit, so its colours and typography remain independent of
+chassis lighting. `drawImage` supplies only the opening layer; photographic
+movement, diagonal/upward reveals and purpose text remain live canvas artwork.
+
+The loading preview is a transparent capture of `MES_Laptop.glb` from the actual
+scene at progress zero, using these static opening images, existing materials,
+lights and shadows. Four 2560 × 1280 WebP plates cover the independent camera
+(aspect below 0.64) and material/quality (width below 48rem) selections. The
+capture preserves the original camera position, rotation and vertical FOV,
+extending only its horizontal projection to aspect 2 so the plate contains the
+uncropped model. Rendering the plate at the stage’s full height and cropping it
+horizontally reproduces the scene at different viewport ratios, including the
+intentional mobile overspill. No HTML hero text is included in the plate.
+
+The decorative `<picture>` selects one plate in the initial HTML. It remains
+visible during capability checking and loading, then crossfades over 180ms after
+final artwork upload and completion of the rendering frame. Isolated additive
+compositing preserves screen colour through the crossfade; browsers without the
+operator replace the matched frame immediately. It hides immediately
+when progress leaves zero and restores on reverse scrolling during loading.
+WebGL failure uses the separate accessible HTML/branded fallback; reduced motion
+retains its existing static opening scene and short page layout.
 
 Scrolling changes the camera and model composition while revealing three real
 MES photographs: a Halal Business Series audience, a group photograph and the

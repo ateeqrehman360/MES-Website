@@ -7,13 +7,12 @@ Use Node.js 22.x and npm. Install locked dependencies with `npm ci`, then run
 `npm run fonts:prepare` before starting the application. Local development requires
 authorised access to the purchased webfonts; the public clone alone is insufficient.
 
-The purchased Apparel Display Regular and TAN Headline Regular WOFF2 files live
+The purchased Apparel Display Regular WOFF2 required by runtime builds lives
 only in the private repository
 [`ateeqrehman360/MES-Private-Assets`](https://github.com/ateeqrehman360/MES-Private-Assets),
 on its `main` branch, at the repository root:
 
 - `appareldisplay-regular-webfont.woff2`
-- `tan_-_headline-webfont.woff2`
 
 `scripts/prepare-private-fonts.mjs` uses Node's built-in APIs and the authenticated
 GitHub Contents API. It writes byte-identical fonts to the gitignored
@@ -69,7 +68,7 @@ remain under the owner’s control:
   **Production** and, if desired and covered by the licences, **Preview** builds.
   Do not enable licensed-font preview builds from untrusted code/contributors.
 - The private assets repository does not need a separate Vercel project or Git
-  integration. The Node script retrieves the two files during `prebuild`.
+  integration. The Node script retrieves only Apparel Display during `prebuild`.
 
 The GitHub-connected build installs dependencies, runs `npm run build`, retrieves
 and validates missing fonts, then compiles Next.js. Cached fonts are always
@@ -103,25 +102,37 @@ redistributing fonts with website source code. `next/font/local` generates
 necessarily remain downloadable by browsers from the deployed site's font URLs;
 private source storage does not make those deployed assets secret.
 
-The owner reports purchasing both webfont licences for £39.72 total. Receipts and
-purchase-specific terms are not in this public repository and were not reviewed.
+The owner previously reported purchasing both webfont licences for £39.72 total.
+Receipts and purchase-specific terms are not in this public repository and were not reviewed.
 The live deployment does not establish licence compliance. The owner must still
-confirm the applicable licence versions, licensee/site ownership, domains/preview
-use and purchased combined pageview limit,
+confirm Apparel’s applicable licence version, licensee/site ownership,
+domains/preview use and purchased combined pageview limit,
 and retain any required accompanying copyright/legal notices through an approved
 private-asset workflow. No purchased licence documents are committed here.
 
-TAN is loaded via generated CSS `@font-face` and the browser Font Loading API,
-then used only to draw fixed, read-only MES branding in a canvas texture. There is
-no end-user typesetting editor or font export. The current public terms do not
-explicitly address canvas/WebGL textures under the **@Font-Face Only** restriction;
-confirm this use with Creative Market/the licensor. Apparel's exact
-purchase-specific terms and any additional foundry requirements also need owner
-confirmation. This implementation is not a legal-compliance certification.
+TAN Headline is now restricted to the static opening screen artwork and the
+laptop loading captures in `public/hero/`. The owner confirmed an active Desktop
+licence and authorised use of the existing TAN asset on 12 October 2026 before
+these images were generated. Creative Market Support’s guidance supplied by the
+owner distinguishes Desktop-licensed static digital artwork from Webfont-licensed
+CSS embedding. TAN has no `next/font/local` declaration, CSS font variable,
+Font Loading API request or runtime canvas text drawing. It is not retrieved by
+`fonts:prepare` and is not required by development or production builds.
+
+Regenerating TAN-containing images requires an active Desktop licence and an
+authorised font held outside the public repository. The earlier Webfont purchase
+is historical context, not authorisation for new static artwork. Do not add the
+font, receipts or private licence documents to the source tree or public assets.
+The separate regular Montserrat TTF is retained as an open-licensed source asset,
+but is no longer loaded at runtime; navigation Montserrat remains unchanged.
+Apparel continues to use its purchased webfont through `next/font/local`, including
+its existing metric overrides and secure retrieval. Its exact purchase-specific
+terms and any additional foundry requirements remain owner review items.
+This implementation is not a legal-compliance certification.
 
 Hanken Grotesk uses the [SIL Open Font License](https://github.com/google/fonts/blob/main/ofl/hankengrotesk/OFL.txt);
 its notice is retained in `public/fonts/licenses/hanken-grotesk/OFL.txt`.
-The existing Montserrat file and `src/assets/fonts/montserrat/OFL.txt` remain intact.
+The source Montserrat file and `src/assets/fonts/montserrat/OFL.txt` remain intact.
 
 **Outstanding history cleanup:** the old Apparel Display, TAN Headline and Kommon
 Grotesk TTFs have been removed from the current branch tree, but remain in the public

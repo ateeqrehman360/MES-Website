@@ -21,12 +21,6 @@ export const fonts = [
     size: 28400,
     sha256: "d2f0ec91914fd31d0e782906681f77ecf5877af6495c3954b0d49fb994fb20a1",
   },
-  {
-    name: "tan_-_headline-webfont.woff2",
-    family: "TAN Headline Regular",
-    size: 32632,
-    sha256: "90c2e9375eef82f925d9eb05c001ce0eaf6d36dcda7bf6b0579d243f2c65aceb",
-  },
 ];
 
 export function validateFont(bytes, font) {
@@ -148,7 +142,7 @@ export async function prepareFonts({
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   prepareFonts().catch((error) => {
     // All download failures are sanitized above; do not print error stacks.
-    const message = error.message.startsWith(fonts[0].name) || error.message.startsWith(fonts[1].name)
+    const message = fonts.some((font) => error.message.startsWith(font.name))
       ? error.message : "Unable to prepare local fonts. Check filesystem permissions.";
     console.error(`[private fonts] ${message}`);
     process.exitCode = 1;
