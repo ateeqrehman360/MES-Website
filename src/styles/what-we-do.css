@@ -295,20 +295,56 @@
     .what-we-do[data-what-we-do-motion="desktop"]
       .what-we-do__chapter--learn {
       z-index: 1;
-      opacity: var(--what-learn-opacity);
       transform: translate3d(0, var(--what-learn-y), 0);
     }
 
     .what-we-do[data-what-we-do-motion="desktop"]
       .what-we-do__chapter--connect {
       z-index: 1;
-      opacity: var(--what-connect-opacity);
     }
 
     .what-we-do[data-what-we-do-motion="desktop"]
       .what-we-do__chapter--build {
       z-index: 3;
+      /* Keep the cream copy inside the animated green field. */
+      clip-path: inset(var(--what-build-inset) 0 var(--what-build-inset) 0);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--learn .what-we-do__word {
+      opacity: var(--what-learn-opacity);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--learn .what-we-do__structural-rule {
+      opacity: calc(0.75 * var(--what-learn-opacity));
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--connect .what-we-do__word {
+      opacity: var(--what-connect-opacity);
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--build .what-we-do__word {
       opacity: var(--what-build-opacity);
+    }
+
+    /* Reveal readable glyphs instead of fading copy through low contrast.
+       The existing progress, timing and translation still drive each chapter. */
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--learn :is(.what-we-do__statement, .what-we-do__description) {
+      clip-path: inset(0 calc((1 - var(--what-learn-opacity)) * 50%));
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--connect :is(.what-we-do__statement, .what-we-do__description) {
+      clip-path: inset(0 calc((1 - var(--what-connect-opacity)) * 50%));
+    }
+
+    .what-we-do[data-what-we-do-motion="desktop"]
+      .what-we-do__chapter--build :is(.what-we-do__statement, .what-we-do__description) {
+      clip-path: inset(0 calc((1 - var(--what-build-opacity)) * 50%));
     }
 
     .what-we-do[data-what-we-do-motion="desktop"]
@@ -412,7 +448,7 @@
       inset-inline: var(--site-gutter);
       width: auto;
       margin: 0;
-      opacity: 0.8;
+      opacity: calc(0.8 * var(--what-connect-opacity));
       transform: scaleX(var(--what-connect-rule));
       transform-origin: center;
     }
@@ -449,7 +485,7 @@
       inset-block-end: 4.5%;
       width: clamp(3rem, 7vw, 7rem);
       margin: 0;
-      opacity: 0.9;
+      opacity: calc(0.9 * var(--what-build-opacity));
       transform: scaleX(var(--what-build-rule));
       transform-origin: left;
     }
@@ -704,21 +740,23 @@
     .what-we-do[data-what-we-do-mobile-motion="ready"]
       .what-we-do__chapter--learn:not([data-what-we-do-mobile-entered="true"])
       .what-we-do__description {
-      opacity: 0.72;
+      /* The 88% colour alpha also contributes to contrast; 95% element
+         opacity keeps Connect above 4.5:1 (4.71:1 for its body copy). */
+      opacity: 0.95;
       transform: translate3d(0, 0.85rem, 0);
     }
 
     .what-we-do[data-what-we-do-mobile-motion="ready"]
       .what-we-do__chapter--connect:not([data-what-we-do-mobile-entered="true"])
       .what-we-do__statement {
-      opacity: 0.72;
+      opacity: 0.95;
       transform: translate3d(-0.7rem, 0.65rem, 0);
     }
 
     .what-we-do[data-what-we-do-mobile-motion="ready"]
       .what-we-do__chapter--connect:not([data-what-we-do-mobile-entered="true"])
       .what-we-do__description {
-      opacity: 0.72;
+      opacity: 0.95;
       transform: translate3d(0.7rem, 0.65rem, 0);
     }
 
@@ -734,7 +772,7 @@
     .what-we-do[data-what-we-do-mobile-motion="ready"]
       .what-we-do__chapter--build:not([data-what-we-do-mobile-entered="true"])
       .what-we-do__description {
-      opacity: 0.68;
+      opacity: 0.95;
       transform: translate3d(0, 1rem, 0);
     }
 

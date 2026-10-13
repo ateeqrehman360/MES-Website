@@ -242,7 +242,8 @@ export function TeamMotion({ children }: { children: ReactNode }) {
         );
         member.style.setProperty(
           "--team-name-opacity",
-          (0.4 + name * 0.6).toFixed(4),
+          // Cream on green stays above 3:1 throughout the masked reveal.
+          (0.55 + name * 0.45).toFixed(4),
         );
         member.style.setProperty(
           "--team-role-y",
