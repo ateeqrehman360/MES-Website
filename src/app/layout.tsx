@@ -17,6 +17,8 @@ const displayFont = Newsreader({
   variable: "--font-newsreader",
   subsets: ["latin"],
   display: "swap",
+  // The hero and recruitment invitation use Apparel; load Newsreader on demand.
+  preload: false,
 });
 
 const heroApparelFont = localFont({
