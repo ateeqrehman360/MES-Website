@@ -270,8 +270,6 @@
   .team__name-mask {
     max-width: 100%;
     margin: 0;
-    /* Captions overlap portraits; their contrast must not depend on a photo. */
-    background: var(--mes-deep-green);
     clip-path: inset(0 var(--team-name-clip, 0%) 0 0);
   }
 
@@ -291,15 +289,13 @@
 
   .team__role {
     margin: 0.85rem 0 0;
-    background: var(--mes-deep-green);
-    color: rgb(234 226 212 / calc(0.82 * (0.86 + 0.14 * var(--team-role-opacity, 1))));
+    color: rgb(234 226 212 / 82%);
     font-family: var(--font-hero-hanken), Arial, Helvetica, sans-serif;
     font-size: 0.75rem;
     letter-spacing: 0.14em;
     line-height: 1.3;
     text-transform: uppercase;
-    /* Keep the existing stagger and slide, with readable revealed glyphs. */
-    clip-path: inset(0 calc((1 - var(--team-role-opacity, 1)) * 100%) 0 0);
+    opacity: var(--team-role-opacity, 1);
     transform: translate3d(0, var(--team-role-y, 0), 0);
   }
 
@@ -341,9 +337,8 @@
 
     .team[data-team-mobile-motion="ready"] .team__caption {
       transition-duration: 620ms;
-      transition-property: clip-path, opacity, transform;
+      transition-property: opacity, transform;
       transition-delay: 120ms;
-      clip-path: inset(0);
     }
 
     .team[data-team-mobile-motion="ready"]
@@ -365,9 +360,7 @@
     .team[data-team-mobile-motion="ready"]
       .team__member:not([data-team-entered="true"])
       .team__caption {
-      /* Keep the fade safe even where the caption backing overlaps a photo. */
-      opacity: 0.95;
-      clip-path: inset(0 0 100% 0);
+      opacity: 0;
       transform: translate3d(0, 0.8rem, 0);
     }
   }
