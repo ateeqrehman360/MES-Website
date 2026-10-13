@@ -181,7 +181,7 @@ MES-Website/
 
 The laptop originates from **[“Laptop” by Aullwen](https://skfb.ly/6RVFt)** on Sketchfab, licensed under **[Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/)**. The MES implementation uses a prepared GLB with custom screen artwork, photography and material treatment. A source and licence credit also appears on the live privacy page.
 
-Third-party models, licensed fonts, MES photography, branding and partner logos have separate rights. No repository-wide software licence is currently declared. Apparel’s purchase-specific webfont terms, retention of the active TAN Desktop licence and removal of earlier font files from public Git history remain owner review items. See [Asset Licensing](docs/ASSET_LICENSING.md); this README does not certify that all licensing obligations have been completed.
+Third-party models, licensed fonts, MES photography, branding and partner logos have separate rights.
 
 ## Author
 
