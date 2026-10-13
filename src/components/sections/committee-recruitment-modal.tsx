@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, type RefObject } from "react";
+import { useRef, type RefObject } from "react";
+import { useCommitteeDialog } from "./use-committee-dialog";
 import styles from "./committee-recruitment.module.css";
 
 type CommitteeRecruitmentModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  triggerRef: RefObject<HTMLAnchorElement | null>;
+  triggerRef: RefObject<HTMLElement | null>;
 };
 
 export function CommitteeRecruitmentModal({
@@ -18,55 +19,7 @@ export function CommitteeRecruitmentModal({
   const closeRef = useRef<HTMLButtonElement>(null);
   const formRef = useRef<HTMLIFrameElement>(null);
 
-  useEffect(() => {
-    const dialog = dialogRef.current;
-
-    if (!isOpen || !dialog) {
-      return;
-    }
-
-    const body = document.body;
-    const root = document.documentElement;
-    const trigger = triggerRef.current;
-    const scrollX = window.scrollX;
-    const scrollY = window.scrollY;
-    const scrollbarWidth = Math.max(0, window.innerWidth - root.clientWidth);
-    const paddingRight = Number.parseFloat(getComputedStyle(body).paddingRight) || 0;
-    const previousBody = {
-      overflow: body.style.overflow,
-      position: body.style.position,
-      top: body.style.top,
-      left: body.style.left,
-      width: body.style.width,
-      paddingRight: body.style.paddingRight,
-    };
-    const previousRootOverflow = root.style.overflow;
-    const previousScrollBehavior = root.style.scrollBehavior;
-
-    // Fixed-body locking also prevents background touch scrolling on iOS Safari.
-    root.style.overflow = "hidden";
-    body.style.overflow = "hidden";
-    body.style.position = "fixed";
-    body.style.top = `-${scrollY}px`;
-    body.style.left = `-${scrollX}px`;
-    body.style.width = "100%";
-    body.style.paddingRight = `${paddingRight + scrollbarWidth}px`;
-
-    // The native top layer makes background content inert. Focus guards below
-    // also wrap Tab at the cross-origin iframe's browsing-context boundaries.
-    dialog.showModal();
-    closeRef.current?.focus({ preventScroll: true });
-
-    return () => {
-      dialog.close();
-      Object.assign(body.style, previousBody);
-      root.style.overflow = previousRootOverflow;
-      root.style.scrollBehavior = "auto";
-      window.scrollTo(scrollX, scrollY);
-      root.style.scrollBehavior = previousScrollBehavior;
-      trigger?.focus({ preventScroll: true });
-    };
-  }, [isOpen, triggerRef]);
+  useCommitteeDialog(isOpen, dialogRef, closeRef, triggerRef);
 
   return (
     <dialog

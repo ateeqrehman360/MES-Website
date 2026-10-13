@@ -1,14 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { CommitteeRecruitmentModal } from "./committee-recruitment-modal";
+import { useEffect, useRef } from "react";
+import { useCommitteeApplication } from "./committee-recruitment-provider";
 import styles from "./committee-recruitment.module.css";
 
 export function CommitteeRecruitmentCta() {
   const tierRef = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLAnchorElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const closeApplication = useCallback(() => setIsOpen(false), []);
+  const openApplication = useCommitteeApplication();
 
   useEffect(() => {
     const tier = tierRef.current;
@@ -56,7 +54,6 @@ export function CommitteeRecruitmentCta() {
             Publicity teams.
           </p>
           <a
-            ref={triggerRef}
             className={styles.cta}
             href="https://tally.so/r/ob4kAb"
             aria-haspopup="dialog"
@@ -74,7 +71,7 @@ export function CommitteeRecruitmentCta() {
               }
 
               event.preventDefault();
-              setIsOpen(true);
+              openApplication(event.currentTarget);
             }}
           >
             <span>Apply to join the MES committee</span>
@@ -82,11 +79,6 @@ export function CommitteeRecruitmentCta() {
           </a>
         </div>
       </div>
-      <CommitteeRecruitmentModal
-        isOpen={isOpen}
-        onClose={closeApplication}
-        triggerRef={triggerRef}
-      />
     </div>
   );
 }

@@ -6,6 +6,7 @@
     "fonts:prepare": "node scripts/prepare-private-fonts.mjs",
     "test:fonts": "node --test scripts/prepare-private-fonts.test.mjs",
     "test:hero": "node --test scripts/hero-display-texture.test.mjs",
+    "test:recruitment": "node --test scripts/committee-recruitment.test.mjs",
     "predev": "npm run fonts:prepare",
     "prebuild": "npm run fonts:prepare",
     "dev": "next dev",
