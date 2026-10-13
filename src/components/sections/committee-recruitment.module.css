@@ -198,6 +198,174 @@
   text-underline-offset: 0.2em;
 }
 
+.popup {
+  position: fixed;
+  inset: 0;
+  width: min(40rem, calc(100% - 2rem));
+  max-width: none;
+  max-height: calc(100vh - 2rem);
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--mes-border);
+  border-radius: 4px;
+  background: var(--mes-cream-soft);
+  color: var(--mes-green-ink);
+  box-shadow: 0 1.5rem 5rem rgb(1 54 9 / 18%);
+}
+
+.popup::backdrop {
+  background: rgb(1 25 5 / 48%);
+}
+
+.popupToolbar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem clamp(1.25rem, 5vw, 2.5rem);
+  background: var(--mes-cream-soft);
+}
+
+.popupRule {
+  width: 2.75rem;
+  height: 1px;
+  background: var(--mes-gold);
+}
+
+.popupContent {
+  padding: 0.875rem clamp(1.25rem, 5vw, 2.5rem) clamp(1.5rem, 5vw, 2.5rem);
+}
+
+.popupEyebrow {
+  margin: 0 0 1.25rem;
+  font-family: var(--font-hero-hanken), Arial, Helvetica, sans-serif;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  line-height: 1.5;
+}
+
+.popupHeading {
+  max-width: 15ch;
+  margin: 0;
+  color: var(--mes-deep-green);
+  font-family: var(--font-hero-apparel), Georgia, serif;
+  font-size: clamp(2.25rem, 6.5vw, 3.5rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.popupCopy {
+  max-width: 46ch;
+  margin-block-start: 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.popupCopy p {
+  margin: 0;
+}
+
+.popupCopy p + p {
+  margin-block-start: 0.75rem;
+}
+
+.popupDeadline {
+  margin: 1.5rem 0 0;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--mes-border);
+  font-family: var(--font-hero-hanken), Arial, Helvetica, sans-serif;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+}
+
+.popupDeadline time {
+  white-space: nowrap;
+}
+
+.popupActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin-block-start: 1rem;
+}
+
+.popupApply {
+  flex: 1 1 12rem;
+  max-width: none;
+  margin: 0;
+  cursor: pointer;
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+}
+
+.popupLater {
+  flex: 1 0 auto;
+  min-height: 3.125rem;
+  padding: 0.75rem;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--mes-deep-green);
+  font-family: var(--font-hero-hanken), Arial, Helvetica, sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.popupLater:hover {
+  background: var(--mes-cream);
+}
+
+.popupLater:focus-visible {
+  outline: 2px solid var(--mes-deep-green);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .popup[open] {
+    animation: recruitment-popup-enter 320ms var(--ease-premium) both;
+  }
+
+  .popup[open]::backdrop {
+    animation: recruitment-backdrop-enter 320ms var(--ease-premium) both;
+  }
+
+  .popup[open][data-closing="true"] {
+    animation: recruitment-popup-exit 180ms var(--ease-premium) both;
+  }
+
+  .popup[open][data-closing="true"]::backdrop {
+    animation: recruitment-backdrop-enter 180ms var(--ease-premium) reverse both;
+  }
+}
+
+@keyframes recruitment-popup-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes recruitment-popup-exit {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(4px); }
+}
+
+@keyframes recruitment-backdrop-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 @media (min-width: 48rem) {
   .composition {
     grid-template-columns: repeat(12, minmax(0, 1fr));
