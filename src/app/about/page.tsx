@@ -5,6 +5,11 @@ import { JourneySection } from "@/components/sections/journey-section";
 import { TeamSection } from "@/components/sections/team-section";
 import { WhatWeDoSection } from "@/components/sections/what-we-do-section";
 import { createPageMetadata } from "@/lib/metadata";
+import "@/styles/about.css";
+import "@/styles/what-we-do.css";
+import "@/styles/team.css";
+import "@/styles/built-at-mmu.css";
+import "@/styles/about-work-with-us.css";
 
 const description =
   "The Muslim Entrepreneurs Society at Manchester Metropolitan University, founded in 2024.";
